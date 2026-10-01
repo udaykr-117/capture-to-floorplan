@@ -1,0 +1,32 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Capture data (large; the three Stray Scanner samples live here during development)
+single_room/
+single_scan_floor_only/
+single_scan_with_ceiling/
+data/
+
+# Generated outputs and weights (weights are fetched by scripts/fetch_models.sh)
+out/
+cache/
+models/
+*.ply
+*.pcd
+*.npz
+*.pt
+*.pth
+*.onnx
+
+
+
+
+*.md

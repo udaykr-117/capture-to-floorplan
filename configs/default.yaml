@@ -1,0 +1,18 @@
+# Every threshold has a one-line justification. Do not change a value to improve a result
+# without logging the before/after in JOURNAL.md (CLAUDE.md rule 4).
+# Only values already decided are here. New ones are added when the code that needs them exists.
+
+stray:
+  rgb_width: 1920        # camera_matrix.csv is at RGB resolution; printed: cv2 reports 1920x1440 on all 3 videos
+  rgb_height: 1440       # same source; reference stray_visualize.py L79 scales with 1920/1440
+  frame_stride: 5        # task brief default; ~4.3 fps keeps the cloud dense while limiting memory
+  confidence_min: 2      # task brief default (0/1/2 scale); re-test 1 for ceilings (CLAUDE.md)
+  depth_min_m: 0.1       # task brief default; closer returns are unreliable
+  depth_max_m: 5.0       # task brief default; far returns are noisier
+  voxel_m: 0.02          # task brief default; 2 cm matches the best opening/ceiling gate granularity
+
+checks:
+  floor_normal_max_deg: 3.0    # pass criterion from the brief to the loader task: floor within ~3 deg of an axis
+  ceiling_probe_min_above_floor_m: 1.8   # probe slab starts here; a plane exactly at this height is a cutoff artifact
+  wall_slab_above_floor_m: [0.3, 1.6]    # slab used to look at walls: above floor clutter, below ceiling
+  wall_normal_vertical_max: 0.2          # |n.up| below this counts as a vertical surface
