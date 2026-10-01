@@ -10,9 +10,13 @@ stray:
   depth_min_m: 0.1       # task brief default; closer returns are unreliable
   depth_max_m: 5.0       # task brief default; far returns are noisier
   voxel_m: 0.02          # task brief default; 2 cm matches the best opening/ceiling gate granularity
+  flush_every_frames: 100  # memory bound only: merge+voxelise every 100 frames; only changes the cloud via voxel averaging order
 
 checks:
-  floor_normal_max_deg: 3.0    # pass criterion from the brief to the loader task: floor within ~3 deg of an axis
+  ransac_distance_m: 0.02      # brief for the loader task: plane distance threshold 0.02 (2 cm = voxel size)
+  ransac_iterations: 2000      # enough for the largest planes at ~10^6 points; not tuned
+  planes_reported: 6           # brief for the loader task: top 6 planes
+  floor_normal_max_deg: 3.0   # pass criterion from the brief to the loader task: floor within ~3 deg of an axis
   ceiling_probe_min_above_floor_m: 1.8   # probe slab starts here; a plane exactly at this height is a cutoff artifact
   wall_slab_above_floor_m: [0.3, 1.6]    # slab used to look at walls: above floor clutter, below ceiling
   wall_normal_vertical_max: 0.2          # |n.up| below this counts as a vertical surface
