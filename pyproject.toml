@@ -31,3 +31,9 @@ build-backend = "uv_build"
 dev = [
     "pytest>=9.1.1",
 ]
+models = [
+    "pillow>=12.3.0",
+    "pycolmap>=4.2.1",
+    "torch>=2.14.1",
+    "transformers>=5.18.0",
+]
