@@ -21,7 +21,7 @@ measured, does not reach the bar), **untested** (built, no data to measure), **m
 | 14 | JSON to the published schema | `src/floorplan/schema.py` | own pydantic schema (no published Round 1 schema was available to us) | partial |
 | 15 | Rendered plan | `src/floorplan/report/render.py` | `plan.png` | met |
 | 16 | Benchmark set composition | `docs/benchmark_report.md` §0 | supplied captures only | partial: no staged damage, no ground truth, photos simulated |
-| 17 | Gate: opening widths <= 2 cm on >= 85% | `docs/benchmark_report.md` §1 | detection counts disagree 4/7/1 between captures | untested (no ground truth) |
+| 17 | Gate: opening widths <= 2 cm on >= 85% | `docs/benchmark_report.md` §1 | detection counts disagree 3/7/1 between captures | untested (no ground truth) |
 | 18 | Gate: ceiling <= 1.5 cm, spread <= 1 cm, report says which failure | `docs/benchmark_report.md` §1 | 6 rooms measured in one capture | untested; spread unmeasurable |
 | 19 | Gate: repeatability 1 cm or 0.5% per wall | `docs/benchmark_report.md` §2 | room dims 3/12, same-wall lengths 2/34 (median 24.7 cm) | fails |
 | 20 | Gate: drift accountability, footprint ablation on/off | `src/floorplan/drift/`, `scripts/m4_ablation.py`, `docs/benchmark_report.md` §3 | footprints 61.1 -> 68.7 and 71.7 -> 72.7 m2 | met |

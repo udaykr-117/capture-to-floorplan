@@ -17,7 +17,7 @@ or tape ground truth). We had no iPhone, so the set is the three Stray Scanner c
 ## 1. Gates
 | Gate | Tier | Number | Verdict |
 |---|---|---|---|
-| Opening widths <= 2 cm on >= 85%, misses and phantoms count | LiDAR | no ground truth. Openings found: 4 / 7 / 1 in the three captures (floor_only reported two doors twice, once per wall face, until merged: 9 -> 7); only 1 opening matches across captures, its width differs by 10 cm | **untested**, almost certainly fails (detection disagrees between captures) |
+| Opening widths <= 2 cm on >= 85%, misses and phantoms count | LiDAR | no ground truth. Openings found: 3 / 7 / 1 in the three captures (was 4 / 9 / 1: two doors counted once per wall face, and a see-through with the same room on both sides, removed); 2 openings match across captures: the corridor door (0.86 vs 0.76 m wide) and one doorway measured 1.92 vs 1.03 m | **untested**, almost certainly fails (detection disagrees between captures: doors open or closed, areas covered differently) |
 | Ceiling <= 1.5 cm per room; spread across captures <= 1 cm | LiDAR | measured in 6 of 6 with_ceiling rooms (intervals ±1 to ±5.5 cm); the other captures did not sweep the ceiling, so no spread can be computed | accuracy **untested**; spread **unmeasurable** (neither "repeatable-but-biased" nor "unrepeatable" can be stated) |
 | Repeatability: same room, same tier, within 1 cm or 0.5% per wall | LiDAR | room dimensions 3/12 pass (paired 3/9, median 5.3 cm); same wall's length 2/34 pass, median 24.7 cm | **fails** |
 | Drift accountability: correction + footprint ablation on/off | LiDAR | correction implemented; ablation in §3 | **met** as a requirement (correction shipped, ablation shown) |
@@ -54,7 +54,7 @@ Without ground truth, the test is: does the interval of the difference between t
 |---|---|---|---|---|
 | Wall length | 8/34 (24%) inside | ±0.54 m (robust 2σ) | 24/34 (71%); 27/34 (79%) with the shipped round-2 pipeline | 24/34 (71%) |
 | Room area | 3/10 (30%) inside | ±25.5% of area (conformal 95%) | 10/10 | 9/10 |
-| Opening width | 1/2 (0/1 after merging duplicate faces) | none (too few pairs) | 0/1 | n/a |
+| Opening width | 0/1 matched pair inside | none (too few pairs) | 0/1 | n/a |
 Wall intervals still under-cover (71% vs 95%) by choice: covering the remaining walls needs ±3.4 m, set by one wall that spans two rooms in another
 capture. The fitted terms come from the same three captures (no independent data), so they are a lower bound on the true uncertainty.
 Benchmark re-run with both terms in the pipeline: walls 24/34 (71%) and room areas 10/10 inside, as fitted (`out/final_bench_after.txt`); with the shipped round-2 pipeline walls 27/34 (79%), areas 10/10 (`out/final_bench_after2a.txt`). The terms were fitted before round 2 and not refitted.

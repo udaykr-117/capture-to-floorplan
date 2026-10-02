@@ -28,7 +28,7 @@ Free space comes from visibility fans (every frame carves the cells between came
 and flooded; each room becomes a rectilinear polygon by assigning cells of the wall-plane grid. Ceilings are measured per room against the room's
 own local floor (floors drift by up to 8 cm across a capture) and are `unmeasurable` with a reason when fewer than 20% of the room has ceiling
 points. Openings are cells of a 2 cm wall image that rays saw through (hit ≥ 20 cm behind the wall) with no wall points, bracketed between the
-see-through extent and the wall-to-wall gap. An opening seen on both faces of one wall (planes < 35 cm apart, overlapping) is reported once.
+see-through extent and the wall-to-wall gap. An opening seen on both faces of one wall (planes < 35 cm apart, overlapping) is reported once, and a see-through with the same room on both sides (a half wall or counter) is not an opening.
 
 ## 2. Tier design and device matrix
 | Tier | Input | Poses | Metric scale | Interval term | On the samples |
@@ -93,7 +93,7 @@ exposed it. Fix: each room's walls are re-measured from the room's longest singl
 pass 1/9 → 3/9, 7 of 9 better, 2 worse; the gate still fails.
 Unpaired, as the benchmark prints it: 1/10 → 3/12 within the gate, median 7.7 → 7.7 cm, 90th percentile 13.0 → 17.1 cm (worse). Costs not
 predicted: floor_only's footprint +2.7 m2 and room overlaps up to 0.14 m2 at shared walls.
-Why it fell short: refinement removes drift BETWEEN visits but not within one; the two regressions are where floor_only is rotated 2.3° locally.
+Why it fell short: refinement removes drift BETWEEN visits but not within one. The two regressions come from one room of floor_only whose walls were measured from its first seconds; two visits of the same room inside one capture differ by up to 7 cm (`scripts/refine_visits.py`). Taking the median over all visits instead was tried and rejected by a rule set before running (room dimensions 3/12 → 2/11, median 7.7 → 10.1 cm).
 
 **Round 2** (same gate, measured as the length of the same wall in two captures: 2/34, median 29.7 cm). Pictures of the three captures registered
 on each other showed a 0.9 m corridor that is part of the top room in one capture and of the bottom room in the others: a corridor never gets a

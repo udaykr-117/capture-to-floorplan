@@ -124,3 +124,12 @@ Choosing between (a) and (a)+(b) after seeing these numbers is a decision inform
 - "One more room in each capture": only with_ceiling gained one (the corridor). Missed for the other two captures, because the corridor split (b) is off.
 - Why it fell short: the corridor is now one room in with_ceiling but still inside the bottom room in floor_only and single_room, so those walls
   still differ; cutting it out reliably needs a corridor test that does not also cut notches (not found in the time available).
+
+
+## Follow-up on the two round-1 regressions
+Both bad dimensions involve floor_only's bottom-right room, whose walls were re-measured from chunks 0-3 (the first seconds of the capture).
+`scripts/refine_visits.py` shows that two visits of the same room within one capture can disagree by up to 7 cm (with_ceiling R2: 3.037 vs
+3.108 m), so a single visit carries its own error. Tested: walls from the median over all visits of >= 2 chunks (`refine.visits: median`,
+`run_benchmark.py --variant after3`). Rule set before running: adopt only if room dimensions improve and no more get worse. Result: room
+dimensions 3/12 -> 2/11 within the gate, median 7.7 -> 10.1 cm, walls in the gate 2 -> 0. **Rejected**; `longest` stays. The regressions are
+explained, not fixed.
