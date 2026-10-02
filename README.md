@@ -9,13 +9,17 @@ truth, so accuracy is untested, and the repeatability gate fails. The video and 
 samples (structure from motion places too few frames). The damage pass reports nothing on the clean samples; whether it finds real damage is untested.
 
 ## Install (clean machine, about 5-15 minutes, mostly downloads)
+Tested from a fresh `git clone` on Windows 11: `uv sync --group models` + `fetch_models.sh` took 38 s with a warm download cache, then
+`plan run` on `single_room` ran in 172 s **offline** (`HF_HUB_OFFLINE=1`), damage pass included. A cold machine adds the downloads
+(the installed environment is 1.4 GB on Windows; Linux takes the CPU-only torch; weights 0.7 GB). Cold-network time was not measured.
 1. Install `uv`: https://docs.astral.sh/uv/getting-started/installation/ (one command; it brings its own Python 3.12).
 2. Get the code and the dependencies:
    ```
    git clone <this repo> floorplan && cd floorplan
    uv sync --group models
    ```
-   (`uv sync` alone is enough for the LiDAR tier without damage detection.)
+   (`uv sync` alone is enough for the LiDAR tier without damage detection.) On Windows, clone into a short path such as `C:\fp`: a deep
+   folder makes some installed file paths exceed Windows' 260-character limit and the install breaks.
 3. Fetch the model weights once (Depth Anything V2 small, OWL-ViT base; pinned revisions, about 0.7 GB; no network needed afterwards):
    ```
    bash scripts/fetch_models.sh
