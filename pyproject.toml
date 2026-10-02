@@ -38,3 +38,12 @@ models = [
     "torch>=2.14.1",
     "transformers>=5.18.0",
 ]
+
+# Linux: take torch from the CPU-only index (the default Linux wheel pulls ~2.5 GB of CUDA libraries; the pipeline is CPU-only).
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
