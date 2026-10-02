@@ -175,3 +175,29 @@ checks:
   ceiling_probe_min_above_floor_m: 1.8   # probe slab starts here; a plane exactly at this height is a cutoff artifact
   wall_slab_above_floor_m: [0.3, 1.6]    # slab used to look at walls: above floor clutter, below ceiling
   wall_normal_vertical_max: 0.2          # |n.up| below this counts as a vertical surface
+
+damage:
+  model: google/owlvit-base-patch32   # chosen in M1 for CPU (0.5-1 s per frame); zero-shot, no damage-specific training, so accuracy is untested
+  keyframe_every: 25           # frames (multiple of stray.frame_stride): about one keyframe per 6 s of walking, ~200 per large capture, bounded CPU time
+  score_min: 0.33              # negative control (scripts/m6_negative_control.py): the 3 samples have no damage; regions vanish from 0.14, the highest single false box was 0.322 -> 0.33 is above every false box seen (569 boxes). Was 0.10 (model-card example). Recall on real damage untested and probably lowered
+  max_box_fraction: 0.5        # a box covering more than half of the image is a whole wall or the floor, not a damage patch
+  surfaces: [wall, ceiling]    # report damage only on walls and ceilings: every prompt names a wall or ceiling, and on single_room the floor boxes were tile grout and a mat (decision made AFTER looking at that output, see JOURNAL M6)
+  min_views: 2                 # a region must be detected in >= 2 keyframes (single-frame detections are the commonest false positives)
+  plane_inlier_m: 0.04         # depth pixels within 4 cm of the box's fitted plane are the surface; others are background seen through the box
+  min_plane_fraction: 0.5      # at least half of the box's depth pixels must lie on one plane, else the box is not on a single surface and is dropped
+  cell_m: 0.05                 # surface raster cell for area and for merging detections of one patch seen in several frames
+  horizontal_normal_min: 0.9   # same as scene.horizontal_normal_min: floor or ceiling plane
+  vertical_normal_max: 0.3     # |n_up| below this is a wall (looser than scene.vertical_normal_max because a box plane fit is noisier than a cloud normal)
+  wall_match_m: 0.10           # a damaged wall point is assigned to a room wall edge within 10 cm of its plane
+  max_extent:                  # physical plausibility per class (m2 of surface; for cracks the longest box side in m). Chosen AFTER seeing 5-7 m2 'holes' in with_ceiling (JOURNAL M6); a hole bigger than a door is not a hole
+    hole: 0.5
+    mold: 2.0
+    stain: 4.0
+    peeling_paint: 4.0
+    crack: 3.0
+  classes:                     # class -> text prompts (all prompts of a class are queried; best score kept per box)
+    stain: ["a water stain on a wall", "a water stain on a ceiling", "a brown stain"]
+    mold: ["mold on a wall", "black mold"]
+    crack: ["a crack in a wall", "a crack in a ceiling"]
+    peeling_paint: ["peeling paint", "blistering paint"]
+    hole: ["a hole in a wall", "a hole in a ceiling"]

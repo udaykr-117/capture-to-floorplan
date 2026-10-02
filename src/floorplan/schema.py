@@ -68,11 +68,50 @@ class Stitched(BaseModel):
     adjacency: list[Adjacency]
 
 
+class DamageRegion(BaseModel):
+    id: str
+    cls: Literal["stain", "mold", "crack", "peeling_paint", "hole"]
+    room_id: str
+    surface_id: str = Field(description="wall edge id (R1.W2), or R1.ceiling / R1.floor")
+    surface_kind: Literal["wall", "ceiling", "floor"]
+    area: Measurement = Field(description="footprint of the detection box(es) on the surface: an UPPER bound, there is no segmentation model")
+    position_xz: tuple[float, float] = Field(description="centre of the patch in the plan frame (m)")
+    surface_extent_m: tuple[float, float, float, float] = Field(description="u0, u1, v0, v1 on the surface: wall = along-wall s and height above the room floor; ceiling/floor = x', z'")
+    score_max: float = Field(description="best detector score (OWL-ViT zero-shot; not a calibrated probability)")
+    n_views: int
+    frames: list[int]
+    evidence_images: list[str] = []
+
+
+class ConcealedFlag(BaseModel):
+    id: str
+    rule_id: str
+    rule: str = Field(description="the rule that fired, in words")
+    hypothesis: str
+    inspect: str
+    room_id: str
+    surface_id: str
+    region_ids: list[str]
+
+
+class ScopeItem(BaseModel):
+    id: str
+    surface_id: str
+    room_id: str
+    region_id: str | None
+    flag_id: str | None = None
+    action: str
+    quantity: Measurement
+    note: str | None = None
+
+
 class DamageSection(BaseModel):
-    status: Literal["not_implemented"] = "not_implemented"
-    regions: list = []
-    concealed_damage_flags: list = []
-    scope_items: list = []
+    status: Literal["not_run", "run"] = "not_run"
+    note: str = "damage detection was not run"
+    regions: list[DamageRegion] = []
+    concealed_damage_flags: list[ConcealedFlag] = []
+    scope_items: list[ScopeItem] = []
+    report: dict = {}
 
 
 class FrameInfo(BaseModel):

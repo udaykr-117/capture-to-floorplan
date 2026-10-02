@@ -1,0 +1,51 @@
+# Concealed-damage rules and scope actions. Plain building-pathology heuristics, written by the author of this repo, NOT validated against
+# claims data or an inspector. A flag is a reason to look behind the surface, never a finding. Every flag in plan.json names the rule below.
+#
+# `when`: cls = detector classes; surface = wall|ceiling|floor; below_m = the whole patch lies below this height above the room floor (walls);
+#         above_m = the whole patch lies above this height (walls).
+rules:
+  - id: CEILING_STAIN
+    when: {cls: [stain], surface: [ceiling]}
+    rule: "A stain on a ceiling"
+    hypothesis: "Water has come through from above (roof, upstairs plumbing or an air-conditioning line); the source and wet insulation or board above are not visible."
+    inspect: "Moisture-meter and thermal check of the ceiling and the space above; trace the source before repainting."
+  - id: WALL_BASE_MOISTURE
+    when: {cls: [stain, mold, peeling_paint], surface: [wall], below_m: 0.30}
+    rule: "A stain, mold or peeling paint confined to the lowest 30 cm of a wall"
+    hypothesis: "Water wicking up from the floor or a slab-level leak; the wall cavity and bottom plate can be wet behind intact-looking board."
+    inspect: "Moisture-meter readings at 10 cm steps up the wall; open the skirting to look at the cavity."
+  - id: WALL_UPPER_STAIN
+    when: {cls: [stain], surface: [wall], above_m: 1.20}
+    rule: "A stain on the upper part of a wall (above 1.2 m)"
+    hypothesis: "Water entering from above (roof edge, window head or a pipe in the wall) and running down inside the wall."
+    inspect: "Check the roof or window above and the cavity along the stain's vertical line."
+  - id: MOLD_ANYWHERE
+    when: {cls: [mold], surface: [wall, ceiling, floor]}
+    rule: "Visible mold on any surface"
+    hypothesis: "Persistent moisture; growth usually continues behind the visible patch."
+    inspect: "Moisture survey of the surface and the adjacent cavity; find the moisture source."
+  - id: PEELING_PAINT
+    when: {cls: [peeling_paint], surface: [wall, ceiling]}
+    rule: "Peeling or blistering paint on a wall or ceiling"
+    hypothesis: "Moisture pushing the coating off from behind (leak, condensation or damp substrate)."
+    inspect: "Moisture-meter check behind the coating and of the adjacent surfaces."
+  - id: CEILING_CRACK
+    when: {cls: [crack], surface: [ceiling]}
+    rule: "A crack in a ceiling"
+    hypothesis: "Board joint failure, sagging from water load or structural movement above."
+    inspect: "Check for sag and moisture above the ceiling line; monitor crack width over time."
+  - id: OPEN_HOLE
+    when: {cls: [hole], surface: [wall, ceiling]}
+    rule: "A hole through a wall or ceiling surface"
+    hypothesis: "Open cavity: insulation, wiring or pipes behind it may be exposed to water or damaged."
+    inspect: "Look into the cavity for wet or missing insulation, damaged wiring or pipes."
+
+# Scope: one repair action per damage class, quantity from the metric extent. No prices (none were provided; inventing them would be fabrication).
+scope:
+  stain: {action: "Seal with stain-blocking primer and repaint", unit: m2, basis: area}
+  mold: {action: "Treat and remove mold growth, clean, prime and repaint", unit: m2, basis: area}
+  peeling_paint: {action: "Scrape loose paint, prime and repaint", unit: m2, basis: area}
+  crack: {action: "Rake out, fill, tape and repaint crack", unit: m, basis: diagonal}
+  hole: {action: "Patch and finish hole in surface", unit: each, basis: count}
+# One inspection item per fired rule, keyed to the same surface.
+inspection_action: "Open up and inspect behind the surface (moisture meter, thermal camera or inspection cut)"

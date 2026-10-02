@@ -146,7 +146,7 @@ def build_plan(src: Source, cfg: dict, tier: str = "lidar", drift: bool | None =
     measured = [r for r in rooms if r.ceiling_height.status != "unmeasurable"]
     limits = [
         "No ground truth: accuracy of every value is untested; intervals are provisional and uncalibrated.",
-        "Damage regions, concealed-damage flags and scope items are not implemented.",
+        "Damage detection has not been run on this plan (separate pass: `plan run` does it with the models group installed).",
         "Spaces joined by an opening wider than 1.2 m are merged into one room; rooms are assumed rectilinear.",
         "Openings use see-through evidence: mirrors and glass can create phantom openings, windows to the outside are not detected.",
     ]

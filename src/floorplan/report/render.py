@@ -49,12 +49,15 @@ def render_plan(plan: Plan, path: str | Path) -> None:
     for o in plan.openings:
         ax.plot([o.p0[0], o.p1[0]], [o.p0[1], o.p1[1]], color="red" if o.kind == "door" else "orange", lw=5, solid_capstyle="butt")
         ax.text((o.p0[0] + o.p1[0]) / 2, (o.p0[1] + o.p1[1]) / 2, _pm(o.width), fontsize=6, color="darkred", ha="center", va="bottom")
+    for dr in plan.damage.regions:
+        ax.plot(*dr.position_xz, marker="X", ms=11, color="magenta", mec="k", mew=0.8, ls="")
+        ax.annotate(f"{dr.id} {dr.cls}\n<= {dr.area.value:.2f} m² ({dr.surface_kind})", dr.position_xz, xytext=(6, 6), textcoords="offset points", fontsize=6, color="purple")
     fa = plan.stitched.footprint_area
     ax.set_title(f"{plan.capture}  |  tier {plan.tier}  |  {plan.stitched.n_rooms} rooms  |  footprint {_pm(fa, '{:.1f}')} m²", fontsize=10)
     ax.set_aspect("equal")
     ax.set_xlabel("x' (m)")
     ax.set_ylabel("z' (m)")
-    fig.text(0.5, 0.005, "provisional, uncalibrated intervals  |  accuracy untested (no ground truth)  |  damage / scope not implemented  |  dashed = no wall plane",
+    fig.text(0.5, 0.005, "provisional, uncalibrated intervals  |  accuracy untested (no ground truth)  |  damage = unvalidated candidates  |  dashed = no wall plane",
              ha="center", fontsize=7, color="0.3")
     fig.savefig(path, dpi=110, bbox_inches="tight")
     plt.close(fig)
