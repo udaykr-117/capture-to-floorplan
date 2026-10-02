@@ -1,6 +1,6 @@
 """M5: run the video tier on a sample (video only: no depth, no poses) and compare it with the LiDAR plan of the same capture.
 
-Usage: uv run --group models python scripts/m5_tier_eval.py <capture> [sequential|exhaustive] [fps]
+Usage: uv run --group models python scripts/m5_tier_eval.py <capture> [sequential|exhaustive|learned] [fps]
 Cached in out/cache: per-image depth (the slow part) and the LiDAR plan. Delete out/cache after changing the depth or SfM code.
 """
 import hashlib
@@ -22,7 +22,7 @@ from floorplan.io.imagesource import build_image_source, depth_for_images
 from floorplan.io.stray import StraySource
 from floorplan.pipeline import build_plan
 from floorplan.register import match_segments, register, segments, to_other, to_other_polygon, wall_points, width_pairs
-from floorplan.sfm import run_sfm, umeyama
+from floorplan.sfm import run_sfm, run_sfm_learned, umeyama
 
 CFG = load_config()
 OUT = D.OUT.parent
@@ -43,7 +43,7 @@ def main(name, matcher="sequential", fps=5.0):
     t_all = time.time()
     fdir, fr = D.frames_for(name, fps, True)
     t0 = time.time()
-    sfm = run_sfm(fdir, OUT / "m5" / name / f"work_{matcher}", CFG, matcher)
+    sfm = run_sfm_learned(fdir, OUT / "m5" / name / "work_learned_disk", CFG) if matcher == "learned" else run_sfm(fdir, OUT / "m5" / name / f"work_{matcher}", CFG, matcher)
     t_sfm = time.time() - t0
     print(f"SfM ({matcher}): {sfm.n_registered}/{sfm.n_input} images in the largest of {sfm.n_models} models, {sfm.n_points} points, reprojection {sfm.reproj_err:.2f}px, {t_sfm:.0f}s")
     idx = np.array([int(i.name[1:-4]) for i in sfm.images])

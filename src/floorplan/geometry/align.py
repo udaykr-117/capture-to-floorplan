@@ -53,6 +53,8 @@ def estimate_floor(y: np.ndarray, cam_y: np.ndarray, cfg: dict) -> FloorEstimate
     a = cfg["align"]
     ymax = cam_y.min() - a["floor_below_camera_m"]
     ys = y[y < ymax]
+    if len(ys) == 0:
+        raise ValueError(f"no points {a['floor_below_camera_m']} m below every camera position: no floor can be found (gravity or capture height unreliable)")
     bins = np.arange(ys.min() - 5 * a["floor_hist_bin_m"], ymax + a["floor_hist_bin_m"], a["floor_hist_bin_m"])  # margin so the lowest peak is not at the array edge
     h, e = np.histogram(ys, bins=bins)
     hs = np.convolve(h, np.ones(3) / 3, mode="same")

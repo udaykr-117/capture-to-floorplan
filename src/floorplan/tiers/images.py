@@ -12,7 +12,7 @@ from floorplan import schema
 from floorplan.io.frames import extract_video_frames
 from floorplan.io.imagesource import build_image_source, depth_for_images
 from floorplan.pipeline import build_plan
-from floorplan.sfm import run_sfm
+from floorplan.sfm import run_sfm, run_sfm_learned
 
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".heic", ".heif"}
 
@@ -44,7 +44,7 @@ def empty_plan(name: str, tier: str, reason: str, cfg: dict, timing: dict, repor
 def run_images(image_dir: Path, work_dir: Path, cfg: dict, matcher: str, name: str, tier: str, n_input: int | None = None) -> tuple[schema.Plan, dict]:
     t: dict[str, float] = {}
     t0 = time.time()
-    sfm = run_sfm(image_dir, work_dir / "sfm", cfg, matcher)
+    sfm = run_sfm_learned(image_dir, work_dir / "sfm", cfg) if cfg["sfm"].get("matcher") == "learned" else run_sfm(image_dir, work_dir / "sfm", cfg, matcher)
     t["sfm"] = time.time() - t0
     n_in = n_input or len(list(image_dir.glob("*.jpg")))
     if sfm is None or sfm.n_registered < cfg["sfm"]["min_registered"]:
@@ -54,7 +54,11 @@ def run_images(image_dir: Path, work_dir: Path, cfg: dict, matcher: str, name: s
     t0 = time.time()
     per_image = depth_for_images(sfm, image_dir, cfg)
     t["depth"] = time.time() - t0
-    src = build_image_source(name, per_image, cfg, n_in, sfm.n_registered, t)
+    try:
+        src = build_image_source(name, per_image, cfg, n_in, sfm.n_registered, t)
+    except ValueError as e:  # e.g. no floor below the cameras: gravity of a partial reconstruction is unreliable
+        return empty_plan(name, tier, f"the reconstruction ({sfm.n_registered} of {n_in} images) has no usable floor or scale: {e}", cfg, t,
+                          dict(images_in=n_in, images_registered=sfm.n_registered)), dict(sfm=sfm)
     cfg2 = copy.deepcopy(cfg)
     cfg2["intervals"]["scale_rel_sigma"] = src.info["scale"].rel_sigma
     try:

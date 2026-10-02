@@ -91,3 +91,14 @@ def test_heic_photo_is_read_upright(tmp_path):
     assert img is not None and img.shape[:2] == (40, 60)
     assert img[20, 10, 2] > 200 and img[20, 50, 2] < 60      # BGR: red channel high on the left only
     assert read_image(tmp_path / "missing.heic") is None
+
+
+def test_floor_without_points_below_the_cameras_is_a_clear_error():
+    import numpy as np
+    import pytest
+
+    from floorplan.config import load_config
+    from floorplan.geometry.align import estimate_floor
+
+    with pytest.raises(ValueError, match="no floor"):
+        estimate_floor(np.array([0.0, 0.2, 0.4]), np.array([0.1, 0.3]), load_config())

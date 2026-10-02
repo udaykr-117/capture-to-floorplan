@@ -32,6 +32,7 @@ dev = [
     "pytest>=9.1.1",
 ]
 models = [
+    "kornia>=0.8.3",
     "pillow>=12.3.0",
     "pillow-heif>=1.8.0",
     "pycolmap>=4.2.1",

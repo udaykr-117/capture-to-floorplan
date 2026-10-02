@@ -155,6 +155,9 @@ sfm:
   guided_matching: false
   init_min_tri_angle_deg: 16.0 # COLMAP default
   min_registered: 3            # fewer registered images than this is not a reconstruction: the tier reports failure and no rooms
+  matcher: sift                # sift (COLMAP) or learned (DISK + LightGlue via kornia, CPU, much slower); see JOURNAL "video tier, learned matcher"
+  learned_width_px: 640        # DISK input width: 3.4 s per frame on this CPU at 640 px
+  learned_max_keypoints: 1024  # LightGlue cost grows with the square of the keypoint count; 1024 keeps a pair near 1-2 s on CPU
 
 scale:
   # Measured on the registered stretches of two samples (M5): error of the depth-model scale +4.8% (single_room) and -26.0% (floor_only);

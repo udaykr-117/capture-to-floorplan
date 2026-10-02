@@ -61,6 +61,13 @@ def run_sfm(image_dir: str | Path, work_dir: str | Path, cfg: dict, matcher: str
         pycolmap.match_exhaustive(db, matching_options=fm)
     timing["matching"] = time.time() - t0
 
+    return _map(db, image_dir, work, s, n_input, timing)
+
+
+def _map(db: Path, image_dir: Path, work: Path, s: dict, n_input: int, timing: dict) -> "Sfm | None":
+    """Incremental mapping on a database that already holds keypoints and verified matches; returns the largest model."""
+    import pycolmap
+
     t0 = time.time()
     opts = pycolmap.IncrementalPipelineOptions()
     opts.mapper.init_min_tri_angle = float(s["init_min_tri_angle_deg"])
@@ -82,6 +89,70 @@ def run_sfm(image_dir: str | Path, work_dir: str | Path, cfg: dict, matcher: str
     images.sort(key=lambda i: i.name)
     return Sfm(images, dict(model=str(cam.model), width=int(cam.width), height=int(cam.height), params=[float(x) for x in cam.params]), n_input, len(recs),
                rec.num_reg_images(), rec.num_points3D(), float(rec.compute_mean_reprojection_error()), timing)
+
+
+def run_sfm_learned(image_dir: str | Path, work_dir: str | Path, cfg: dict, overrides: dict | None = None) -> "Sfm | None":
+    """Same as run_sfm, but keypoints are DISK and matches LightGlue (kornia, CPU), for walls too plain for SIFT. COLMAP still does the
+    geometric verification and the mapping. SIFT is run once with very few features only to create the image and camera rows of the database."""
+    import cv2
+    import kornia as K
+    import kornia.feature as KF
+    import pycolmap
+    import torch
+
+    s = {**cfg["sfm"], **(overrides or {})}
+    image_dir, work = Path(image_dir), Path(work_dir)
+    work.mkdir(parents=True, exist_ok=True)
+    db = work / "db.db"
+    if db.exists():
+        db.unlink()
+    n_input = len(list(image_dir.glob("*.jpg"))) + len(list(image_dir.glob("*.png")))
+    timing = {}
+    reader = pycolmap.ImageReaderOptions()
+    reader.default_focal_length_factor = s["focal_factor"]
+    ext = pycolmap.FeatureExtractionOptions()
+    ext.sift.max_num_features = 16
+    pycolmap.extract_features(db, image_dir, camera_mode=pycolmap.CameraMode.SINGLE, reader_options=reader, extraction_options=ext)
+
+    t0 = time.time()
+    disk = KF.DISK.from_pretrained("depth").eval()
+    lg = KF.LightGlueMatcher("disk").eval()
+    database = pycolmap.Database.open(db)
+    images = sorted(database.read_all_images(), key=lambda im: im.name)
+    feats = {}
+    database.clear_keypoints()
+    database.clear_descriptors()
+    for im in images:
+        bgr = cv2.imread(str(image_dir / im.name))
+        h0, w0 = bgr.shape[:2]
+        w = int(s["learned_width_px"])
+        h = int(round(h0 * w / w0)) // 16 * 16
+        x = K.image_to_tensor(np.ascontiguousarray(cv2.resize(bgr, (w, h))[:, :, ::-1]), False).float() / 255.0
+        with torch.inference_mode():
+            f = disk(x, n=int(s["learned_max_keypoints"]), pad_if_not_divisible=True)[0]
+        kp = f.keypoints.numpy() * np.array([w0 / w, h0 / h])
+        database.write_keypoints(im.image_id, (kp + 0.5).astype(np.float32))       # COLMAP pixel centres are at +0.5
+        feats[im.image_id] = (f.keypoints, f.descriptors, (h, w))
+    timing["features"] = time.time() - t0
+
+    t0 = time.time()
+    pairs = []
+    for a in range(len(images)):
+        for b in range(a + 1, min(len(images), a + 1 + int(s["seq_overlap"]))):
+            i, j = images[a].image_id, images[b].image_id
+            (k0, d0, s0), (k1, d1, s1) = feats[i], feats[j]
+            with torch.inference_mode():
+                l0 = KF.laf_from_center_scale_ori(k0[None], torch.ones(1, len(k0), 1, 1))
+                l1 = KF.laf_from_center_scale_ori(k1[None], torch.ones(1, len(k1), 1, 1))
+                _, idx = lg(d0, d1, l0, l1, hw1=torch.tensor(s0), hw2=torch.tensor(s1))
+            if len(idx) >= 15:
+                database.write_matches(i, j, idx.numpy().astype(np.uint32))
+                pairs.append((images[a].name, images[b].name))
+    database.close()
+    (work / "pairs.txt").write_text("\n".join(f"{a} {b}" for a, b in pairs))
+    pycolmap.verify_matches(db, work / "pairs.txt")
+    timing["matching"] = time.time() - t0
+    return _map(db, image_dir, work, s, n_input, timing)
 
 
 def umeyama(src: np.ndarray, dst: np.ndarray) -> tuple[float, np.ndarray, np.ndarray]:

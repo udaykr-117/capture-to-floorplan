@@ -11,4 +11,8 @@ MODELS = [
 ]
 for repo, rev in MODELS:
     print(repo, "->", snapshot_download(repo, revision=rev, ignore_patterns=["*.bin", "*.h5", "*.msgpack"]))  # safetensors only
+
+import kornia.feature as KF   # DISK + LightGlue weights for the learned matcher (sfm.matcher: learned); cached by torch hub
+KF.DISK.from_pretrained("depth"); KF.LightGlueMatcher("disk")
+print("DISK + LightGlue weights cached")
 EOF
