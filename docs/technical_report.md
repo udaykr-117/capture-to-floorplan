@@ -41,7 +41,7 @@ Device matrix and the capture route: `docs/device_matrix.md`, `docs/capture_prot
 for video and photos). Video and photo failed on the samples for one diagnosed reason: COLMAP placed only 34/191 (5 fps), 33/350 and 25/650 (3 fps) video frames
 (18%, 9%, 4%) and 0 of 8 / 0 of 31 simulated photos. Frames that do register fit the ARKit trajectory to 2-3 cm, so the geometry is right where it
 exists; the walls are white and featureless and the hand-held turns blur. Changing matcher topology, feature thresholds or initialisation did
-not change it; a learned matcher (ALIKED/LightGlue inside pycolmap) crashed natively. When SfM places fewer than 3 frames, or the partial
+not change it; a learned matcher (ALIKED/LightGlue inside pycolmap) crashed natively; DISK + LightGlue through kornia (`sfm.matcher: learned`) placed 63/191 single_room frames instead of 34 but took 36 min on CPU and still gave no usable floor, so it ships off. When SfM places fewer than 3 frames, or the partial
 reconstruction has no consistent wall direction, the tier returns a plan with **no rooms and the reason**, never invented rooms. The scale
 estimate was off by -11%, -22% and +56% on the three videos, which is why the scale term is at least 20% (1σ); the +56% case (25 frames in 17
 fragments) is outside even that, and is stated as such.
