@@ -77,11 +77,12 @@ ceiling:
   interval_sigma: 2.0          # interval half-width = 2 x robust sigma of local floor and ceiling spread; NOT calibrated yet
 
 openings:
+  drop_same_room: true         # an opening joins two spaces (or a space and the outside); with the same room on both sides it is a see-through around a half wall, counter or shelf inside the room (with_ceiling O0, sill 0.88 m, 2.94 m wide)
   merge_wall_faces: true       # one opening seen on both faces of a wall (planes < adjacency_wall_m apart, overlapping) is one opening; floor_only reported doors twice (JOURNAL)
   cell_m: 0.02                 # 2 cm cells along the wall: the opening-width gate is 2 cm
   image_height_m: 2.6          # wall images cover floor to 2.6 m (door heads and windows are below this)
   wall_tol_m: 0.05             # points within +-5 cm of the plane are wall (door trim and slight plane tilt)
-  through_beyond_m: 0.20       # a ray counts as passing through the plane only if its hit is >= 20 cm beyond it (drift doubles walls by 10-30 cm; M1 overlay)
+  through_beyond_m: 0.20       # a ray counts as passing through the plane only if its hit is >= 20 cm beyond it (drift doubles walls by 10-30 cm; M1 overlay). 0.50 was tried and reverted: it did not remove the 1.9 m with_ceiling opening and turned real doors into 'raised' (JOURNAL)
   through_point_stride: 3      # use every 3rd hit per frame for ray crossings: 3x faster, still thousands of rays per metre of wall
   max_gap_bridge_m: 3.0        # runs of the same plane closer than 3 m are examined together (an opening can split a plane's runs)
   min_open_height_m: 0.4       # a column is open if it has >= 40 cm of continuous see-through height with no wall points
@@ -191,6 +192,7 @@ refine:                        # M7 fix: room-local wall refinement (src/floorpl
   enabled: true                # on after the M7 benchmark: 7 of 9 paired room dimensions agree better across captures, 2 worse (docs/fix_declaration.md)
   chunk_inside_min: 0.5        # a chunk belongs to a room visit if >= half of its camera positions are inside the room polygon
   min_visit_chunks: 2          # a visit of one chunk (~9 s) is too short to see opposite walls; keep the global planes then
+  visits: longest              # longest = walls from the room's longest visit (round-1 fix); median = median over all visits of >= min_visit_chunks (test of the two round-1 regressions, JOURNAL)
   window_m: 0.15               # search +-15 cm around the global plane: same as register.plane_match_tol_m; per-chunk wall positions range ~14 cm (M7 H1)
   end_margin_m: 0.2            # ignore 20 cm at each wall end (corners mix the perpendicular wall)
   min_points: 40               # same as the M7 diagnosis: ~0.016 m2 of 2 cm voxels

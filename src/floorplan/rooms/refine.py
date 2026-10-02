@@ -26,6 +26,20 @@ def _visit(inside: list[bool]) -> list[int]:
     return best
 
 
+def _runs(inside: list[bool]) -> list[list[int]]:
+    """All runs of consecutive True values (visits), in time order."""
+    out, cur = [], []
+    for k, v in enumerate(inside):
+        if v:
+            cur.append(k)
+        elif cur:
+            out.append(cur)
+            cur = []
+    if cur:
+        out.append(cur)
+    return out
+
+
 def _mode_offset(c: np.ndarray, centre: float, win: float) -> tuple[float, float] | None:
     e = np.arange(centre - win, centre + win + 1e-9, 0.01)
     h = np.convolve(np.histogram(c, e)[0], np.ones(3), mode="same")      # 3 cm smoothing of 1 cm bins
@@ -57,23 +71,34 @@ def refine_rooms(polys: list[RoomPoly], chunks: list, fr, corr, cfg: dict) -> tu
             out.append(rp)
             report.append(dict(room=f"R{int(rp.id)}", refined=0, reason=f"longest visit {len(visit)} chunk(s) < {rc['min_visit_chunks']}"))
             continue
-        P = np.concatenate([pts(k) for k in visit])
-        P = P[(P[:, 1] > lo) & (P[:, 1] < hi)]
+        # 'longest': walls from the longest visit only. 'median': each wall measured in every visit of >= min_visit_chunks chunks, median taken,
+        # so one visit's own error (visits of one room differ by up to ~7 cm, scripts/refine_visits.py) cannot decide a wall alone.
+        visits = [visit] if rc.get("visits", "longest") == "longest" else [v for v in _runs(inside) if len(v) >= rc["min_visit_chunks"]]
+        clouds = []
+        for v in visits:
+            P = np.concatenate([pts(k) for k in v])
+            clouds.append(P[(P[:, 1] > lo) & (P[:, 1] < hi)])
         maps: dict[int, dict[float, float]] = {0: {}, 2: {}}
         moves = []
         for e in rp.edges:
             if e.source != "plane" or e.offset in maps[e.axis]:
                 continue
             along = 2 if e.axis == 0 else 0
-            m = (np.abs(P[:, e.axis] - e.offset) < rc["window_m"]) & (P[:, along] > e.s0 + rc["end_margin_m"]) & (P[:, along] < e.s1 - rc["end_margin_m"])
-            if m.sum() < rc["min_points"]:
+            found, n_pts, spreads = [], 0, []
+            for P in clouds:
+                m = (np.abs(P[:, e.axis] - e.offset) < rc["window_m"]) & (P[:, along] > e.s0 + rc["end_margin_m"]) & (P[:, along] < e.s1 - rc["end_margin_m"])
+                if m.sum() < rc["min_points"]:
+                    continue
+                r = _mode_offset(P[m, e.axis], e.offset, rc["window_m"])
+                if r is not None:
+                    found.append(r[0]); spreads.append(r[1]); n_pts += int(m.sum())
+            if not found:
                 continue
-            r = _mode_offset(P[m, e.axis], e.offset, rc["window_m"])
-            if r is None:
-                continue
-            maps[e.axis][e.offset] = r[0]
-            extra.append(WallPlane(e.axis, r[0], int(m.sum()), sigma=r[1]))
-            moves.append(r[0] - e.offset)
+            new = float(np.median(found))
+            sig = float(max(np.median(spreads), 1.4826 * np.median(np.abs(np.array(found) - new)))) if len(found) > 1 else spreads[0]
+            maps[e.axis][e.offset] = new
+            extra.append(WallPlane(e.axis, new, n_pts, sigma=sig))
+            moves.append(new - e.offset)
 
         def remap(v: float, axis: int) -> float:
             for old, new in maps[axis].items():

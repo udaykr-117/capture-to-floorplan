@@ -209,3 +209,9 @@ def merge_wall_faces(openings: list[Opening], cfg: dict) -> list[Opening]:
         if not dup:
             kept.append(o)
     return kept
+
+
+def drop_same_room(openings: list[Opening]) -> list[Opening]:
+    """An opening joins two spaces (or a space and the outside). With the same room on both sides it is a see-through around a half wall,
+    counter or shelf inside one room, and under the opening gate it would count as a phantom."""
+    return [o for o in openings if not (len(o.rooms) == 2 and o.rooms[0] is not None and o.rooms[0] == o.rooms[1])]

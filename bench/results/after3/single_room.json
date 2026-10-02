@@ -664,12 +664,12 @@
   "report": {}
  },
  "timing_s": {
-  "chunks": 3.18,
-  "align_and_drift": 1.11,
-  "walls": 0.08,
-  "frame_pass": 4.55,
-  "rooms_and_openings": 0.17,
-  "assemble": 0.02
+  "chunks": 9.18,
+  "align_and_drift": 2.93,
+  "walls": 0.23,
+  "frame_pass": 12.61,
+  "rooms_and_openings": 0.47,
+  "assemble": 0.07
  },
  "limitations": [
   "No ground truth: accuracy of every value is untested. Wall-length and room-area intervals are calibrated only against repeat captures of one property (a lower bound); other intervals are provisional.",
@@ -680,5 +680,5 @@
   "Room-local refinement: wall positions of 2 of 3 rooms re-measured from that room's longest single visit (drift between visits removed from room dimensions); rooms are refined independently, so a shared wall can differ by a few cm between its two rooms.",
   "Drift: corrected per chunk of 40 sampled frames by: chunk heading, floor level. Assumes rectilinear walls and a flat floor; drift without wall evidence is not corrected; wall-matching shifts are not applied (they did not improve agreement in the M4 ablation)."
  ],
- "config_sha256": "d1e9f6c9388d4a3b"
+ "config_sha256": "0610a148827c337f"
 }

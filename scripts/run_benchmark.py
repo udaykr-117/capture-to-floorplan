@@ -29,9 +29,10 @@ SAMPLES = {"with_ceiling": ROOT / "single_scan_with_ceiling" / "c7d28f72c6", "fl
 PAIRS = [("with_ceiling", "floor_only"), ("with_ceiling", "single_room"), ("floor_only", "single_room")]
 OFF2 = {"keep_narrow_rooms": False, "split_connectors": False}
 VARIANTS = {"before": {"refine": {"enabled": False}, "rooms": OFF2},                                           # round 1 before
-            "after": {"refine": {"enabled": True}, "rooms": OFF2},                                             # round 1 after = round 2 before
-            "after2a": {"refine": {"enabled": True}, "rooms": {"keep_narrow_rooms": True, "split_connectors": False}},  # round 2 (a)
-            "after2": {"refine": {"enabled": True}, "rooms": {"keep_narrow_rooms": True, "split_connectors": True}}}    # round 2 (a)+(b)
+            "after": {"refine": {"enabled": True, "visits": "longest"}, "rooms": OFF2},                                             # round 1 after = round 2 before
+            "after2a": {"refine": {"enabled": True, "visits": "longest"}, "rooms": {"keep_narrow_rooms": True, "split_connectors": False}},  # round 2 (a)
+            "after2": {"refine": {"enabled": True}, "rooms": {"keep_narrow_rooms": True, "split_connectors": True}},    # round 2 (a)+(b)
+            "after3": {"refine": {"enabled": True, "visits": "median"}, "rooms": {"keep_narrow_rooms": True, "split_connectors": False}}}  # median over visits
 
 
 def wall_seg(w) -> Seg:
