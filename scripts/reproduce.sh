@@ -12,6 +12,7 @@ uv run python scripts/run_benchmark.py --variant before | tee out/final_bench_be
 uv run python scripts/run_benchmark.py --variant after  | tee out/final_bench_after.txt     # round 1 after = round 2 before
 uv run python scripts/run_benchmark.py --variant after2a | tee out/final_bench_after2a.txt  # round 2, shipped
 uv run python scripts/run_benchmark.py --variant after2  | tee out/final_bench_after2.txt   # round 2 with the corridor split (not shipped)
+uv run python scripts/run_benchmark.py --variant after3  | tee out/final_bench_after3.txt   # median over visits (tested for the round-1 regressions, rejected)
 
 echo "== 2. drift on/off ablation (stitched footprint, wall sharpness, loop gap, cross-capture agreement)"
 uv run python scripts/m4_ablation.py | tee out/final_drift_ablation.txt
