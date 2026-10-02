@@ -195,3 +195,17 @@ def detect_openings(images: list[WallImage], cfg: dict) -> list[Opening]:
             out.append(Opening(im.span.axis, im.span.offset, s0, s1, (lo_w + hi_w) / 2, (lo_w, hi_w),
                                "door" if bottom <= o["door_bottom_max_m"] else "raised", bottom, top, int(im.through[c0:c1 + 1].sum())))
     return out
+
+
+def merge_wall_faces(openings: list[Opening], cfg: dict) -> list[Opening]:
+    """One opening through a wall is seen on both faces of the wall (two parallel planes 10-30 cm apart) and was reported twice. Openings on
+    parallel planes closer than a wall thickness (`intervals.adjacency_wall_m`) that overlap by >= half of the narrower one are one opening;
+    the one with more see-through rays is kept."""
+    tol = cfg["intervals"]["adjacency_wall_m"]
+    kept: list[Opening] = []
+    for o in sorted(openings, key=lambda o: -o.n_rays):
+        dup = any(k.axis == o.axis and abs(k.offset - o.offset) <= tol and min(k.s1, o.s1) - max(k.s0, o.s0) >= 0.5 * min(k.s1 - k.s0, o.s1 - o.s0)
+                  for k in kept)
+        if not dup:
+            kept.append(o)
+    return kept

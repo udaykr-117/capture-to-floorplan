@@ -33,9 +33,9 @@
    "gate_pass": null
   },
   "openings": {
-   "n": 2,
-   "inside": 0.5,
-   "median_abs": 0.06,
+   "n": 1,
+   "inside": 0.0,
+   "median_abs": 0.09999999999999998,
    "gate_pass": null
   }
  },
@@ -400,7 +400,7 @@
    "openings": [],
    "n_openings": [
     4,
-    9
+    7
    ],
    "plane_pairs": [
     {
@@ -810,26 +810,17 @@
    ],
    "openings": [
     {
-     "opening_a": "O6",
+     "opening_a": "O5",
      "opening_b": "O0",
      "width_a": 0.86,
      "width_b": 0.76,
      "delta": -0.09999999999999998,
      "halfwidth": 0.028284271247461926,
      "centre_dist_m": 0.132
-    },
-    {
-     "opening_a": "O7",
-     "opening_b": "O0",
-     "width_a": 0.78,
-     "width_b": 0.76,
-     "delta": -0.020000000000000018,
-     "halfwidth": 0.028284271247461926,
-     "centre_dist_m": 0.196
     }
    ],
    "n_openings": [
-    9,
+    7,
     1
    ],
    "plane_pairs": [
@@ -870,27 +861,27 @@
  },
  "timing_s": {
   "with_ceiling": {
-   "chunks": 49.7,
-   "align_and_drift": 29.22,
-   "walls": 2.02,
-   "frame_pass": 26.92,
-   "rooms_and_openings": 0.87,
-   "assemble": 0.37
+   "chunks": 20.19,
+   "align_and_drift": 12.91,
+   "walls": 1.86,
+   "frame_pass": 26.37,
+   "rooms_and_openings": 0.9,
+   "assemble": 0.38
   },
   "floor_only": {
-   "chunks": 10.4,
-   "align_and_drift": 5.38,
-   "walls": 0.85,
-   "frame_pass": 17.34,
-   "rooms_and_openings": 1.84,
-   "assemble": 0.44
+   "chunks": 10.3,
+   "align_and_drift": 5.57,
+   "walls": 0.9,
+   "frame_pass": 15.13,
+   "rooms_and_openings": 0.68,
+   "assemble": 0.16
   },
   "single_room": {
-   "chunks": 7.13,
-   "align_and_drift": 1.21,
-   "walls": 0.1,
-   "frame_pass": 4.7,
-   "rooms_and_openings": 0.18,
+   "chunks": 3.27,
+   "align_and_drift": 1.14,
+   "walls": 0.07,
+   "frame_pass": 4.76,
+   "rooms_and_openings": 0.17,
    "assemble": 0.02
   }
  }

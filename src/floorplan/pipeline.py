@@ -17,7 +17,7 @@ from floorplan.geometry.align import Aligned, analysis_cloud, check_residual, es
 from floorplan.geometry.walls import find_wall_planes
 from floorplan.rooms.ceiling import measure_ceiling
 from floorplan.rooms.freespace import carve_one, free_space, make_grid, segment_rooms
-from floorplan.rooms.openings import assign_rooms, detect_openings, plane_spans, through_one, wall_images
+from floorplan.rooms.openings import assign_rooms, detect_openings, merge_wall_faces, plane_spans, through_one, wall_images
 from floorplan.rooms.polygon import clean_labels, room_polygons
 from floorplan.rooms.refine import refine_rooms
 
@@ -91,6 +91,8 @@ def build_plan(src: Source, cfg: dict, tier: str = "lidar", drift: bool | None =
         polys, extra, refine_report = refine_rooms(polys, chunks, fr, corr, cfg)
         planes_iv = planes + extra
     ops = detect_openings(images, cfg) if planes else []
+    if cfg["openings"].get("merge_wall_faces", False):
+        ops = merge_wall_faces(ops, cfg)
     assign_rooms(ops, {rp.id: rp.polygon for rp in polys})
     t["rooms_and_openings"] = time.time() - t0
 

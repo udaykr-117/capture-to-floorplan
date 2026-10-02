@@ -77,6 +77,7 @@ ceiling:
   interval_sigma: 2.0          # interval half-width = 2 x robust sigma of local floor and ceiling spread; NOT calibrated yet
 
 openings:
+  merge_wall_faces: true       # one opening seen on both faces of a wall (planes < adjacency_wall_m apart, overlapping) is one opening; floor_only reported doors twice (JOURNAL)
   cell_m: 0.02                 # 2 cm cells along the wall: the opening-width gate is 2 cm
   image_height_m: 2.6          # wall images cover floor to 2.6 m (door heads and windows are below this)
   wall_tol_m: 0.05             # points within +-5 cm of the plane are wall (door trim and slight plane tilt)
