@@ -28,7 +28,7 @@ Free space comes from visibility fans (every frame carves the cells between came
 and flooded; each room becomes a rectilinear polygon by assigning cells of the wall-plane grid. Ceilings are measured per room against the room's
 own local floor (floors drift by up to 8 cm across a capture) and are `unmeasurable` with a reason when fewer than 20% of the room has ceiling
 points. Openings are cells of a 2 cm wall image that rays saw through (hit ≥ 20 cm behind the wall) with no wall points, bracketed between the
-see-through extent and the wall-to-wall gap.
+see-through extent and the wall-to-wall gap. An opening seen on both faces of one wall (planes < 35 cm apart, overlapping) is reported once.
 
 ## 2. Tier design and device matrix
 | Tier | Input | Poses | Metric scale | Interval term | On the samples |
@@ -85,7 +85,7 @@ recalibrated per tier from error quantiles.
 
 ## 6. Fix loop
 Declaration, prediction and result: `docs/fix_declaration.md`; regenerate with `run_benchmark.py --variant before|after`.
-Worst gate: repeatability (room dimensions within 1 cm or 0.5%: 1 of 10 passed, median 7.7 cm). Root cause tested against six hypotheses; the
+**Round 1.** Worst gate: repeatability (room dimensions within 1 cm or 0.5%: 1 of 10 passed, median 7.7 cm). Root cause tested against six hypotheses; the
 evidence supports drift blur (one wall's position moves by a robust 3.5 cm over a capture, and widths measured only in chunks that see both walls
 agree better: 4.9 → 2.6 cm on the biggest pair) and rejects fit noise, per-run offsets, a mode estimator and ambiguous matches. My first version of
 the drift test searched only ±3 cm around the plane and wrongly showed ~1 cm; pictures of the worst pairs (whole walls displaced 10-20 cm)
@@ -94,6 +94,14 @@ pass 1/9 → 3/9, 7 of 9 better, 2 worse; the gate still fails.
 Unpaired, as the benchmark prints it: 1/10 → 3/12 within the gate, median 7.7 → 7.7 cm, 90th percentile 13.0 → 17.1 cm (worse). Costs not
 predicted: floor_only's footprint +2.7 m2 and room overlaps up to 0.14 m2 at shared walls.
 Why it fell short: refinement removes drift BETWEEN visits but not within one; the two regressions are where floor_only is rotated 2.3° locally.
+
+**Round 2** (same gate, measured as the length of the same wall in two captures: 2/34, median 29.7 cm). Pictures of the three captures registered
+on each other showed a 0.9 m corridor that is part of the top room in one capture and of the bottom room in the others: a corridor never gets a
+room seed (all floor is < 0.5 m from a wall), so the flood hands it to whichever neighbour reaches it first. The declared fix (cut corridors out of
+rooms) first did not fire at all: debugging showed the polygon step swallowing narrow spaces. Keeping narrow spaces (grid lines along their edges,
+1 m2 minimum) helped: same-wall median 29.7 → 24.7 cm, room areas 2.03 → 1.04 m2, footprints of the two whole-property captures 5.4% → 4.1%
+apart. Cutting corridors out as well over-split (a notch became a room in one capture) and made walls worse (41.8 cm), so it ships off. Predicted
+10-20 cm for walls: missed; predicted ~1 m2 for areas: met; gate still fails.
 
 ## 7. Known failure modes
 - **Low texture, blur** (video/photo): SfM fragments; the tier says "no plan". Protocol asks for slow turns and furniture in view.

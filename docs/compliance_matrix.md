@@ -21,15 +21,15 @@ measured, does not reach the bar), **untested** (built, no data to measure), **m
 | 14 | JSON to the published schema | `src/floorplan/schema.py` | own pydantic schema (no published Round 1 schema was available to us) | partial |
 | 15 | Rendered plan | `src/floorplan/report/render.py` | `plan.png` | met |
 | 16 | Benchmark set composition | `docs/benchmark_report.md` §0 | supplied captures only | partial: no staged damage, no ground truth, photos simulated |
-| 17 | Gate: opening widths <= 2 cm on >= 85% | `docs/benchmark_report.md` §1 | detection counts disagree 4/9/1 between captures | untested (no ground truth) |
+| 17 | Gate: opening widths <= 2 cm on >= 85% | `docs/benchmark_report.md` §1 | detection counts disagree 4/7/1 between captures | untested (no ground truth) |
 | 18 | Gate: ceiling <= 1.5 cm, spread <= 1 cm, report says which failure | `docs/benchmark_report.md` §1 | 6 rooms measured in one capture | untested; spread unmeasurable |
-| 19 | Gate: repeatability 1 cm or 0.5% per wall | `docs/benchmark_report.md` §2 | room dims 3/12, wall lengths 2/34 | fails |
+| 19 | Gate: repeatability 1 cm or 0.5% per wall | `docs/benchmark_report.md` §2 | room dims 3/12, same-wall lengths 2/34 (median 24.7 cm) | fails |
 | 20 | Gate: drift accountability, footprint ablation on/off | `src/floorplan/drift/`, `scripts/m4_ablation.py`, `docs/benchmark_report.md` §3 | footprints 61.1 -> 68.7 and 71.7 -> 72.7 m2 | met |
 | 21 | Gate: photo-tier whole-property stitch, ±8%, no overlaps | `docs/benchmark_report.md` §1 | no plan | fails |
 | 22 | Gates: photo walls ±8%, video walls ±3% | `docs/benchmark_report.md` §1 | no plan | fails |
-| 23 | Calibration scored at every tier | `scripts/calibrate_intervals.py`, `docs/benchmark_report.md` §4 | LiDAR walls 71% / areas 100% (90% held out) covered | partial |
+| 23 | Calibration scored at every tier | `scripts/calibrate_intervals.py`, `docs/benchmark_report.md` §4 | LiDAR walls 79% / areas 100% covered (held-out: 71% / 90%) | partial |
 | 24 | Head-to-head vs a consumer app on 2 rooms | `docs/benchmark_report.md` §5 | none | missing (no iPhone) |
-| 25 | Fix loop: declaration, before/after regenerable, readable diff | `docs/fix_declaration.md`, `scripts/run_benchmark.py --variant before/after`, commit `2ba35f6` | paired room dims 1/9 -> 3/9, median 9.3 -> 5.3 cm | met (gate still fails, reason stated) |
+| 25 | Fix loop: declaration, before/after regenerable, readable diff | `docs/fix_declaration.md`, `scripts/run_benchmark.py --variant before/after/after2a/after2` | round 1: paired room dims 1/9 -> 3/9, median 9.3 -> 5.3 cm; round 2: same-wall median 29.7 -> 24.7 cm, room areas 2.03 -> 1.04 m2 | met (gate still fails, reasons stated) |
 | 26 | Process evidence: commit history | `git log` | commits per step since the scaffold | met |
 | 27 | README to running in < 15 min on a clean machine | `README.md` | install, fetch, one command | met: fresh clone on Windows, setup 38 s (warm cache) + offline run 172 s; cold-network time not measured |
 | 28 | Reproduction bundle | `scripts/reproduce.sh`, `bench/results/` | regenerates every reported number from raw captures | met (live paths; no cached model outputs needed) |
