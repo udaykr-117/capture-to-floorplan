@@ -133,7 +133,39 @@ def segment_rooms(free: np.ndarray, grid: Grid, cfg: dict) -> np.ndarray:
         if not (seeds[m] > 0).any():
             n_seeds += 1
             seeds[np.unravel_index(np.argmax(np.where(m, dist, -1)), dist.shape)] = n_seeds
-    return _merge_small(_flood(dist, seeds.astype(np.int32), free), grid, r["min_room_area_m2"])
+    labels = _merge_small(_flood(dist, seeds.astype(np.int32), free), grid, r["min_room_area_m2"])
+    return split_connectors(labels, grid, cfg) if r.get("split_connectors", False) else labels
+
+
+def split_connectors(labels: np.ndarray, grid: Grid, cfg: dict) -> np.ndarray:
+    """Give corridors their own label. A corridor narrower than 2 x seed_min_dist never gets a seed, so the flood hands it to whichever
+    neighbouring room reaches it first, and that differs between captures of the same home (JOURNAL, second fix loop). Here, inside every room,
+    the part that a disk of the connector width cannot reach (narrow), long enough not to be a doorway, and touching ANOTHER room, becomes a
+    new room. A strip between furniture and a wall touches only its own room and is left alone."""
+    r = cfg["rooms"]
+    rad = max(1, int(round(r["connector_max_width_m"] / 2 / grid.cell)))
+    k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * rad + 1, 2 * rad + 1))
+    out = labels.copy()
+    nxt = int(labels.max()) + 1
+    for i in [i for i in np.unique(labels) if i > 0]:
+        m = labels == i
+        wide = cv2.morphologyEx(m.astype(np.uint8), cv2.MORPH_OPEN, k).astype(bool)
+        lab, n = ndimage.label(m & ~wide)
+        for j in range(1, n + 1):
+            c = lab == j
+            area = c.sum() * grid.cell**2
+            if area < r["connector_min_area_m2"]:
+                continue
+            pts = np.argwhere(c)[:, ::-1].astype(np.float32)
+            (_, _), (w, h), _ = cv2.minAreaRect(pts)
+            if max(w, h) * grid.cell < r["connector_min_length_m"]:
+                continue
+            ring = ndimage.binary_dilation(c, iterations=max(1, int(round(cfg["intervals"]["adjacency_wall_m"] / grid.cell)))) & ~m   # across a wall (same distance as room adjacency)
+            if not ((labels[ring] > 0) & (labels[ring] != i)).any():
+                continue
+            out[c] = nxt
+            nxt += 1
+    return out
 
 
 def _flood(dist: np.ndarray, seeds: np.ndarray, free: np.ndarray) -> np.ndarray:

@@ -106,6 +106,21 @@ def room_polygons(labels: np.ndarray, planes: list[WallPlane], grid: Grid, cfg: 
     virt: dict[int, list[tuple[int, float]]] = {i: _virtual_lines(labels == i, grid, planes, cfg) for i in ids}
     vx = [v for i in ids for a, v in virt[i] if a == 0]
     vz = [v for i in ids for a, v in virt[i] if a == 2]
+    narrow = set()
+    if r.get("keep_narrow_rooms", False):   # a corridor needs grid lines along its own edges, or a neighbour's larger rectangle swallows it
+        tol = r["virtual_line_plane_tol_m"]
+        for i in ids:
+            rr, cc = np.nonzero(labels == i)
+            x, z = grid.xz(rr, cc)
+            wx, wz = np.ptp(x) + grid.cell, np.ptp(z) + grid.cell
+            if min(wx, wz) > r["connector_max_width_m"] + 2 * grid.cell or max(wx, wz) < r["connector_min_length_m"]:
+                continue
+            narrow.add(i)
+            for vals, lines, planes_ax in (((x.min() - grid.cell / 2, x.max() + grid.cell / 2), vx, plane_x),
+                                           ((z.min() - grid.cell / 2, z.max() + grid.cell / 2), vz, plane_z)):
+                for v in vals:
+                    if not planes_ax or min(abs(np.array(planes_ax) - v)) > tol:
+                        lines.append(float(v))
     xs = sorted(set(plane_x) | set(_merge_close(vx, 0.02) if vx else []))
     zs = sorted(set(plane_z) | set(_merge_close(vz, 0.02) if vz else []))
     plane_set = {0: np.array(plane_x), 2: np.array(plane_z)}
@@ -137,8 +152,8 @@ def room_polygons(labels: np.ndarray, planes: list[WallPlane], grid: Grid, cfg: 
             poly = max(poly.geoms, key=lambda g: g.area)
         holes = [h for h in poly.interiors if Polygon(h).area > r["hole_max_m2"]]
         poly = Polygon(poly.exterior, holes).simplify(0.0)
-        if poly.area < r["min_room_area_m2"]:
-            continue  # slivers (wall thickness, door gaps) are not rooms
+        if poly.area < (r["connector_min_area_m2"] if i in narrow else r["min_room_area_m2"]):
+            continue  # slivers (wall thickness, door gaps) are not rooms; corridors may be smaller than a room
         rooms.append(RoomPoly(i, poly, _edges(poly, planes, plane_set)))
     return rooms
 

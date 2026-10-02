@@ -1,0 +1,2409 @@
+{
+ "schema_version": "0.1",
+ "capture": "single_scan_floor_only/1a8384c3f6",
+ "tier": "lidar",
+ "frame": {
+  "yaw_deg": 87.079,
+  "floor_world_y": -1.4001,
+  "drift_correction": "chunk heading + floor level + odometry jump distribution",
+  "drift_report": {
+   "components": [
+    "chunk heading",
+    "floor level",
+    "odometry jump distribution"
+   ],
+   "chunks": 27,
+   "chunk_frames": 40,
+   "associations": 31,
+   "residual_rms_cm_before": 9.51,
+   "residual_rms_cm_after": 0.06,
+   "holdout_rms_cm_before": 5.89,
+   "holdout_rms_cm_after": 0.08,
+   "max_rotation_deg": 3.13,
+   "max_shift_cm": 0.0,
+   "floor_level_range_cm": [
+    -3.1,
+    1.0
+   ],
+   "odometry_jumps": [
+    {
+     "frames": [
+      5198,
+      5200
+     ],
+     "jump_cm": 58.7,
+     "spread_over_frames": 5199
+    }
+   ],
+   "room_refinement": [
+    {
+     "room": "R1",
+     "refined": 4,
+     "visit_chunks": 3,
+     "visit": [
+      0,
+      2
+     ],
+     "median_move_cm": 2.0,
+     "max_move_cm": 4.8
+    },
+    {
+     "room": "R2",
+     "refined": 3,
+     "visit_chunks": 2,
+     "visit": [
+      4,
+      5
+     ],
+     "median_move_cm": 0.3,
+     "max_move_cm": 13.5
+    },
+    {
+     "room": "R3",
+     "refined": 6,
+     "visit_chunks": 5,
+     "visit": [
+      19,
+      23
+     ],
+     "median_move_cm": 0.6,
+     "max_move_cm": 12.4
+    },
+    {
+     "room": "R4",
+     "refined": 6,
+     "visit_chunks": 3,
+     "visit": [
+      8,
+      10
+     ],
+     "median_move_cm": 0.4,
+     "max_move_cm": 14.0
+    },
+    {
+     "room": "R5",
+     "refined": 5,
+     "visit_chunks": 2,
+     "visit": [
+      16,
+      17
+     ],
+     "median_move_cm": 5.2,
+     "max_move_cm": 14.5
+    },
+    {
+     "room": "R6",
+     "refined": 2,
+     "visit_chunks": 2,
+     "visit": [
+      13,
+      14
+     ],
+     "median_move_cm": 9.6,
+     "max_move_cm": 14.4
+    },
+    {
+     "room": "R8",
+     "refined": 0,
+     "reason": "longest visit 1 chunk(s) < 2"
+    },
+    {
+     "room": "R9",
+     "refined": 0,
+     "reason": "longest visit 1 chunk(s) < 2"
+    }
+   ]
+  },
+  "tier_report": {}
+ },
+ "rooms": [
+  {
+   "id": "R1",
+   "polygon": [
+    [
+     -0.0794,
+     -0.0754
+    ],
+    [
+     -0.0794,
+     0.8239
+    ],
+    [
+     2.6187,
+     0.8239
+    ],
+    [
+     2.6187,
+     -2.3303
+    ],
+    [
+     -0.2447,
+     -2.3303
+    ],
+    [
+     -0.2447,
+     -0.0754
+    ]
+   ],
+   "area": {
+    "value": 8.883,
+    "unit": "m2",
+    "interval": {
+     "low": 6.522,
+     "high": 11.245,
+     "method": "edge-plane spread + 3.5 cm systematic + unobserved share + room-extent term fitted on repeat captures (conformal 95%)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "ceiling_height": {
+    "value": null,
+    "unit": "m",
+    "interval": {
+     "low": null,
+     "high": null,
+     "method": "none: ceiling not captured",
+     "calibrated": false
+    },
+    "status": "unmeasurable",
+    "note": "only 8 horizontal points between 1.8 and 4.5 m above the floor",
+    "source": null
+   },
+   "observed_fraction": 0.885,
+   "floor_offset_m": 0.0004,
+   "walls": [
+    {
+     "id": "R1.W0",
+     "p0": [
+      -0.07944776561317535,
+      -0.07542734956062896
+     ],
+     "p1": [
+      -0.07944776561317535,
+      0.8238830646687714
+     ],
+     "length": {
+      "value": 0.8993,
+      "unit": "m",
+      "interval": {
+       "low": 0.344,
+       "high": 1.4546,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.354
+    },
+    {
+     "id": "R1.W1",
+     "p0": [
+      -0.07944776561317535,
+      0.8238830646687714
+     ],
+     "p1": [
+      2.618685456729645,
+      0.8238830646687714
+     ],
+     "length": {
+      "value": 2.6981,
+      "unit": "m",
+      "interval": {
+       "low": 2.1477,
+       "high": 3.2486,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.728
+    },
+    {
+     "id": "R1.W2",
+     "p0": [
+      2.618685456729645,
+      -2.33032164972278
+     ],
+     "p1": [
+      2.618685456729645,
+      0.8238830646687714
+     ],
+     "length": {
+      "value": 3.1542,
+      "unit": "m",
+      "interval": {
+       "low": 2.6019,
+       "high": 3.7065,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.719
+    },
+    {
+     "id": "R1.W3",
+     "p0": [
+      -0.2447374643659237,
+      -2.33032164972278
+     ],
+     "p1": [
+      2.618685456729645,
+      -2.33032164972278
+     ],
+     "length": {
+      "value": 2.8634,
+      "unit": "m",
+      "interval": {
+       "low": 2.3135,
+       "high": 3.4134,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.947
+    },
+    {
+     "id": "R1.W4",
+     "p0": [
+      -0.2447374643659237,
+      -2.33032164972278
+     ],
+     "p1": [
+      -0.2447374643659237,
+      -0.07542734956062896
+     ],
+     "length": {
+      "value": 2.2549,
+      "unit": "m",
+      "interval": {
+       "low": 1.705,
+       "high": 2.8048,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.967
+    },
+    {
+     "id": "R1.W5",
+     "p0": [
+      -0.2447374643659237,
+      -0.07542734956062896
+     ],
+     "p1": [
+      -0.07944776561317535,
+      -0.07542734956062896
+     ],
+     "length": {
+      "value": 0.1653,
+      "unit": "m",
+      "interval": {
+       "low": -0.3935,
+       "high": 0.7241,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.0
+    }
+   ],
+   "openings": [
+    "O4"
+   ]
+  },
+  {
+   "id": "R2",
+   "polygon": [
+    [
+     2.6434,
+     -0.0781
+    ],
+    [
+     5.5962,
+     -0.0781
+    ],
+    [
+     5.5962,
+     -2.4714
+    ],
+    [
+     2.6434,
+     -2.4714
+    ]
+   ],
+   "area": {
+    "value": 7.067,
+    "unit": "m2",
+    "interval": {
+     "low": 4.85,
+     "high": 9.284,
+     "method": "edge-plane spread + 3.5 cm systematic + unobserved share + room-extent term fitted on repeat captures (conformal 95%)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "ceiling_height": {
+    "value": null,
+    "unit": "m",
+    "interval": {
+     "low": null,
+     "high": null,
+     "method": "none: ceiling not captured",
+     "calibrated": false
+    },
+    "status": "unmeasurable",
+    "note": "only 0 horizontal points between 1.8 and 4.5 m above the floor",
+    "source": null
+   },
+   "observed_fraction": 0.652,
+   "floor_offset_m": -0.004,
+   "walls": [
+    {
+     "id": "R2.W0",
+     "p0": [
+      2.6433603764326894,
+      -0.07814452741348377
+     ],
+     "p1": [
+      5.596162691998811,
+      -0.07814452741348377
+     ],
+     "length": {
+      "value": 2.9528,
+      "unit": "m",
+      "interval": {
+       "low": 2.403,
+       "high": 3.5026,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.983
+    },
+    {
+     "id": "R2.W1",
+     "p0": [
+      5.596162691998811,
+      -2.471426140460828
+     ],
+     "p1": [
+      5.596162691998811,
+      -0.07814452741348377
+     ],
+     "length": {
+      "value": 2.3933,
+      "unit": "m",
+      "interval": {
+       "low": 1.8438,
+       "high": 2.9428,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.974
+    },
+    {
+     "id": "R2.W2",
+     "p0": [
+      2.6433603764326894,
+      -2.471426140460828
+     ],
+     "p1": [
+      5.596162691998811,
+      -2.471426140460828
+     ],
+     "length": {
+      "value": 2.9528,
+      "unit": "m",
+      "interval": {
+       "low": 2.4015,
+       "high": 3.5041,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.593
+    },
+    {
+     "id": "R2.W3",
+     "p0": [
+      2.6433603764326894,
+      -2.471426140460828
+     ],
+     "p1": [
+      2.6433603764326894,
+      -0.07814452741348377
+     ],
+     "length": {
+      "value": 2.3933,
+      "unit": "m",
+      "interval": {
+       "low": 1.8438,
+       "high": 2.9428,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 1.0
+    }
+   ],
+   "openings": [
+    "O3"
+   ]
+  },
+  {
+   "id": "R3",
+   "polygon": [
+    [
+     -0.027,
+     1.1598
+    ],
+    [
+     -0.027,
+     3.9908
+    ],
+    [
+     2.6434,
+     3.9908
+    ],
+    [
+     2.6434,
+     5.1734
+    ],
+    [
+     5.1137,
+     5.1734
+    ],
+    [
+     5.1137,
+     3.2589
+    ],
+    [
+     4.5793,
+     3.2589
+    ],
+    [
+     4.5793,
+     1.1598
+    ]
+   ],
+   "area": {
+    "value": 16.353,
+    "unit": "m2",
+    "interval": {
+     "low": 11.963,
+     "high": 20.743,
+     "method": "edge-plane spread + 3.5 cm systematic + unobserved share + room-extent term fitted on repeat captures (conformal 95%)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "ceiling_height": {
+    "value": null,
+    "unit": "m",
+    "interval": {
+     "low": null,
+     "high": null,
+     "method": "none: ceiling not captured",
+     "calibrated": false
+    },
+    "status": "unmeasurable",
+    "note": "best level covers 0% of the room (0.1 m2), below the 20% / 1.0 m2 minimum",
+    "source": null
+   },
+   "observed_fraction": 0.845,
+   "floor_offset_m": 0.006,
+   "walls": [
+    {
+     "id": "R3.W0",
+     "p0": [
+      -0.026954571814480577,
+      1.15977580053868
+     ],
+     "p1": [
+      -0.026954571814480577,
+      3.9907808172216406
+     ],
+     "length": {
+      "value": 2.831,
+      "unit": "m",
+      "interval": {
+       "low": 2.2791,
+       "high": 3.3829,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.491
+    },
+    {
+     "id": "R3.W1",
+     "p0": [
+      -0.026954571814480577,
+      3.9907808172216406
+     ],
+     "p1": [
+      2.6433603764326894,
+      3.9907808172216406
+     ],
+     "length": {
+      "value": 2.6703,
+      "unit": "m",
+      "interval": {
+       "low": 2.1203,
+       "high": 3.2204,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 1.0
+    },
+    {
+     "id": "R3.W2",
+     "p0": [
+      2.6433603764326894,
+      3.9907808172216406
+     ],
+     "p1": [
+      2.6433603764326894,
+      5.173424437765963
+     ],
+     "length": {
+      "value": 1.1826,
+      "unit": "m",
+      "interval": {
+       "low": 0.6314,
+       "high": 1.7339,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.837
+    },
+    {
+     "id": "R3.W3",
+     "p0": [
+      2.6433603764326894,
+      5.173424437765963
+     ],
+     "p1": [
+      5.11374124603663,
+      5.173424437765963
+     ],
+     "length": {
+      "value": 2.4704,
+      "unit": "m",
+      "interval": {
+       "low": 1.9204,
+       "high": 3.0203,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.964
+    },
+    {
+     "id": "R3.W4",
+     "p0": [
+      5.11374124603663,
+      3.2589154201388144
+     ],
+     "p1": [
+      5.11374124603663,
+      5.173424437765963
+     ],
+     "length": {
+      "value": 1.9145,
+      "unit": "m",
+      "interval": {
+       "low": 1.3637,
+       "high": 2.4653,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 1.0
+    },
+    {
+     "id": "R3.W5",
+     "p0": [
+      4.579295240847294,
+      3.2589154201388144
+     ],
+     "p1": [
+      5.11374124603663,
+      3.2589154201388144
+     ],
+     "length": {
+      "value": 0.5344,
+      "unit": "m",
+      "interval": {
+       "low": -0.0156,
+       "high": 1.0844,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.799
+    },
+    {
+     "id": "R3.W6",
+     "p0": [
+      4.579295240847294,
+      1.15977580053868
+     ],
+     "p1": [
+      4.579295240847294,
+      3.2589154201388144
+     ],
+     "length": {
+      "value": 2.0991,
+      "unit": "m",
+      "interval": {
+       "low": 1.5498,
+       "high": 2.6485,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 1.0
+    },
+    {
+     "id": "R3.W7",
+     "p0": [
+      -0.026954571814480577,
+      1.15977580053868
+     ],
+     "p1": [
+      4.579295240847294,
+      1.15977580053868
+     ],
+     "length": {
+      "value": 4.6062,
+      "unit": "m",
+      "interval": {
+       "low": 4.0563,
+       "high": 5.1562,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.855
+    }
+   ],
+   "openings": [
+    "O0",
+    "O1",
+    "O2",
+    "O4",
+    "O5",
+    "O6",
+    "O7",
+    "O8"
+   ]
+  },
+  {
+   "id": "R4",
+   "polygon": [
+    [
+     5.0558,
+     6.9966
+    ],
+    [
+     8.4028,
+     6.9966
+    ],
+    [
+     8.4028,
+     4.2039
+    ],
+    [
+     8.913,
+     4.2039
+    ],
+    [
+     8.913,
+     3.1241
+    ],
+    [
+     5.0558,
+     3.1241
+    ]
+   ],
+   "area": {
+    "value": 13.512,
+    "unit": "m2",
+    "interval": {
+     "low": 9.693,
+     "high": 17.331,
+     "method": "edge-plane spread + 3.5 cm systematic + unobserved share + room-extent term fitted on repeat captures (conformal 95%)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "ceiling_height": {
+    "value": null,
+    "unit": "m",
+    "interval": {
+     "low": null,
+     "high": null,
+     "method": "none: ceiling not captured",
+     "calibrated": false
+    },
+    "status": "unmeasurable",
+    "note": "only 13 horizontal points between 1.8 and 4.5 m above the floor",
+    "source": null
+   },
+   "observed_fraction": 0.768,
+   "floor_offset_m": -0.0077,
+   "walls": [
+    {
+     "id": "R4.W0",
+     "p0": [
+      5.055846743266271,
+      6.996626613822679
+     ],
+     "p1": [
+      8.402808217006813,
+      6.996626613822679
+     ],
+     "length": {
+      "value": 3.347,
+      "unit": "m",
+      "interval": {
+       "low": 2.7964,
+       "high": 3.8975,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.622
+    },
+    {
+     "id": "R4.W1",
+     "p0": [
+      8.402808217006813,
+      4.203942997573466
+     ],
+     "p1": [
+      8.402808217006813,
+      6.996626613822679
+     ],
+     "length": {
+      "value": 2.7927,
+      "unit": "m",
+      "interval": {
+       "low": 2.2435,
+       "high": 3.3419,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.961
+    },
+    {
+     "id": "R4.W2",
+     "p0": [
+      8.402808217006813,
+      4.203942997573466
+     ],
+     "p1": [
+      8.912965720436237,
+      4.203942997573466
+     ],
+     "length": {
+      "value": 0.5102,
+      "unit": "m",
+      "interval": {
+       "low": -0.0484,
+       "high": 1.0687,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.0
+    },
+    {
+     "id": "R4.W3",
+     "p0": [
+      8.912965720436237,
+      3.1241161850873485
+     ],
+     "p1": [
+      8.912965720436237,
+      4.203942997573466
+     ],
+     "length": {
+      "value": 1.0798,
+      "unit": "m",
+      "interval": {
+       "low": 0.5306,
+       "high": 1.6291,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 1.0
+    },
+    {
+     "id": "R4.W4",
+     "p0": [
+      5.055846743266271,
+      3.1241161850873485
+     ],
+     "p1": [
+      8.912965720436237,
+      3.1241161850873485
+     ],
+     "length": {
+      "value": 3.8571,
+      "unit": "m",
+      "interval": {
+       "low": 3.3077,
+       "high": 4.4066,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.963
+    },
+    {
+     "id": "R4.W5",
+     "p0": [
+      5.055846743266271,
+      3.1241161850873485
+     ],
+     "p1": [
+      5.055846743266271,
+      6.996626613822679
+     ],
+     "length": {
+      "value": 3.8725,
+      "unit": "m",
+      "interval": {
+       "low": 3.323,
+       "high": 4.422,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.872
+    }
+   ],
+   "openings": [
+    "O2"
+   ]
+  },
+  {
+   "id": "R5",
+   "polygon": [
+    [
+     -0.2596,
+     4.1343
+    ],
+    [
+     -0.2596,
+     4.1446
+    ],
+    [
+     -3.517,
+     4.1446
+    ],
+    [
+     -3.517,
+     7.128
+    ],
+    [
+     -0.2596,
+     7.128
+    ],
+    [
+     -0.2596,
+     7.1114
+    ],
+    [
+     0.883,
+     7.1114
+    ],
+    [
+     0.883,
+     7.128
+    ],
+    [
+     1.7415,
+     7.128
+    ],
+    [
+     1.7415,
+     5.2255
+    ],
+    [
+     0.883,
+     5.2255
+    ],
+    [
+     0.883,
+     4.1446
+    ],
+    [
+     -0.0319,
+     4.1446
+    ],
+    [
+     -0.0319,
+     4.1343
+    ]
+   ],
+   "area": {
+    "value": 14.743,
+    "unit": "m2",
+    "interval": {
+     "low": 10.491,
+     "high": 18.996,
+     "method": "edge-plane spread + 3.5 cm systematic + unobserved share + room-extent term fitted on repeat captures (conformal 95%)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "ceiling_height": {
+    "value": null,
+    "unit": "m",
+    "interval": {
+     "low": null,
+     "high": null,
+     "method": "none: ceiling not captured",
+     "calibrated": false
+    },
+    "status": "unmeasurable",
+    "note": "only 11 horizontal points between 1.8 and 4.5 m above the floor",
+    "source": null
+   },
+   "observed_fraction": 0.744,
+   "floor_offset_m": -0.0003,
+   "walls": [
+    {
+     "id": "R5.W0",
+     "p0": [
+      -0.25959973230350397,
+      4.134305414744629
+     ],
+     "p1": [
+      -0.25959973230350397,
+      4.144617823026378
+     ],
+     "length": {
+      "value": 0.0103,
+      "unit": "m",
+      "interval": {
+       "low": -0.5481,
+       "high": 0.5687,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.0
+    },
+    {
+     "id": "R5.W1",
+     "p0": [
+      -3.5169578784474274,
+      4.144617823026378
+     ],
+     "p1": [
+      -0.25959973230350397,
+      4.144617823026378
+     ],
+     "length": {
+      "value": 3.2574,
+      "unit": "m",
+      "interval": {
+       "low": 2.6819,
+       "high": 3.8328,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.0
+    },
+    {
+     "id": "R5.W2",
+     "p0": [
+      -3.5169578784474274,
+      4.144617823026378
+     ],
+     "p1": [
+      -3.5169578784474274,
+      7.1279937099363515
+     ],
+     "length": {
+      "value": 2.9834,
+      "unit": "m",
+      "interval": {
+       "low": 2.4249,
+       "high": 3.5418,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "virtual",
+     "support": 0.0
+    },
+    {
+     "id": "R5.W3",
+     "p0": [
+      -3.5169578784474274,
+      7.1279937099363515
+     ],
+     "p1": [
+      -0.25959973230350397,
+      7.1279937099363515
+     ],
+     "length": {
+      "value": 3.2574,
+      "unit": "m",
+      "interval": {
+       "low": 2.6819,
+       "high": 3.8328,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.0
+    },
+    {
+     "id": "R5.W4",
+     "p0": [
+      -0.25959973230350397,
+      7.1279937099363515
+     ],
+     "p1": [
+      -0.25959973230350397,
+      7.111357019314751
+     ],
+     "length": {
+      "value": -0.0166,
+      "unit": "m",
+      "interval": {
+       "low": -0.575,
+       "high": 0.5417,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.0
+    },
+    {
+     "id": "R5.W5",
+     "p0": [
+      -0.25959973230350397,
+      7.111357019314751
+     ],
+     "p1": [
+      0.8830421215525733,
+      7.111357019314751
+     ],
+     "length": {
+      "value": 1.1426,
+      "unit": "m",
+      "interval": {
+       "low": 0.5759,
+       "high": 1.7093,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 1.0
+    },
+    {
+     "id": "R5.W6",
+     "p0": [
+      0.8830421215525733,
+      7.1279937099363515
+     ],
+     "p1": [
+      0.8830421215525733,
+      7.111357019314751
+     ],
+     "length": {
+      "value": -0.0166,
+      "unit": "m",
+      "interval": {
+       "low": -0.575,
+       "high": 0.5417,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "virtual",
+     "support": 0.0
+    },
+    {
+     "id": "R5.W7",
+     "p0": [
+      0.8830421215525733,
+      7.1279937099363515
+     ],
+     "p1": [
+      1.741540418539051,
+      7.1279937099363515
+     ],
+     "length": {
+      "value": 0.8585,
+      "unit": "m",
+      "interval": {
+       "low": 0.2849,
+       "high": 1.4321,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.0
+    },
+    {
+     "id": "R5.W8",
+     "p0": [
+      1.741540418539051,
+      5.225493376954402
+     ],
+     "p1": [
+      1.741540418539051,
+      7.1279937099363515
+     ],
+     "length": {
+      "value": 1.9025,
+      "unit": "m",
+      "interval": {
+       "low": 1.3527,
+       "high": 2.4523,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.87
+    },
+    {
+     "id": "R5.W9",
+     "p0": [
+      0.8830421215525733,
+      5.225493376954402
+     ],
+     "p1": [
+      1.741540418539051,
+      5.225493376954402
+     ],
+     "length": {
+      "value": 0.8585,
+      "unit": "m",
+      "interval": {
+       "low": 0.2936,
+       "high": 1.4234,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.956
+    },
+    {
+     "id": "R5.W10",
+     "p0": [
+      0.8830421215525733,
+      4.144617823026378
+     ],
+     "p1": [
+      0.8830421215525733,
+      5.225493376954402
+     ],
+     "length": {
+      "value": 1.0809,
+      "unit": "m",
+      "interval": {
+       "low": 0.5223,
+       "high": 1.6394,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "virtual",
+     "support": 0.0
+    },
+    {
+     "id": "R5.W11",
+     "p0": [
+      -0.031854960839122204,
+      4.144617823026378
+     ],
+     "p1": [
+      0.8830421215525733,
+      4.144617823026378
+     ],
+     "length": {
+      "value": 0.9149,
+      "unit": "m",
+      "interval": {
+       "low": 0.3406,
+       "high": 1.4892,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.0
+    },
+    {
+     "id": "R5.W12",
+     "p0": [
+      -0.031854960839122204,
+      4.134305414744629
+     ],
+     "p1": [
+      -0.031854960839122204,
+      4.144617823026378
+     ],
+     "length": {
+      "value": 0.0103,
+      "unit": "m",
+      "interval": {
+       "low": -0.5481,
+       "high": 0.5687,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.0
+    },
+    {
+     "id": "R5.W13",
+     "p0": [
+      -0.25959973230350397,
+      4.134305414744629
+     ],
+     "p1": [
+      -0.031854960839122204,
+      4.134305414744629
+     ],
+     "length": {
+      "value": 0.2277,
+      "unit": "m",
+      "interval": {
+       "low": -0.3239,
+       "high": 0.7794,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 1.0
+    }
+   ],
+   "openings": []
+  },
+  {
+   "id": "R6",
+   "polygon": [
+    [
+     2.4997,
+     7.0667
+    ],
+    [
+     4.4552,
+     7.0667
+    ],
+    [
+     4.4552,
+     6.9967
+    ],
+    [
+     4.883,
+     6.9967
+    ],
+    [
+     4.883,
+     5.1734
+    ],
+    [
+     2.4997,
+     5.1734
+    ]
+   ],
+   "area": {
+    "value": 4.482,
+    "unit": "m2",
+    "interval": {
+     "low": 3.201,
+     "high": 5.764,
+     "method": "edge-plane spread + 3.5 cm systematic + unobserved share + room-extent term fitted on repeat captures (conformal 95%)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "ceiling_height": {
+    "value": null,
+    "unit": "m",
+    "interval": {
+     "low": null,
+     "high": null,
+     "method": "none: ceiling not captured",
+     "calibrated": false
+    },
+    "status": "unmeasurable",
+    "note": "only 2 horizontal points between 1.8 and 4.5 m above the floor",
+    "source": null
+   },
+   "observed_fraction": 0.81,
+   "floor_offset_m": -0.0123,
+   "walls": [
+    {
+     "id": "R6.W0",
+     "p0": [
+      2.4996807241437167,
+      7.066739876975169
+     ],
+     "p1": [
+      4.455163783176136,
+      7.066739876975169
+     ],
+     "length": {
+      "value": 1.9555,
+      "unit": "m",
+      "interval": {
+       "low": 1.4018,
+       "high": 2.5092,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.335
+    },
+    {
+     "id": "R6.W1",
+     "p0": [
+      4.455163783176136,
+      6.996657049239091
+     ],
+     "p1": [
+      4.455163783176136,
+      7.066739876975169
+     ],
+     "length": {
+      "value": 0.0701,
+      "unit": "m",
+      "interval": {
+       "low": -0.4884,
+       "high": 0.6286,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.0
+    },
+    {
+     "id": "R6.W2",
+     "p0": [
+      4.455163783176136,
+      6.996657049239091
+     ],
+     "p1": [
+      4.883042121552573,
+      6.996657049239091
+     ],
+     "length": {
+      "value": 0.4279,
+      "unit": "m",
+      "interval": {
+       "low": -0.1462,
+       "high": 1.002,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.0
+    },
+    {
+     "id": "R6.W3",
+     "p0": [
+      4.883042121552573,
+      5.173424437765963
+     ],
+     "p1": [
+      4.883042121552573,
+      6.996657049239091
+     ],
+     "length": {
+      "value": 1.8232,
+      "unit": "m",
+      "interval": {
+       "low": 1.2633,
+       "high": 2.3832,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "virtual",
+     "support": 0.0
+    },
+    {
+     "id": "R6.W4",
+     "p0": [
+      2.4996807241437167,
+      5.173424437765963
+     ],
+     "p1": [
+      4.883042121552573,
+      5.173424437765963
+     ],
+     "length": {
+      "value": 2.3834,
+      "unit": "m",
+      "interval": {
+       "low": 1.8184,
+       "high": 2.9483,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 1.0
+    },
+    {
+     "id": "R6.W5",
+     "p0": [
+      2.4996807241437167,
+      5.173424437765963
+     ],
+     "p1": [
+      2.4996807241437167,
+      7.066739876975169
+     ],
+     "length": {
+      "value": 1.8933,
+      "unit": "m",
+      "interval": {
+       "low": 1.3401,
+       "high": 2.4465,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.521
+    }
+   ],
+   "openings": [
+    "O8"
+   ]
+  },
+  {
+   "id": "R8",
+   "polygon": [
+    [
+     4.4552,
+     -0.0754
+    ],
+    [
+     2.6434,
+     -0.0754
+    ],
+    [
+     2.6434,
+     0.8239
+    ],
+    [
+     4.4552,
+     0.8239
+    ]
+   ],
+   "area": {
+    "value": 1.629,
+    "unit": "m2",
+    "interval": {
+     "low": 1.111,
+     "high": 2.147,
+     "method": "edge-plane spread + 3.5 cm systematic + unobserved share + room-extent term fitted on repeat captures (conformal 95%)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "ceiling_height": {
+    "value": null,
+    "unit": "m",
+    "interval": {
+     "low": null,
+     "high": null,
+     "method": "none: ceiling not captured",
+     "calibrated": false
+    },
+    "status": "unmeasurable",
+    "note": "only 0 horizontal points between 1.8 and 4.5 m above the floor",
+    "source": null
+   },
+   "observed_fraction": 0.738,
+   "floor_offset_m": 0.0086,
+   "walls": [
+    {
+     "id": "R8.W0",
+     "p0": [
+      2.6433603764326894,
+      -0.07542734956062896
+     ],
+     "p1": [
+      4.455163783176136,
+      -0.07542734956062896
+     ],
+     "length": {
+      "value": 1.8118,
+      "unit": "m",
+      "interval": {
+       "low": 1.2616,
+       "high": 2.362,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.978
+    },
+    {
+     "id": "R8.W1",
+     "p0": [
+      2.6433603764326894,
+      -0.07542734956062896
+     ],
+     "p1": [
+      2.6433603764326894,
+      0.8238830646687714
+     ],
+     "length": {
+      "value": 0.8993,
+      "unit": "m",
+      "interval": {
+       "low": 0.339,
+       "high": 1.4596,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.012
+    },
+    {
+     "id": "R8.W2",
+     "p0": [
+      2.6433603764326894,
+      0.8238830646687714
+     ],
+     "p1": [
+      4.455163783176136,
+      0.8238830646687714
+     ],
+     "length": {
+      "value": 1.8118,
+      "unit": "m",
+      "interval": {
+       "low": 1.2616,
+       "high": 2.362,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.967
+    },
+    {
+     "id": "R8.W3",
+     "p0": [
+      4.455163783176136,
+      -0.07542734956062896
+     ],
+     "p1": [
+      4.455163783176136,
+      0.8238830646687714
+     ],
+     "length": {
+      "value": 0.8993,
+      "unit": "m",
+      "interval": {
+       "low": 0.3477,
+       "high": 1.4509,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.897
+    }
+   ],
+   "openings": [
+    "O5",
+    "O6",
+    "O7"
+   ]
+  },
+  {
+   "id": "R9",
+   "polygon": [
+    [
+     0.883,
+     5.1734
+    ],
+    [
+     2.4947,
+     5.1734
+    ],
+    [
+     2.4947,
+     4.1343
+    ],
+    [
+     0.883,
+     4.1343
+    ]
+   ],
+   "area": {
+    "value": 1.675,
+    "unit": "m2",
+    "interval": {
+     "low": 1.137,
+     "high": 2.212,
+     "method": "edge-plane spread + 3.5 cm systematic + unobserved share + room-extent term fitted on repeat captures (conformal 95%)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "ceiling_height": {
+    "value": null,
+    "unit": "m",
+    "interval": {
+     "low": null,
+     "high": null,
+     "method": "none: ceiling not captured",
+     "calibrated": false
+    },
+    "status": "unmeasurable",
+    "note": "only 0 horizontal points between 1.8 and 4.5 m above the floor",
+    "source": null
+   },
+   "observed_fraction": 0.748,
+   "floor_offset_m": 0.0016,
+   "walls": [
+    {
+     "id": "R9.W0",
+     "p0": [
+      0.8830421215525733,
+      5.173424437765963
+     ],
+     "p1": [
+      2.4947130056158535,
+      5.173424437765963
+     ],
+     "length": {
+      "value": 1.6117,
+      "unit": "m",
+      "interval": {
+       "low": 1.0458,
+       "high": 2.1775,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.977
+    },
+    {
+     "id": "R9.W1",
+     "p0": [
+      2.4947130056158535,
+      4.134305414744629
+     ],
+     "p1": [
+      2.4947130056158535,
+      5.173424437765963
+     ],
+     "length": {
+      "value": 1.0391,
+      "unit": "m",
+      "interval": {
+       "low": 0.4881,
+       "high": 1.5901,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.951
+    },
+    {
+     "id": "R9.W2",
+     "p0": [
+      0.8830421215525733,
+      4.134305414744629
+     ],
+     "p1": [
+      2.4947130056158535,
+      4.134305414744629
+     ],
+     "length": {
+      "value": 1.6117,
+      "unit": "m",
+      "interval": {
+       "low": 1.0458,
+       "high": 2.1775,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 1.0
+    },
+    {
+     "id": "R9.W3",
+     "p0": [
+      0.8830421215525733,
+      4.134305414744629
+     ],
+     "p1": [
+      0.8830421215525733,
+      5.173424437765963
+     ],
+     "length": {
+      "value": 1.0391,
+      "unit": "m",
+      "interval": {
+       "low": 0.4791,
+       "high": 1.5991,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "virtual",
+     "support": 0.0
+    }
+   ],
+   "openings": [
+    "O0",
+    "O1"
+   ]
+  }
+ ],
+ "openings": [
+  {
+   "id": "O0",
+   "kind": "door",
+   "p0": [
+    2.4947130056158535,
+    4.335564710331084
+   ],
+   "p1": [
+    2.4947130056158535,
+    5.105564710331084
+   ],
+   "width": {
+    "value": 0.76,
+    "unit": "m",
+    "interval": {
+     "low": 0.74,
+     "high": 0.78,
+     "method": "bracket: see-through extent to wall-to-wall (provisional)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "bottom_m": 0.06,
+   "top_m": 1.58,
+   "rooms": [
+    "R9",
+    "R3"
+   ]
+  },
+  {
+   "id": "O1",
+   "kind": "door",
+   "p0": [
+    2.6433603764326894,
+    4.335177302047828
+   ],
+   "p1": [
+    2.6433603764326894,
+    5.125177302047828
+   ],
+   "width": {
+    "value": 0.78,
+    "unit": "m",
+    "interval": {
+     "low": 0.76,
+     "high": 0.8,
+     "method": "bracket: see-through extent to wall-to-wall (provisional)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "bottom_m": 0.06,
+   "top_m": 1.56,
+   "rooms": [
+    "R9",
+    "R3"
+   ]
+  },
+  {
+   "id": "O2",
+   "kind": "door",
+   "p0": [
+    5.057043864488941,
+    3.268541117340207
+   ],
+   "p1": [
+    5.057043864488941,
+    4.308541117340207
+   ],
+   "width": {
+    "value": 1.03,
+    "unit": "m",
+    "interval": {
+     "low": 1.02,
+     "high": 1.04,
+     "method": "bracket: see-through extent to wall-to-wall (provisional)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "bottom_m": 0.06,
+   "top_m": 1.84,
+   "rooms": [
+    "R3",
+    "R4"
+   ]
+  },
+  {
+   "id": "O3",
+   "kind": "door",
+   "p0": [
+    4.005632492616471,
+    -2.3360770459404385
+   ],
+   "p1": [
+    4.9256324926164705,
+    -2.3360770459404385
+   ],
+   "width": {
+    "value": 0.9,
+    "unit": "m",
+    "interval": {
+     "low": 0.88,
+     "high": 0.92,
+     "method": "bracket: see-through extent to wall-to-wall (provisional)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "bottom_m": 0.14,
+   "top_m": 1.4,
+   "rooms": [
+    null,
+    "R2"
+   ]
+  },
+  {
+   "id": "O4",
+   "kind": "raised",
+   "p0": [
+    0.8949741835571172,
+    0.8238830646687714
+   ],
+   "p1": [
+    1.8349741835571174,
+    0.8238830646687714
+   ],
+   "width": {
+    "value": 0.88,
+    "unit": "m",
+    "interval": {
+     "low": 0.82,
+     "high": 0.94,
+     "method": "bracket: see-through extent to wall-to-wall (provisional)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "bottom_m": 1.44,
+   "top_m": 1.92,
+   "rooms": [
+    "R1",
+    "R3"
+   ]
+  },
+  {
+   "id": "O5",
+   "kind": "raised",
+   "p0": [
+    2.4449741835571173,
+    0.8238830646687714
+   ],
+   "p1": [
+    3.054974183557117,
+    0.8238830646687714
+   ],
+   "width": {
+    "value": 0.55,
+    "unit": "m",
+    "interval": {
+     "low": 0.48,
+     "high": 0.62,
+     "method": "bracket: see-through extent to wall-to-wall (provisional)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "bottom_m": 0.94,
+   "top_m": 1.64,
+   "rooms": [
+    "R8",
+    "R3"
+   ]
+  },
+  {
+   "id": "O6",
+   "kind": "door",
+   "p0": [
+    3.3949741835571174,
+    0.8238830646687714
+   ],
+   "p1": [
+    4.274974183557117,
+    0.8238830646687714
+   ],
+   "width": {
+    "value": 0.86,
+    "unit": "m",
+    "interval": {
+     "low": 0.84,
+     "high": 0.88,
+     "method": "bracket: see-through extent to wall-to-wall (provisional)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "bottom_m": 0.06,
+   "top_m": 1.44,
+   "rooms": [
+    "R8",
+    "R3"
+   ]
+  },
+  {
+   "id": "O7",
+   "kind": "raised",
+   "p0": [
+    3.535929643678194,
+    1.0923739499804865
+   ],
+   "p1": [
+    4.3359296436781944,
+    1.0923739499804865
+   ],
+   "width": {
+    "value": 0.78,
+    "unit": "m",
+    "interval": {
+     "low": 0.76,
+     "high": 0.8,
+     "method": "bracket: see-through extent to wall-to-wall (provisional)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "bottom_m": 0.24,
+   "top_m": 1.44,
+   "rooms": [
+    "R8",
+    "R3"
+   ]
+  },
+  {
+   "id": "O8",
+   "kind": "raised",
+   "p0": [
+    2.6602907382972196,
+    5.173424437765963
+   ],
+   "p1": [
+    3.3202907382972193,
+    5.173424437765963
+   ],
+   "width": {
+    "value": 0.58,
+    "unit": "m",
+    "interval": {
+     "low": 0.5,
+     "high": 0.66,
+     "method": "bracket: see-through extent to wall-to-wall (provisional)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "bottom_m": 0.38,
+   "top_m": 1.22,
+   "rooms": [
+    "R3",
+    "R6"
+   ]
+  }
+ ],
+ "stitched": {
+  "footprint_area": {
+   "value": 68.234,
+   "unit": "m2",
+   "interval": {
+    "low": 60.195,
+    "high": 76.274,
+    "method": "root-sum-square of room area half-widths (provisional)",
+    "calibrated": false
+   },
+   "status": "measured",
+   "note": null,
+   "source": null
+  },
+  "n_rooms": 8,
+  "max_room_overlap_m2": 0.1108,
+  "adjacency": [
+   {
+    "a": "R9",
+    "b": "R3",
+    "via": "opening",
+    "opening_id": "O0"
+   },
+   {
+    "a": "R9",
+    "b": "R3",
+    "via": "opening",
+    "opening_id": "O1"
+   },
+   {
+    "a": "R3",
+    "b": "R4",
+    "via": "opening",
+    "opening_id": "O2"
+   },
+   {
+    "a": "R1",
+    "b": "R3",
+    "via": "opening",
+    "opening_id": "O4"
+   },
+   {
+    "a": "R8",
+    "b": "R3",
+    "via": "opening",
+    "opening_id": "O5"
+   },
+   {
+    "a": "R8",
+    "b": "R3",
+    "via": "opening",
+    "opening_id": "O6"
+   },
+   {
+    "a": "R8",
+    "b": "R3",
+    "via": "opening",
+    "opening_id": "O7"
+   },
+   {
+    "a": "R3",
+    "b": "R6",
+    "via": "opening",
+    "opening_id": "O8"
+   },
+   {
+    "a": "R1",
+    "b": "R2",
+    "via": "shared_wall",
+    "opening_id": null
+   },
+   {
+    "a": "R1",
+    "b": "R8",
+    "via": "shared_wall",
+    "opening_id": null
+   },
+   {
+    "a": "R2",
+    "b": "R8",
+    "via": "shared_wall",
+    "opening_id": null
+   },
+   {
+    "a": "R3",
+    "b": "R5",
+    "via": "shared_wall",
+    "opening_id": null
+   },
+   {
+    "a": "R4",
+    "b": "R6",
+    "via": "shared_wall",
+    "opening_id": null
+   },
+   {
+    "a": "R5",
+    "b": "R9",
+    "via": "shared_wall",
+    "opening_id": null
+   },
+   {
+    "a": "R6",
+    "b": "R9",
+    "via": "shared_wall",
+    "opening_id": null
+   }
+  ]
+ },
+ "damage": {
+  "status": "not_run",
+  "note": "damage detection was not run",
+  "regions": [],
+  "concealed_damage_flags": [],
+  "scope_items": [],
+  "report": {}
+ },
+ "timing_s": {
+  "chunks": 10.27,
+  "align_and_drift": 5.4,
+  "walls": 0.86,
+  "frame_pass": 14.74,
+  "rooms_and_openings": 0.68,
+  "assemble": 0.18
+ },
+ "limitations": [
+  "No ground truth: accuracy of every value is untested. Wall-length and room-area intervals are calibrated only against repeat captures of one property (a lower bound); other intervals are provisional.",
+  "Damage detection has not been run on this plan (separate pass: `plan run` does it with the models group installed).",
+  "Spaces joined by an opening wider than 1.2 m are merged into one room; rooms are assumed rectilinear.",
+  "Openings use see-through evidence: mirrors and glass can create phantom openings, windows to the outside are not detected.",
+  "No ceiling was captured in any room: all ceiling heights are unmeasurable.",
+  "Room-local refinement: wall positions of 6 of 8 rooms re-measured from that room's longest single visit (drift between visits removed from room dimensions); rooms are refined independently, so a shared wall can differ by a few cm between its two rooms.",
+  "Drift: corrected per chunk of 40 sampled frames by: chunk heading, floor level, odometry jump distribution. Assumes rectilinear walls and a flat floor; drift without wall evidence is not corrected; wall-matching shifts are not applied (they did not improve agreement in the M4 ablation)."
+ ],
+ "config_sha256": "2149bb02d303d178"
+}

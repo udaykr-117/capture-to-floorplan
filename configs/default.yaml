@@ -52,6 +52,11 @@ rooms:
   fill_hole_max_m2: 4.0        # unobserved holes fully enclosed by floor and under 4 m2 are furniture, not walls
   seed_min_dist_m: 0.5         # room core is >= 0.5 m from any barrier; doorways up to 1.0 m wide have a max distance < 0.5 m
   min_room_area_m2: 1.5        # smaller regions are merged into their neighbour (closets are kept by the polygon step)
+  keep_narrow_rooms: true      # ON after the second fix loop: same-wall median 29.7 -> 24.7 cm, room areas 2.03 -> 1.04 m2 across captures (docs/fix_declaration.md round 2). Second fix loop (a): a narrow labelled space (corridor) gets grid lines along its own edges and the smaller connector minimum area, so a neighbour's rectangle does not swallow it (rooms/polygon.py)
+  split_connectors: false      # second fix loop (b): also cut corridors out of rooms (rooms/freespace.py split_connectors); over-split in the benchmark, see JOURNAL
+  connector_max_width_m: 1.2   # a corridor is narrower than 1.2 m (the same width above which an opening merges two rooms); wider spaces get their own seed anyway
+  connector_min_length_m: 1.5  # and at least 1.5 m long: a doorway neck is only a wall thick (0.1-0.3 m), a hallway is longer than a door leaf
+  connector_min_area_m2: 1.0   # smaller narrow pieces are convex-corner slivers of the opening, not corridors
   min_room_width_m: 0.6        # opening by a 0.3 m radius removes tails narrower than 0.6 m (leaks through windows, doors)
   rect_min_fraction: 0.35      # a plane-grid rectangle joins a room if >= 35% of its cells are that room; the barrier trims ~7 cm per wall side, so wall-thickness slivers fall below it
   virtual_line_min_len_m: 0.8  # a straight stretch of room edge >= 0.8 m with no wall plane within the tolerance becomes a virtual wall line

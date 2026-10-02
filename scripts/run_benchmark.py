@@ -27,7 +27,11 @@ ROOT = Path(__file__).resolve().parents[1]
 SAMPLES = {"with_ceiling": ROOT / "single_scan_with_ceiling" / "c7d28f72c6", "floor_only": ROOT / "single_scan_floor_only" / "1a8384c3f6",
            "single_room": ROOT / "single_room" / "c00a170fe1"}
 PAIRS = [("with_ceiling", "floor_only"), ("with_ceiling", "single_room"), ("floor_only", "single_room")]
-VARIANTS = {"before": {"refine": {"enabled": False}}, "after": {"refine": {"enabled": True}}}
+OFF2 = {"keep_narrow_rooms": False, "split_connectors": False}
+VARIANTS = {"before": {"refine": {"enabled": False}, "rooms": OFF2},                                           # round 1 before
+            "after": {"refine": {"enabled": True}, "rooms": OFF2},                                             # round 1 after = round 2 before
+            "after2a": {"refine": {"enabled": True}, "rooms": {"keep_narrow_rooms": True, "split_connectors": False}},  # round 2 (a)
+            "after2": {"refine": {"enabled": True}, "rooms": {"keep_narrow_rooms": True, "split_connectors": True}}}    # round 2 (a)+(b)
 
 
 def wall_seg(w) -> Seg:
