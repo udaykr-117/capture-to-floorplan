@@ -53,7 +53,7 @@ def estimate_floor(y: np.ndarray, cam_y: np.ndarray, cfg: dict) -> FloorEstimate
     a = cfg["align"]
     ymax = cam_y.min() - a["floor_below_camera_m"]
     ys = y[y < ymax]
-    bins = np.arange(ys.min(), ymax + a["floor_hist_bin_m"], a["floor_hist_bin_m"])
+    bins = np.arange(ys.min() - 5 * a["floor_hist_bin_m"], ymax + a["floor_hist_bin_m"], a["floor_hist_bin_m"])  # margin so the lowest peak is not at the array edge
     h, e = np.histogram(ys, bins=bins)
     hs = np.convolve(h, np.ones(3) / 3, mode="same")
     peaks, _ = find_peaks(hs, height=a["floor_peak_min_rel"] * hs.max(), distance=3)
@@ -95,19 +95,30 @@ def analysis_cloud(pts: np.ndarray, cfg: dict) -> tuple[np.ndarray, np.ndarray]:
     return np.asarray(pcd.points), np.asarray(pcd.normals)
 
 
-def align(pts: np.ndarray, cam_xyz: np.ndarray, cfg: dict) -> tuple[Aligned, np.ndarray, np.ndarray]:
-    """Return the alignment plus the analysis cloud and normals, both already in the aligned frame."""
+def estimate_frame(pts: np.ndarray, cam_xyz: np.ndarray, cfg: dict) -> tuple[Frame, FloorEstimate, dict, np.ndarray, np.ndarray]:
+    """Floor height and wall yaw of a whole capture. Also returns the world-frame analysis cloud and normals."""
     floor = estimate_floor(pts[:, 1], cam_xyz[:, 1], cfg)
     P, N = analysis_cloud(pts, cfg)
     lo, hi = cfg["checks"]["wall_slab_above_floor_m"]
     slab = (P[:, 1] > floor.height + lo) & (P[:, 1] < floor.height + hi)
     yaw, ev = wall_yaw(P[slab], N[slab], cfg)
-    frame = Frame(yaw, floor.height)
-    Pa, Na = frame.to_aligned(P), frame.rotate(N)
+    return Frame(yaw, floor.height), floor, ev, P, N
+
+
+def check_residual(Pa: np.ndarray, Na: np.ndarray, ev: dict, cfg: dict) -> dict:
+    """Refuse to continue if the wall direction in the aligned cloud is more than the allowed angle from an axis."""
+    lo, hi = cfg["checks"]["wall_slab_above_floor_m"]
     slab_a = (Pa[:, 1] > lo) & (Pa[:, 1] < hi)
     yaw_res, _ = wall_yaw(Pa[slab_a], Na[slab_a], cfg)
     res = min(yaw_res, 90 - yaw_res)
     ev["residual_deg"] = float(res)
     if res > cfg["align"]["yaw_max_residual_deg"]:
         raise ValueError(f"alignment residual {res:.2f} deg exceeds {cfg['align']['yaw_max_residual_deg']} deg")
-    return Aligned(frame, floor, ev), Pa, Na
+    return ev
+
+
+def align(pts: np.ndarray, cam_xyz: np.ndarray, cfg: dict) -> tuple[Aligned, np.ndarray, np.ndarray]:
+    """Return the alignment plus the analysis cloud and normals, both already in the aligned frame."""
+    frame, floor, ev, P, N = estimate_frame(pts, cam_xyz, cfg)
+    Pa, Na = frame.to_aligned(P), frame.rotate(N)
+    return Aligned(frame, floor, check_residual(Pa, Na, ev, cfg)), Pa, Na

@@ -78,7 +78,8 @@ class DamageSection(BaseModel):
 class FrameInfo(BaseModel):
     yaw_deg: float
     floor_world_y: float
-    drift_correction: Literal["none"] = "none"
+    drift_correction: str = Field(default="none", description="the components applied, e.g. 'chunk heading + floor level + odometry jump distribution'; 'none' = poses as-is")
+    drift_report: dict = {}
 
 
 class Plan(BaseModel):

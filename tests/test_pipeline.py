@@ -5,41 +5,38 @@ from floorplan.config import load_config
 from floorplan.pipeline import build_plan
 from floorplan.report.render import render_plan
 from floorplan.schema import Plan
-from synth import box_room, cast_rays_3d, rotate_yaw
+from synth import cast_rays_3d, rotate_yaw
 
 CFG = load_config()
 SHIFT = np.array([3.0, 0, -2.0])
 YAW = 25.0
 FLOOR_Y = -1.4
-SEGS = [((0, 0), (0, 4)), ((8, 0), (8, 4)), ((0, 0), (8, 0)), ((0, 4), (8, 4)), ((4, 0), (4, 4))]
+# A (x 0..4, ceiling 2.5) and B (x 4..8, ceiling 2.8); the partition at x = 4 is segment 6 and has a 0.9 m door
+SEGS = [((0, 0), (0, 4)), ((8, 0), (8, 4)), ((0, 0), (4, 0)), ((4, 0), (8, 0)), ((0, 4), (4, 4)), ((4, 4), (8, 4)), ((4, 0), (4, 4))]
+HEIGHTS = [2.5, 2.8, 2.5, 2.8, 2.5, 2.8, 2.8]
+CEILS = [(0, 4, 2.5), (4, 8, 2.8)]
+DOOR = (1.55, 2.45, 0.0, 2.0)
 PATH = [(2, 2), (3, 1), (3, 3), (1.5, 3.4), (2.5, 3.4), (1, 1), (6, 2), (5, 1), (5, 3), (6.5, 3.5), (7, 1), (3.6, 2.0), (4.4, 2.0), (3.5, 3.4), (4.5, 3.4)]
 
 
 class SyntheticSource:
+    """Frames only (as a real capture): the cloud the pipeline uses is built from them."""
     name = "synthetic/two-rooms"
 
     def __init__(self):
-        door = (1.55, 2.45, 0.0, 2.0)
-        a = box_room(0, 0, 4, 4, 2.5, seed=1, openings=[("x1", *door)])
-        b = box_room(4, 0, 8, 4, 2.8, seed=2, openings=[("x0", *door)])
-        self.pts = rotate_yaw(np.concatenate([a, b]), YAW) + SHIFT
         self.cams = rotate_yaw(np.array([[x, 0.0, z] for x, z in PATH]), YAW) + SHIFT
-        self.hits = [rotate_yaw(cast_rays_3d((x, 0.0, z), SEGS, 2.5, FLOOR_Y, [(4, *door)]), YAW) + SHIFT for x, z in PATH]
-
-    def cloud(self):
-        return self.pts
+        self.hits = [rotate_yaw(cast_rays_3d((x, 0.0, z), SEGS, 2.8, FLOOR_Y, [(6, *DOOR)], ceilings=CEILS, seg_heights=HEIGHTS), YAW) + SHIFT for x, z in PATH]
 
     def camera_positions(self):
         return self.cams
 
     def frames(self):
-        for h, c in zip(self.hits, self.cams):
-            yield h, c
+        yield from zip(self.hits, self.cams)
 
 
 @pytest.fixture(scope="module")
 def plan():
-    return build_plan(SyntheticSource(), CFG)[0]
+    return build_plan(SyntheticSource(), CFG, drift=False)[0]
 
 
 def test_rooms_areas_walls_and_ceilings_match_the_truth(plan):

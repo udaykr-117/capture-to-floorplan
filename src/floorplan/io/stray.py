@@ -90,6 +90,11 @@ class StraySource:
     def __init__(self, capture_dir: str | Path, cfg: dict):
         self.cfg = cfg
         self.cap = open_capture(capture_dir, cfg)
+        self.jumps: list[dict] = []
+        if cfg["drift"]["enabled"] and cfg["drift"]["jump_correction"]:
+            from floorplan.drift.jumps import distribute_jumps
+
+            self.cap.odo, self.jumps = distribute_jumps(self.cap.odo, cfg)
         d = Path(capture_dir).resolve()
         self.name = f"{d.parent.name}/{d.name}"
 

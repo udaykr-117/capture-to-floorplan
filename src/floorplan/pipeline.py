@@ -1,15 +1,19 @@
-"""Capture -> Plan. One pass to build the cloud and alignment, one pass over the frames for fans and see-through rays."""
+"""Capture -> Plan. One pass builds chunk clouds (then alignment and drift correction), a second pass feeds fans and see-through rays."""
 import hashlib
 import json
 import time
 from typing import Iterator, Protocol
 
 import numpy as np
+import open3d as o3d
 from shapely import contains_xy
 from shapely.ops import unary_union
 
 from floorplan import intervals, schema
-from floorplan.geometry.align import align
+from floorplan.drift.chunks import analyze_chunk, build_chunks
+from floorplan.drift.correct import Correction
+from floorplan.drift.correct import estimate as estimate_drift
+from floorplan.geometry.align import Aligned, analysis_cloud, check_residual, estimate_frame
 from floorplan.geometry.walls import find_wall_planes
 from floorplan.rooms.ceiling import measure_ceiling
 from floorplan.rooms.freespace import carve_one, free_space, make_grid, segment_rooms
@@ -20,7 +24,6 @@ from floorplan.rooms.polygon import clean_labels, room_polygons
 class Source(Protocol):
     name: str
 
-    def cloud(self) -> np.ndarray: ...
     def camera_positions(self) -> np.ndarray: ...
     def frames(self) -> Iterator[tuple[np.ndarray, np.ndarray]]: ...
 
@@ -34,31 +37,48 @@ def _ceiling_measurement(c, cfg: dict) -> schema.Measurement:
                                                        method=f"{cfg['ceiling']['interval_sigma']:g} sigma of local floor and ceiling spread (provisional)"))
 
 
-def build_plan(src: Source, cfg: dict, tier: str = "lidar") -> tuple[schema.Plan, dict]:
+def build_plan(src: Source, cfg: dict, tier: str = "lidar", drift: bool | None = None, chunks: list | None = None) -> tuple[schema.Plan, dict]:
+    """`drift` overrides `cfg["drift"]["enabled"]` for the plane-anchored chunk correction (the source decides about odometry jumps).
+    `chunks` lets a caller reuse chunk clouds built earlier from the same source (an experiment shortcut)."""
+    use_drift = cfg["drift"]["enabled"] if drift is None else drift
     t: dict[str, float] = {}
     t0 = time.time()
-    pts = src.cloud()
+    chunks = chunks if chunks is not None else build_chunks(src.frames(), cfg)
     cam = src.camera_positions()
-    t["cloud"] = time.time() - t0
+    pts_w = np.concatenate([c.pts for c in chunks])
+    t["chunks"] = time.time() - t0
 
     t0 = time.time()
-    al, Pa, Na = align(pts, cam, cfg)
-    fr = al.frame
+    fr, floor, ev, _, _ = estimate_frame(pts_w, cam, cfg)
+    if use_drift:
+        corr = estimate_drift([analyze_chunk(c, fr, cfg) for c in chunks], cfg)
+    else:
+        corr = Correction.identity(len(chunks))
+    pts_a = np.concatenate([corr.apply(c.idx, fr.to_aligned(c.pts)) for c in chunks])
+    pts_a = np.asarray(o3d.geometry.PointCloud(o3d.utility.Vector3dVector(pts_a)).voxel_down_sample(cfg["stray"]["voxel_m"]).points)
+    Pa, Na = analysis_cloud(pts_a, cfg)
+    ev = check_residual(Pa, Na, ev, cfg)
+    al = Aligned(fr, floor, ev)
+    cams_a = np.concatenate([corr.apply(c.idx, fr.to_aligned(c.cams)) for c in chunks])
+    t["align_and_drift"] = time.time() - t0
+
+    t0 = time.time()
     planes = find_wall_planes(Pa, Na, cfg)
-    images = wall_images(plane_spans(planes, cfg), fr.to_aligned(pts), cfg)
+    images = wall_images(plane_spans(planes, cfg), pts_a, cfg)
     grid = make_grid(Pa, cfg["rooms"]["cell_m"])
-    t["align_and_walls"] = time.time() - t0
+    t["walls"] = time.time() - t0
 
     t0 = time.time()
     fans = np.zeros((grid.nz, grid.nx), np.int16)
-    for P, c in src.frames():
-        Pf, cf = fr.to_aligned(P), fr.to_aligned(np.asarray(c)[None])[0]
+    k_chunk = cfg["drift"]["chunk_frames"]
+    for k, (P, c) in enumerate(src.frames()):
+        ci = min(k // k_chunk, len(chunks) - 1)
+        Pf, cf = corr.apply(ci, fr.to_aligned(P)), corr.apply(ci, fr.to_aligned(np.asarray(c)[None]))[0]
         carve_one(fans, Pf, cf, grid, cfg)
         through_one(images, Pf, cf, cfg)
     t["frame_pass"] = time.time() - t0
 
     t0 = time.time()
-    cams_a = fr.to_aligned(cam)
     layers = free_space(Pa, Na, cams_a, planes, fans, grid, cfg)
     labels = clean_labels(segment_rooms(layers["free"], grid, cfg), grid, cfg)
     polys = room_polygons(labels, planes, grid, cfg)
@@ -122,15 +142,33 @@ def build_plan(src: Source, cfg: dict, tier: str = "lidar") -> tuple[schema.Plan
     measured = [r for r in rooms if r.ceiling_height.status != "unmeasurable"]
     limits = [
         "No ground truth: accuracy of every value is untested; intervals are provisional and uncalibrated.",
-        "Poses are used as-is (no drift correction yet); floor and wall positions can drift by several cm across a capture.",
         "Damage regions, concealed-damage flags and scope items are not implemented.",
         "Spaces joined by an opening wider than 1.2 m are merged into one room; rooms are assumed rectilinear.",
         "Openings use see-through evidence: mirrors and glass can create phantom openings, windows to the outside are not detected.",
     ]
     if not measured:
         limits.append("No ceiling was captured in any room: all ceiling heights are unmeasurable.")
+    jumps = list(getattr(src, "jumps", []))
+    mode = "none"
+    report: dict = {}
+    if use_drift:
+        d = cfg["drift"]
+        parts = [name for name, on in (("chunk heading", d["use_yaw"]), ("floor level", d["use_floor"]), ("wall-matching shifts", d["use_shift"]),
+                                       ("odometry jump distribution", bool(jumps))) if on]
+        mode = " + ".join(parts) or "none"
+        dg = corr.diag
+        report = dict(components=parts, chunks=len(chunks), chunk_frames=d["chunk_frames"], associations=dg["n_assoc"], residual_rms_cm_before=round(dg["rms_before_cm"], 2),
+                      residual_rms_cm_after=round(dg["rms_after_cm"], 2), holdout_rms_cm_before=round(dg["holdout_before_cm"], 2) if "holdout_before_cm" in dg else None,
+                      holdout_rms_cm_after=round(dg["holdout_after_cm"], 2) if "holdout_after_cm" in dg else None, max_rotation_deg=round(float(np.max(np.abs(dg["theta_deg"]))), 2),
+                      max_shift_cm=round(float(np.max(np.linalg.norm(np.array(dg["shift_cm"]), axis=1))), 1) if d["use_shift"] else 0.0,
+                      floor_level_range_cm=[round(float(np.min(dg["dy_cm"])), 1), round(float(np.max(dg["dy_cm"])), 1)] if d["use_floor"] else [0.0, 0.0],
+                      odometry_jumps=[dict(frames=j["frames"], jump_cm=round(j["jump_m"] * 100, 1), spread_over_frames=j["spread_over_frames"]) for j in jumps])
+        limits.append(f"Drift: corrected per chunk of {d['chunk_frames']} sampled frames by: {', '.join(parts) or 'nothing'}. Assumes rectilinear walls and a flat floor; "
+                      "drift without wall evidence is not corrected" + ("" if d["use_shift"] else "; wall-matching shifts are not applied (they did not improve agreement in the M4 ablation)") + ".")
+    else:
+        limits.append("Drift is NOT corrected (poses used as-is): floor and wall positions can drift by several cm to tens of cm across a capture.")
     plan = schema.Plan(
-        capture=src.name, tier=tier, frame=schema.FrameInfo(yaw_deg=round(fr.yaw_deg, 3), floor_world_y=round(fr.floor_y, 4)),
+        capture=src.name, tier=tier, frame=schema.FrameInfo(yaw_deg=round(fr.yaw_deg, 3), floor_world_y=round(fr.floor_y, 4), drift_correction=mode, drift_report=report),
         rooms=rooms, openings=out_ops, stitched=stitched, timing_s={k: round(v, 2) for k, v in t.items()}, limitations=limits,
         config_sha256=hashlib.sha256(json.dumps(cfg, sort_keys=True).encode()).hexdigest()[:16])
-    return plan, dict(Pa=Pa, Na=Na, planes=planes, polys=polys, labels=labels, grid=grid, layers=layers, ceilings=ceilings, al=al)
+    return plan, dict(Pa=Pa, Na=Na, corr=corr, chunks=chunks, planes=planes, polys=polys, labels=labels, grid=grid, layers=layers, ceilings=ceilings, al=al)

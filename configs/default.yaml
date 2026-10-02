@@ -113,6 +113,29 @@ register:
   gate_rel: 0.005              # ... or 0.5% of the wall length
   room_inside_fraction: 0.7    # a room's ceiling is taken from another capture only if >= 70% of the room lies inside one room of that capture
 
+drift:
+  enabled: true                # plane-anchored per-chunk correction (M4); false = poses used as-is
+  chunk_frames: 40             # sampled frames per chunk (~9 s at stride 5): enough walls per chunk for a direction, short enough to follow drift
+  min_vertical_points: 400     # a chunk needs this many vertical-surface analysis points to trust its wall direction
+  min_resultant: 0.6           # ... and a 4-theta resultant length of at least 0.6 (walls agree on one direction)
+  floor_min_points: 200        # a chunk needs this many floor points to trust its floor height
+  yaw_median_chunks: 5         # median filter over 5 chunks: drift is slow, single-chunk jumps of ~2 deg (with_ceiling chunk 8) are measurement noise
+  floor_median_chunks: 5       # same for floor height (one chunk of floor_only read +13 cm while its neighbours read 0..1 cm)
+  max_yaw_deg: 6.0             # never rotate a chunk by more than 6 deg (largest drift seen in the diagnosis is 3.5 deg)
+  max_floor_m: 0.15            # never shift a chunk's floor by more than 15 cm (largest seen is 8.5 cm)
+  assoc_tol_m: 0.35            # two views of a wall are associated if their offsets differ by < 35 cm (drift reaches ~60 cm over a capture, M4 diagnosis)
+  assoc_min_overlap_m: 0.5     # ... and overlap along the wall by >= 0.5 m, from the same side (so the two faces of a partition are not mixed up)
+  smooth_weight: 0.1           # weight of 'neighbouring chunks move together' relative to one wall association (weight 1)
+  prior_weight: 0.01           # weak pull of every shift to zero; only fixes the free global translation
+  huber_m: 0.05                # associations with a residual above 5 cm are down-weighted (wrong matches)
+  irls_iters: 4                # re-weighting rounds
+  jump_correction: true        # spread odometry relocalization jumps back along the path (needs drift.enabled)
+  use_yaw: true                # component switches for the M4 ablation: chunk heading correction ...
+  use_shift: false             # ... chunk wall-position shifts: OFF by default. In the M4 component ablation it worsened the path start-end gap on both captures with a loop (35->41 cm, 19->23 cm) and the cleanest capture pair (median width difference 1.6->5.3 cm); it helped only floor_only's widths (22->31% within the gate). Few pairs: low power, so kept as an option
+  use_floor: true              # ... and chunk floor levelling
+  jump_speed_mps: 5.0          # a step faster than 5 m/s is a tracker snap, not motion (walking 0.5 m/s; clean captures never exceed 1.5 m/s; floor_only has 17 m/s)
+  holdout_fraction: 0.2        # share of wall associations held out to check that the shifts generalise
+
 checks:
   ransac_distance_m: 0.02      # brief for the loader task: plane distance threshold 0.02 (2 cm = voxel size)
   ransac_iterations: 2000      # enough for the largest planes at ~10^6 points; not tuned

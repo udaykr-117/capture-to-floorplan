@@ -38,11 +38,14 @@ def _plane(u0, u1, v0, v1, fixed, axes, step):
     return pts
 
 
-def cast_rays_3d(cam_xyz, segments, height, floor_y=-1.4, openings=(), max_range=5.0, az_step=0.3, el_range=(-55, 35), el_step=0.6):
+def cast_rays_3d(cam_xyz, segments, height, floor_y=-1.4, openings=(), max_range=5.0, az_step=0.3, el_range=(-55, 35), el_step=0.6,
+                 ceiling=True, ceilings=None, seg_heights=None):
     """3D ray casting against vertical walls (segments), a floor and a ceiling; returns the hits (N, 3).
 
     `openings` is a list of (segment_index, a0, a1, h0, h1): along-segment distance from its start and height above the
     floor; a ray crossing a wall inside an opening continues. Rays that find nothing within `max_range` give no hit.
+    `ceiling=False` leaves the room without a ceiling (rays going up find nothing); `ceilings` is a list of (x0, x1, H) giving the
+    ceiling height by x; `seg_heights` gives one wall height per segment.
     """
     ox, oy, oz = cam_xyz
     az = np.radians(np.arange(0, 360, az_step))
@@ -54,7 +57,15 @@ def cast_rays_3d(cam_xyz, segments, height, floor_y=-1.4, openings=(), max_range
     y0 = oy - floor_y
     with np.errstate(divide="ignore", invalid="ignore"):
         tf = np.where(m < 0, -y0 / m, np.inf)
-        tc = np.where(m > 0, (height - y0) / m, np.inf)
+        tc = np.full(dx.shape, np.inf)
+        if ceiling:
+            if ceilings is None:
+                tc = np.where(m > 0, (height - y0) / m, np.inf)
+            else:
+                for xa, xb, H in ceilings:
+                    tch = np.where(m > 0, (H - y0) / m, np.inf)
+                    xh = ox + dx * tch
+                    tc = np.where((xh >= xa) & (xh < xb) & (tch < tc), tch, tc)
     best = np.minimum(best, np.minimum(tf, tc))
     for k, ((x0, z0), (x1, z1)) in enumerate(segments):
         ex, ez = x1 - x0, z1 - z0
@@ -63,7 +74,8 @@ def cast_rays_3d(cam_xyz, segments, height, floor_y=-1.4, openings=(), max_range
             t = ((x0 - ox) * ez - (z0 - oz) * ex) / den
             u = ((x0 - ox) * dz - (z0 - oz) * dx) / den
         y = y0 + m * t
-        ok = (np.abs(den) > 1e-12) & (t > 1e-6) & (u >= 0) & (u <= 1) & (y >= 0) & (y <= height)
+        hk = height if seg_heights is None else seg_heights[k]
+        ok = (np.abs(den) > 1e-12) & (t > 1e-6) & (u >= 0) & (u <= 1) & (y >= 0) & (y <= hk)
         L = float(np.hypot(ex, ez))
         for seg, a0, a1, h0, h1 in openings:
             if seg == k:
