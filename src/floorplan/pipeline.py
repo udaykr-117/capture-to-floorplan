@@ -19,6 +19,7 @@ from floorplan.rooms.ceiling import measure_ceiling
 from floorplan.rooms.freespace import carve_one, free_space, make_grid, segment_rooms
 from floorplan.rooms.openings import assign_rooms, detect_openings, plane_spans, through_one, wall_images
 from floorplan.rooms.polygon import clean_labels, room_polygons
+from floorplan.rooms.refine import refine_rooms
 
 
 class Source(Protocol):
@@ -85,6 +86,10 @@ def build_plan(src: Source, cfg: dict, tier: str = "lidar", drift: bool | None =
     layers = free_space(Pa, Na, cams_a, planes, fans, grid, cfg)
     labels = clean_labels(segment_rooms(layers["free"], grid, cfg), grid, cfg)
     polys = room_polygons(labels, planes, grid, cfg) if planes else []   # no wall plane found: nothing to build rooms from, do not invent any
+    planes_iv, refine_report = planes, []
+    if cfg["refine"]["enabled"] and polys:
+        polys, extra, refine_report = refine_rooms(polys, chunks, fr, corr, cfg)
+        planes_iv = planes + extra
     ops = detect_openings(images, cfg) if planes else []
     assign_rooms(ops, {rp.id: rp.polygon for rp in polys})
     t["rooms_and_openings"] = time.time() - t0
@@ -102,9 +107,9 @@ def build_plan(src: Source, cfg: dict, tier: str = "lidar", drift: bool | None =
         walls = []
         for k, e in enumerate(rp.edges):
             p0, p1 = ((e.offset, e.s0), (e.offset, e.s1)) if e.axis == 0 else ((e.s0, e.offset), (e.s1, e.offset))
-            walls.append(schema.Wall(id=f"{rid}.W{k}", p0=p0, p1=p1, length=intervals.wall_length(e, planes, cfg), source=e.source, support=round(e.support, 3)))
+            walls.append(schema.Wall(id=f"{rid}.W{k}", p0=p0, p1=p1, length=intervals.wall_length(e, planes_iv, cfg), source=e.source, support=round(e.support, 3)))
         rooms.append(schema.Room(id=rid, polygon=[(round(x, 4), round(z, 4)) for x, z in rp.polygon.exterior.coords[:-1]],
-                                 area=intervals.room_area(rp.area, rp.edges, observed, planes, cfg), ceiling_height=_ceiling_measurement(ceil, cfg),
+                                 area=intervals.room_area(rp.area, rp.edges, observed, planes_iv, cfg), ceiling_height=_ceiling_measurement(ceil, cfg),
                                  observed_fraction=round(observed, 3), floor_offset_m=round(ceil.floor_offset, 4), walls=walls, openings=[]))
     out_ops = []
     for k, o in enumerate(sorted(ops, key=lambda o: (o.axis, o.offset, o.s0))):
@@ -165,6 +170,10 @@ def build_plan(src: Source, cfg: dict, tier: str = "lidar", drift: bool | None =
                            cloud_extent_m=[round(float(x), 2) for x in np.ptp(Pa, axis=0)], note=sc.note)
         limits.append(f"{tier} tier: no depth sensor and no poses. SfM registered {info['n_registered']} of {info['n_input']} images ({100 * info['n_registered'] / max(info['n_input'], 1):.0f}%); "
                       f"only the registered part of the capture is reconstructed. Metric scale from monocular depth and camera height, relative uncertainty +-{100 * sc.rel_sigma:.0f}% (1 sigma).")
+    if cfg["refine"]["enabled"]:
+        n_ref = sum(1 for r in refine_report if r["refined"])
+        limits.append(f"Room-local refinement: wall positions of {n_ref} of {len(refine_report)} rooms re-measured from that room's longest single visit (drift between visits "
+                      "removed from room dimensions); rooms are refined independently, so a shared wall can differ by a few cm between its two rooms.")
     jumps = list(getattr(src, "jumps", []))
     mode = "none"
     report: dict = {}
@@ -185,7 +194,7 @@ def build_plan(src: Source, cfg: dict, tier: str = "lidar", drift: bool | None =
     else:
         limits.append("Drift is NOT corrected (poses used as-is): floor and wall positions can drift by several cm to tens of cm across a capture.")
     plan = schema.Plan(
-        capture=src.name, tier=tier, frame=schema.FrameInfo(yaw_deg=round(fr.yaw_deg, 3), floor_world_y=round(fr.floor_y, 4), drift_correction=mode, drift_report=report, tier_report=tier_report),
+        capture=src.name, tier=tier, frame=schema.FrameInfo(yaw_deg=round(fr.yaw_deg, 3), floor_world_y=round(fr.floor_y, 4), drift_correction=mode, drift_report={**report, 'room_refinement': refine_report} if refine_report else report, tier_report=tier_report),
         rooms=rooms, openings=out_ops, stitched=stitched, timing_s={k: round(v, 2) for k, v in t.items()}, limitations=limits,
         config_sha256=hashlib.sha256(json.dumps(cfg, sort_keys=True).encode()).hexdigest()[:16])
     return plan, dict(Pa=Pa, Na=Na, corr=corr, chunks=chunks, planes=planes, polys=polys, labels=labels, grid=grid, layers=layers, ceilings=ceilings, al=al)

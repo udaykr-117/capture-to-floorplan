@@ -1,0 +1,684 @@
+{
+ "schema_version": "0.1",
+ "capture": "single_room/c00a170fe1",
+ "tier": "lidar",
+ "frame": {
+  "yaw_deg": 23.096,
+  "floor_world_y": -1.4791,
+  "drift_correction": "chunk heading + floor level",
+  "drift_report": {
+   "components": [
+    "chunk heading",
+    "floor level"
+   ],
+   "chunks": 9,
+   "chunk_frames": 40,
+   "associations": 5,
+   "residual_rms_cm_before": 3.03,
+   "residual_rms_cm_after": 0.13,
+   "holdout_rms_cm_before": null,
+   "holdout_rms_cm_after": null,
+   "max_rotation_deg": 0.45,
+   "max_shift_cm": 0.0,
+   "floor_level_range_cm": [
+    -0.6,
+    2.9
+   ],
+   "odometry_jumps": [],
+   "room_refinement": [
+    {
+     "room": "R1",
+     "refined": 6,
+     "visit_chunks": 4,
+     "visit": [
+      0,
+      3
+     ],
+     "median_move_cm": 0.7,
+     "max_move_cm": 14.2
+    },
+    {
+     "room": "R2",
+     "refined": 0,
+     "reason": "longest visit 1 chunk(s) < 2"
+    },
+    {
+     "room": "R3",
+     "refined": 3,
+     "visit_chunks": 3,
+     "visit": [
+      4,
+      6
+     ],
+     "median_move_cm": 2.5,
+     "max_move_cm": 14.0
+    }
+   ]
+  },
+  "tier_report": {}
+ },
+ "rooms": [
+  {
+   "id": "R1",
+   "polygon": [
+    [
+     -1.047,
+     3.5774
+    ],
+    [
+     -0.0387,
+     3.5774
+    ],
+    [
+     -0.0387,
+     1.9
+    ],
+    [
+     2.3752,
+     1.9
+    ],
+    [
+     2.3752,
+     -1.1378
+    ],
+    [
+     -1.047,
+     -1.1378
+    ]
+   ],
+   "area": {
+    "value": 12.087,
+    "unit": "m2",
+    "interval": {
+     "low": 10.842,
+     "high": 13.332,
+     "method": "edge-plane spread + 3.5 cm systematic (cross-capture, M3) + unobserved share",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "ceiling_height": {
+    "value": null,
+    "unit": "m",
+    "interval": {
+     "low": null,
+     "high": null,
+     "method": "none: ceiling not captured",
+     "calibrated": false
+    },
+    "status": "unmeasurable",
+    "note": "only 0 horizontal points between 1.8 and 4.5 m above the floor",
+    "source": null
+   },
+   "observed_fraction": 0.813,
+   "floor_offset_m": 0.0017,
+   "walls": [
+    {
+     "id": "R1.W0",
+     "p0": [
+      -1.0469691895663722,
+      3.577378086121461
+     ],
+     "p1": [
+      -0.03866437315915816,
+      3.577378086121461
+     ],
+     "length": {
+      "value": 1.0083,
+      "unit": "m",
+      "interval": {
+       "low": 0.8761,
+       "high": 1.1405,
+       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.161
+    },
+    {
+     "id": "R1.W1",
+     "p0": [
+      -0.03866437315915816,
+      1.8999916000657917
+     ],
+     "p1": [
+      -0.03866437315915816,
+      3.577378086121461
+     ],
+     "length": {
+      "value": 1.6774,
+      "unit": "m",
+      "interval": {
+       "low": 1.5343,
+       "high": 1.8204,
+       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.0
+    },
+    {
+     "id": "R1.W2",
+     "p0": [
+      -0.03866437315915816,
+      1.8999916000657917
+     ],
+     "p1": [
+      2.3751536906116026,
+      1.8999916000657917
+     ],
+     "length": {
+      "value": 2.4138,
+      "unit": "m",
+      "interval": {
+       "low": 2.312,
+       "high": 2.5156,
+       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.919
+    },
+    {
+     "id": "R1.W3",
+     "p0": [
+      2.3751536906116026,
+      -1.1378410329033626
+     ],
+     "p1": [
+      2.3751536906116026,
+      1.8999916000657917
+     ],
+     "length": {
+      "value": 3.0378,
+      "unit": "m",
+      "interval": {
+       "low": 2.9366,
+       "high": 3.1391,
+       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.952
+    },
+    {
+     "id": "R1.W4",
+     "p0": [
+      -1.0469691895663722,
+      -1.1378410329033626
+     ],
+     "p1": [
+      2.3751536906116026,
+      -1.1378410329033626
+     ],
+     "length": {
+      "value": 3.4221,
+      "unit": "m",
+      "interval": {
+       "low": 3.3201,
+       "high": 3.5241,
+       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.948
+    },
+    {
+     "id": "R1.W5",
+     "p0": [
+      -1.0469691895663722,
+      -1.1378410329033626
+     ],
+     "p1": [
+      -1.0469691895663722,
+      3.577378086121461
+     ],
+     "length": {
+      "value": 4.7152,
+      "unit": "m",
+      "interval": {
+       "low": 4.6049,
+       "high": 4.8255,
+       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.564
+    }
+   ],
+   "openings": [
+    "O0"
+   ]
+  },
+  {
+   "id": "R2",
+   "polygon": [
+    [
+     -1.0533,
+     1.8921
+    ],
+    [
+     -5.4901,
+     1.8921
+    ],
+    [
+     -5.4901,
+     3.657
+    ],
+    [
+     -1.0533,
+     3.657
+    ]
+   ],
+   "area": {
+    "value": 7.83,
+    "unit": "m2",
+    "interval": {
+     "low": 6.748,
+     "high": 8.913,
+     "method": "edge-plane spread + 3.5 cm systematic (cross-capture, M3) + unobserved share",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "ceiling_height": {
+    "value": null,
+    "unit": "m",
+    "interval": {
+     "low": null,
+     "high": null,
+     "method": "none: ceiling not captured",
+     "calibrated": false
+    },
+    "status": "unmeasurable",
+    "note": "only 0 horizontal points between 1.8 and 4.5 m above the floor",
+    "source": null
+   },
+   "observed_fraction": 0.756,
+   "floor_offset_m": -0.0015,
+   "walls": [
+    {
+     "id": "R2.W0",
+     "p0": [
+      -5.490144480770499,
+      1.892117503576633
+     ],
+     "p1": [
+      -1.05333311909616,
+      1.892117503576633
+     ],
+     "length": {
+      "value": 4.4368,
+      "unit": "m",
+      "interval": {
+       "low": 4.2862,
+       "high": 4.5874,
+       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.0
+    },
+    {
+     "id": "R2.W1",
+     "p0": [
+      -5.490144480770499,
+      1.892117503576633
+     ],
+     "p1": [
+      -5.490144480770499,
+      3.6569849381545985
+     ],
+     "length": {
+      "value": 1.7649,
+      "unit": "m",
+      "interval": {
+       "low": 1.6522,
+       "high": 1.8776,
+       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.609
+    },
+    {
+     "id": "R2.W2",
+     "p0": [
+      -5.490144480770499,
+      3.6569849381545985
+     ],
+     "p1": [
+      -1.05333311909616,
+      3.6569849381545985
+     ],
+     "length": {
+      "value": 4.4368,
+      "unit": "m",
+      "interval": {
+       "low": 4.3153,
+       "high": 4.5583,
+       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.543
+    },
+    {
+     "id": "R2.W3",
+     "p0": [
+      -1.05333311909616,
+      1.892117503576633
+     ],
+     "p1": [
+      -1.05333311909616,
+      3.6569849381545985
+     ],
+     "length": {
+      "value": 1.7649,
+      "unit": "m",
+      "interval": {
+       "low": 1.659,
+       "high": 1.8707,
+       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.942
+    }
+   ],
+   "openings": [
+    "O0"
+   ]
+  },
+  {
+   "id": "R3",
+   "polygon": [
+    [
+     2.3995,
+     2.5156
+    ],
+    [
+     -0.1743,
+     2.5156
+    ],
+    [
+     -0.1743,
+     4.8829
+    ],
+    [
+     2.3995,
+     4.8829
+    ]
+   ],
+   "area": {
+    "value": 6.093,
+    "unit": "m2",
+    "interval": {
+     "low": 5.368,
+     "high": 6.818,
+     "method": "edge-plane spread + 3.5 cm systematic (cross-capture, M3) + unobserved share",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "ceiling_height": {
+    "value": null,
+    "unit": "m",
+    "interval": {
+     "low": null,
+     "high": null,
+     "method": "none: ceiling not captured",
+     "calibrated": false
+    },
+    "status": "unmeasurable",
+    "note": "only 0 horizontal points between 1.8 and 4.5 m above the floor",
+    "source": null
+   },
+   "observed_fraction": 0.826,
+   "floor_offset_m": -0.0023,
+   "walls": [
+    {
+     "id": "R3.W0",
+     "p0": [
+      -0.17430150603565658,
+      2.5155544190009467
+     ],
+     "p1": [
+      2.39950185070112,
+      2.5155544190009467
+     ],
+     "length": {
+      "value": 2.5738,
+      "unit": "m",
+      "interval": {
+       "low": 2.4308,
+       "high": 2.7168,
+       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "virtual",
+     "support": 0.0
+    },
+    {
+     "id": "R3.W1",
+     "p0": [
+      -0.17430150603565658,
+      2.5155544190009467
+     ],
+     "p1": [
+      -0.17430150603565658,
+      4.882882883765168
+     ],
+     "length": {
+      "value": 2.3673,
+      "unit": "m",
+      "interval": {
+       "low": 2.193,
+       "high": 2.5416,
+       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.514
+    },
+    {
+     "id": "R3.W2",
+     "p0": [
+      -0.17430150603565658,
+      4.882882883765168
+     ],
+     "p1": [
+      2.39950185070112,
+      4.882882883765168
+     ],
+     "length": {
+      "value": 2.5738,
+      "unit": "m",
+      "interval": {
+       "low": 2.4716,
+       "high": 2.676,
+       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 0.998
+    },
+    {
+     "id": "R3.W3",
+     "p0": [
+      2.39950185070112,
+      2.5155544190009467
+     ],
+     "p1": [
+      2.39950185070112,
+      4.882882883765168
+     ],
+     "length": {
+      "value": 2.3673,
+      "unit": "m",
+      "interval": {
+       "low": 2.1999,
+       "high": 2.5347,
+       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "calibrated": false
+      },
+      "status": "measured",
+      "note": null,
+      "source": null
+     },
+     "source": "plane",
+     "support": 1.0
+    }
+   ],
+   "openings": []
+  }
+ ],
+ "openings": [
+  {
+   "id": "O0",
+   "kind": "door",
+   "p0": [
+    -1.05333311909616,
+    2.68398131636261
+   ],
+   "p1": [
+    -1.05333311909616,
+    3.4639813163626103
+   ],
+   "width": {
+    "value": 0.76,
+    "unit": "m",
+    "interval": {
+     "low": 0.74,
+     "high": 0.78,
+     "method": "bracket: see-through extent to wall-to-wall (provisional)",
+     "calibrated": false
+    },
+    "status": "measured",
+    "note": null,
+    "source": null
+   },
+   "bottom_m": 0.14,
+   "top_m": 1.4,
+   "rooms": [
+    "R2",
+    "R1"
+   ]
+  }
+ ],
+ "stitched": {
+  "footprint_area": {
+   "value": 25.867,
+   "unit": "m2",
+   "interval": {
+    "low": 24.064,
+    "high": 27.669,
+    "method": "root-sum-square of room area half-widths (provisional)",
+    "calibrated": false
+   },
+   "status": "measured",
+   "note": null,
+   "source": null
+  },
+  "n_rooms": 3,
+  "max_room_overlap_m2": 0.144,
+  "adjacency": [
+   {
+    "a": "R2",
+    "b": "R1",
+    "via": "opening",
+    "opening_id": "O0"
+   },
+   {
+    "a": "R1",
+    "b": "R3",
+    "via": "shared_wall",
+    "opening_id": null
+   }
+  ]
+ },
+ "damage": {
+  "status": "not_run",
+  "note": "damage detection was not run",
+  "regions": [],
+  "concealed_damage_flags": [],
+  "scope_items": [],
+  "report": {}
+ },
+ "timing_s": {
+  "chunks": 8.79,
+  "align_and_drift": 3.03,
+  "walls": 0.23,
+  "frame_pass": 11.42,
+  "rooms_and_openings": 0.5,
+  "assemble": 0.08
+ },
+ "limitations": [
+  "No ground truth: accuracy of every value is untested; intervals are provisional and uncalibrated.",
+  "Damage detection has not been run on this plan (separate pass: `plan run` does it with the models group installed).",
+  "Spaces joined by an opening wider than 1.2 m are merged into one room; rooms are assumed rectilinear.",
+  "Openings use see-through evidence: mirrors and glass can create phantom openings, windows to the outside are not detected.",
+  "No ceiling was captured in any room: all ceiling heights are unmeasurable.",
+  "Room-local refinement: wall positions of 2 of 3 rooms re-measured from that room's longest single visit (drift between visits removed from room dimensions); rooms are refined independently, so a shared wall can differ by a few cm between its two rooms.",
+  "Drift: corrected per chunk of 40 sampled frames by: chunk heading, floor level. Assumes rectilinear walls and a flat floor; drift without wall evidence is not corrected; wall-matching shifts are not applied (they did not improve agreement in the M4 ablation)."
+ ],
+ "config_sha256": "59bf1a9e34271286"
+}

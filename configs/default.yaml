@@ -176,6 +176,14 @@ checks:
   wall_slab_above_floor_m: [0.3, 1.6]    # slab used to look at walls: above floor clutter, below ceiling
   wall_normal_vertical_max: 0.2          # |n.up| below this counts as a vertical surface
 
+refine:                        # M7 fix: room-local wall refinement (src/floorplan/rooms/refine.py). false = M6 behaviour (the "before" of the fix loop)
+  enabled: true                # on after the M7 benchmark: 7 of 9 paired room dimensions agree better across captures, 2 worse (docs/fix_declaration.md)
+  chunk_inside_min: 0.5        # a chunk belongs to a room visit if >= half of its camera positions are inside the room polygon
+  min_visit_chunks: 2          # a visit of one chunk (~9 s) is too short to see opposite walls; keep the global planes then
+  window_m: 0.15               # search +-15 cm around the global plane: same as register.plane_match_tol_m; per-chunk wall positions range ~14 cm (M7 H1)
+  end_margin_m: 0.2            # ignore 20 cm at each wall end (corners mix the perpendicular wall)
+  min_points: 40               # same as the M7 diagnosis: ~0.016 m2 of 2 cm voxels
+
 damage:
   model: google/owlvit-base-patch32   # chosen in M1 for CPU (0.5-1 s per frame); zero-shot, no damage-specific training, so accuracy is untested
   keyframe_every: 25           # frames (multiple of stray.frame_stride): about one keyframe per 6 s of walking, ~200 per large capture, bounded CPU time
