@@ -89,6 +89,7 @@ intervals:
   # PROVISIONAL and NOT calibrated: there is no ground truth. They are made conservative and are meant to be
   # replaced by quantiles of real errors (cross-capture disagreement in M3, benchmark in M7).
   sigma_k: 2.0                 # half-width = 2 x the robust spread of the wall points around the fitted plane (~95% if the spread were Gaussian noise)
+  plane_position_sigma_m: 0.035  # systematic wall-plane position error added in quadrature to the fit spread. From M3: 42 facing-wall widths over the 3 capture pairs differ by a robust sigma of 7.1 cm = 2 x sqrt(2) x 3.5 cm (clean pair alone: 2.1 cm). A LOWER bound on error (two captures can share a bias) and fitted on these same samples; recalibrate against ground truth in M7
   virtual_end_halfwidth_m: 0.15  # a wall end with no fitted plane sits on the mask edge, good to ~15 cm
   unsupported_halfwidth_m: 0.10  # extra half-width per unit of (1 - wall support): a mostly unseen wall is a guess
   min_halfwidth_m: 0.01        # never report a half-width under 1 cm
@@ -96,6 +97,21 @@ intervals:
   min_area_rel: 0.01           # area half-width is at least 1% of the area
   adjacency_wall_m: 0.35       # rooms whose boundaries run within 35 cm (a wall thickness) for >= 0.5 m are adjacent
   adjacency_min_shared_m: 0.5
+
+register:
+  raster_cell_m: 0.05          # 5 cm cells for the coarse correlation that picks the 90-degree rotation and the shift
+  icp_thresholds_m: [0.30, 0.15, 0.08, 0.05]  # trimmed ICP: pairs farther than this are ignored; shrinks from the correlation error (~10 cm) to the 5 cm fitness distance
+  icp_max_iter: 40             # per threshold; stops earlier when the update is below 0.1 mm / 0.001 deg
+  icp_max_points: 150000       # random subset of the moving wall points, for speed
+  min_fitness_5cm: 0.5         # a registration is accepted if >= 50% of wall points land within 5 cm of the other capture; below that it is reported as failed
+  plane_match_tol_m: 0.15      # wall segments match if their offsets differ by < 15 cm after registration (drift doubles walls by 10-30 cm, M1 overlay)
+  plane_min_overlap_m: 0.5     # ... and overlap along the wall by >= 0.5 m
+  baseline_min_m: 0.8          # width pairs: distance between two facing planes, at least a narrow room
+  baseline_max_m: 10.0         # ... and at most a house length
+  baseline_bins_m: [0.8, 2.0, 4.0, 6.0, 10.0]  # error is reported per baseline bin because drift grows with distance
+  gate_abs_m: 0.01             # repeatability gate from the brief: within 1 cm ...
+  gate_rel: 0.005              # ... or 0.5% of the wall length
+  room_inside_fraction: 0.7    # a room's ceiling is taken from another capture only if >= 70% of the room lies inside one room of that capture
 
 checks:
   ransac_distance_m: 0.02      # brief for the loader task: plane distance threshold 0.02 (2 cm = voxel size)

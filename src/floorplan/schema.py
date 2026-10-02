@@ -20,6 +20,7 @@ class Measurement(BaseModel):
     interval: Interval
     status: Literal["measured", "ambiguous", "unmeasurable"] = "measured"
     note: str | None = None
+    source: str | None = Field(default=None, description="set when the value comes from another capture instead of this one")
 
 
 class Wall(BaseModel):

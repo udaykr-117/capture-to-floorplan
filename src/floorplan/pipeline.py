@@ -133,4 +133,4 @@ def build_plan(src: Source, cfg: dict, tier: str = "lidar") -> tuple[schema.Plan
         capture=src.name, tier=tier, frame=schema.FrameInfo(yaw_deg=round(fr.yaw_deg, 3), floor_world_y=round(fr.floor_y, 4)),
         rooms=rooms, openings=out_ops, stitched=stitched, timing_s={k: round(v, 2) for k, v in t.items()}, limitations=limits,
         config_sha256=hashlib.sha256(json.dumps(cfg, sort_keys=True).encode()).hexdigest()[:16])
-    return plan, dict(Pa=Pa, planes=planes, polys=polys, labels=labels, grid=grid, layers=layers, ceilings=ceilings, al=al)
+    return plan, dict(Pa=Pa, Na=Na, planes=planes, polys=polys, labels=labels, grid=grid, layers=layers, ceilings=ceilings, al=al)
