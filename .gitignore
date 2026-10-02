@@ -30,3 +30,7 @@ models/
 
 
 *.md
+# deliverable documents are committed; working notes (PLAN, JOURNAL, CLAUDE) stay local
+!README.md
+!DISCLOSURE.md
+!docs/*.md
