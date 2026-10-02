@@ -71,8 +71,8 @@ def pose(row: pd.Series) -> tuple[np.ndarray, np.ndarray]:
     return R, np.array([row.x, row.y, row.z])
 
 
-def iter_frames(cap: Capture, cfg: dict, stride: int | None = None) -> Iterator[tuple[int, np.ndarray]]:
-    """Yield (frame index, world points) for every `stride`-th frame."""
+def iter_frames(cap: Capture, cfg: dict, stride: int | None = None) -> Iterator[tuple[int, np.ndarray, np.ndarray]]:
+    """Yield (frame index, world points, camera position in world) for every `stride`-th frame."""
     s = cfg["stray"]
     stride = stride or s["frame_stride"]
     for i in range(0, len(cap.odo), stride):
@@ -81,7 +81,27 @@ def iter_frames(cap: Capture, cfg: dict, stride: int | None = None) -> Iterator[
         conf = cv2.imread(str(cap.dir / "confidence" / name), -1)
         p_cam = backproject(depth, conf, cap.K_depth, s["confidence_min"], s["depth_min_m"], s["depth_max_m"])
         R, t = pose(cap.odo.iloc[i])
-        yield i, p_cam @ R.T + t
+        yield i, p_cam @ R.T + t, t
+
+
+class StraySource:
+    """What the pipeline needs from a capture: a world cloud, camera positions, and a pass over per-frame hits."""
+
+    def __init__(self, capture_dir: str | Path, cfg: dict):
+        self.cfg = cfg
+        self.cap = open_capture(capture_dir, cfg)
+        d = Path(capture_dir).resolve()
+        self.name = f"{d.parent.name}/{d.name}"
+
+    def cloud(self) -> np.ndarray:
+        return cloud(self.cap, self.cfg)
+
+    def camera_positions(self) -> np.ndarray:
+        return self.cap.odo[["x", "y", "z"]].values
+
+    def frames(self) -> Iterator[tuple[np.ndarray, np.ndarray]]:
+        for _, pts, origin in iter_frames(self.cap, self.cfg):
+            yield pts, origin
 
 
 def cloud(cap: Capture, cfg: dict, stride: int | None = None, voxel: float | None = None) -> np.ndarray:
@@ -98,7 +118,7 @@ def cloud(cap: Capture, cfg: dict, stride: int | None = None, voxel: float | Non
             acc = (acc + p).voxel_down_sample(voxel)
             batch = []
 
-    for _, pts in iter_frames(cap, cfg, stride):
+    for _, pts, _ in iter_frames(cap, cfg, stride):
         batch.append(pts.astype(np.float64))
         if len(batch) >= s["flush_every_frames"]:
             flush()
