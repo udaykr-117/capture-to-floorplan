@@ -91,6 +91,8 @@ intervals:
   scale_rel_sigma: 0.0         # relative uncertainty of the metric scale: 0 for LiDAR; the image tiers set it from their scale estimate (scale.py)
   sigma_k: 2.0                 # half-width = 2 x the robust spread of the wall points around the fitted plane (~95% if the spread were Gaussian noise)
   plane_position_sigma_m: 0.035  # systematic wall-plane position error added in quadrature to the fit spread. From M3: 42 facing-wall widths over the 3 capture pairs differ by a robust sigma of 7.1 cm = 2 x sqrt(2) x 3.5 cm (clean pair alone: 2.1 cm). A LOWER bound on error (two captures can share a bias) and fitted on these same samples; recalibrate against ground truth in M7
+  extent_halfwidth_m: 0.54     # room-extent term added to every wall-length half-width. Repeat captures cut rooms at different places: same wall differs by a median 25-30 cm (scripts/calibrate_intervals.py, out/calibrate_intervals.txt). Robust 2-sigma fit; covers 24/34 wall pairs in- and out-of-sample. The 95% conformal fit (3.43 m) is set by one wall that spans two rooms in another capture (a segmentation failure, reported as such), so it was not used
+  extent_area_rel: 0.255       # room-extent term for room areas, as a fraction of the area: conformal 95% fit over 10 room pairs (10/10 in-sample, 9/10 leave-one-pair-out). Fitted on the same 3 captures: re-fit against ground truth when it exists
   virtual_end_halfwidth_m: 0.15  # a wall end with no fitted plane sits on the mask edge, good to ~15 cm
   unsupported_halfwidth_m: 0.10  # extra half-width per unit of (1 - wall support): a mostly unseen wall is a guess
   min_halfwidth_m: 0.01        # never report a half-width under 1 cm

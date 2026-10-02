@@ -147,9 +147,9 @@
     "value": 10.979,
     "unit": "m2",
     "interval": {
-     "low": 9.966,
-     "high": 11.992,
-     "method": "edge-plane spread + 3.5 cm systematic (cross-capture, M3) + unobserved share",
+     "low": 8.002,
+     "high": 13.956,
+     "method": "edge-plane spread + 3.5 cm systematic + unobserved share + room-extent term fitted on repeat captures (conformal 95%)",
      "calibrated": false
     },
     "status": "measured",
@@ -186,9 +186,9 @@
       "value": 1.0171,
       "unit": "m",
       "interval": {
-       "low": 0.898,
-       "high": 1.1362,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 0.4642,
+       "high": 1.5701,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -212,9 +212,9 @@
       "value": 4.4295,
       "unit": "m",
       "interval": {
-       "low": 4.3267,
-       "high": 4.5323,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 3.8798,
+       "high": 4.9792,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -238,9 +238,9 @@
       "value": 1.0171,
       "unit": "m",
       "interval": {
-       "low": 0.9166,
-       "high": 1.1177,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 0.4678,
+       "high": 1.5664,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -264,9 +264,9 @@
       "value": 1.7314,
       "unit": "m",
       "interval": {
-       "low": 1.6293,
-       "high": 1.8335,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 1.1818,
+       "high": 2.2809,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -290,9 +290,9 @@
       "value": 2.2608,
       "unit": "m",
       "interval": {
-       "low": 2.1588,
-       "high": 2.3629,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 1.7113,
+       "high": 2.8104,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -316,9 +316,9 @@
       "value": 2.8634,
       "unit": "m",
       "interval": {
-       "low": 2.7592,
-       "high": 2.9676,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 2.3135,
+       "high": 3.4134,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -342,9 +342,9 @@
       "value": 2.2608,
       "unit": "m",
       "interval": {
-       "low": 2.1587,
-       "high": 2.3629,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 1.7113,
+       "high": 2.8104,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -368,9 +368,9 @@
       "value": 0.1653,
       "unit": "m",
       "interval": {
-       "low": 0.0215,
-       "high": 0.3091,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": -0.3935,
+       "high": 0.7241,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -412,9 +412,9 @@
     "value": 7.067,
     "unit": "m2",
     "interval": {
-     "low": 5.776,
-     "high": 8.358,
-     "method": "edge-plane spread + 3.5 cm systematic (cross-capture, M3) + unobserved share",
+     "low": 4.85,
+     "high": 9.284,
+     "method": "edge-plane spread + 3.5 cm systematic + unobserved share + room-extent term fitted on repeat captures (conformal 95%)",
      "calibrated": false
     },
     "status": "measured",
@@ -451,9 +451,9 @@
       "value": 2.9528,
       "unit": "m",
       "interval": {
-       "low": 2.8493,
-       "high": 3.0563,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 2.403,
+       "high": 3.5026,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -477,9 +477,9 @@
       "value": 2.3933,
       "unit": "m",
       "interval": {
-       "low": 2.2916,
-       "high": 2.4949,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 1.8438,
+       "high": 2.9428,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -503,9 +503,9 @@
       "value": 2.9528,
       "unit": "m",
       "interval": {
-       "low": 2.8416,
-       "high": 3.064,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 2.4015,
+       "high": 3.5041,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -529,9 +529,9 @@
       "value": 2.3933,
       "unit": "m",
       "interval": {
-       "low": 2.2917,
-       "high": 2.4949,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 1.8438,
+       "high": 2.9428,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -586,9 +586,9 @@
     "value": 16.353,
     "unit": "m2",
     "interval": {
-     "low": 14.981,
-     "high": 17.725,
-     "method": "edge-plane spread + 3.5 cm systematic (cross-capture, M3) + unobserved share",
+     "low": 11.963,
+     "high": 20.743,
+     "method": "edge-plane spread + 3.5 cm systematic + unobserved share + room-extent term fitted on repeat captures (conformal 95%)",
      "calibrated": false
     },
     "status": "measured",
@@ -625,9 +625,9 @@
       "value": 2.6703,
       "unit": "m",
       "interval": {
-       "low": 2.5656,
-       "high": 2.775,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 2.1203,
+       "high": 3.2204,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -651,9 +651,9 @@
       "value": 1.1826,
       "unit": "m",
       "interval": {
-       "low": 1.0719,
-       "high": 1.2934,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 0.6314,
+       "high": 1.7339,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -677,9 +677,9 @@
       "value": 2.4704,
       "unit": "m",
       "interval": {
-       "low": 2.3661,
-       "high": 2.5746,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 1.9204,
+       "high": 3.0203,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -703,9 +703,9 @@
       "value": 1.9145,
       "unit": "m",
       "interval": {
-       "low": 1.8058,
-       "high": 2.0232,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 1.3637,
+       "high": 2.4653,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -729,9 +729,9 @@
       "value": 0.5344,
       "unit": "m",
       "interval": {
-       "low": 0.43,
-       "high": 0.6388,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": -0.0156,
+       "high": 1.0844,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -755,9 +755,9 @@
       "value": 2.0991,
       "unit": "m",
       "interval": {
-       "low": 1.9981,
-       "high": 2.2002,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 1.5498,
+       "high": 2.6485,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -781,9 +781,9 @@
       "value": 4.6062,
       "unit": "m",
       "interval": {
-       "low": 4.5022,
-       "high": 4.7103,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 4.0563,
+       "high": 5.1562,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -807,9 +807,9 @@
       "value": 2.831,
       "unit": "m",
       "interval": {
-       "low": 2.7171,
-       "high": 2.945,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 2.2791,
+       "high": 3.3829,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -863,9 +863,9 @@
     "value": 13.512,
     "unit": "m2",
     "interval": {
-     "low": 11.864,
-     "high": 15.16,
-     "method": "edge-plane spread + 3.5 cm systematic (cross-capture, M3) + unobserved share",
+     "low": 9.693,
+     "high": 17.331,
+     "method": "edge-plane spread + 3.5 cm systematic + unobserved share + room-extent term fitted on repeat captures (conformal 95%)",
      "calibrated": false
     },
     "status": "measured",
@@ -902,9 +902,9 @@
       "value": 3.347,
       "unit": "m",
       "interval": {
-       "low": 3.2395,
-       "high": 3.4544,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 2.7964,
+       "high": 3.8975,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -928,9 +928,9 @@
       "value": 2.7927,
       "unit": "m",
       "interval": {
-       "low": 2.6927,
-       "high": 2.8926,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 2.2435,
+       "high": 3.3419,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -954,9 +954,9 @@
       "value": 0.5102,
       "unit": "m",
       "interval": {
-       "low": 0.3674,
-       "high": 0.6529,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": -0.0484,
+       "high": 1.0687,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -980,9 +980,9 @@
       "value": 1.0798,
       "unit": "m",
       "interval": {
-       "low": 0.9796,
-       "high": 1.1801,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 0.5306,
+       "high": 1.6291,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1006,9 +1006,9 @@
       "value": 3.8571,
       "unit": "m",
       "interval": {
-       "low": 3.7556,
-       "high": 3.9586,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 3.3077,
+       "high": 4.4066,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1032,9 +1032,9 @@
       "value": 3.8725,
       "unit": "m",
       "interval": {
-       "low": 3.7709,
-       "high": 3.9742,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 3.323,
+       "high": 4.422,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1097,9 +1097,9 @@
     "value": 16.448,
     "unit": "m2",
     "interval": {
-     "low": 14.313,
-     "high": 18.583,
-     "method": "edge-plane spread + 3.5 cm systematic (cross-capture, M3) + unobserved share",
+     "low": 11.742,
+     "high": 21.154,
+     "method": "edge-plane spread + 3.5 cm systematic + unobserved share + room-extent term fitted on repeat captures (conformal 95%)",
      "calibrated": false
     },
     "status": "measured",
@@ -1136,9 +1136,9 @@
       "value": 3.2574,
       "unit": "m",
       "interval": {
-       "low": 3.0585,
-       "high": 3.4562,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 2.6819,
+       "high": 3.8328,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1162,9 +1162,9 @@
       "value": 2.9778,
       "unit": "m",
       "interval": {
-       "low": 2.8344,
-       "high": 3.1211,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 2.4191,
+       "high": 3.5365,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1188,9 +1188,9 @@
       "value": 3.2574,
       "unit": "m",
       "interval": {
-       "low": 3.0585,
-       "high": 3.4562,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 2.6819,
+       "high": 3.8328,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1214,9 +1214,9 @@
       "value": -0.0153,
       "unit": "m",
       "interval": {
-       "low": -0.1576,
-       "high": 0.127,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": -0.5737,
+       "high": 0.5431,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1240,9 +1240,9 @@
       "value": 1.9978,
       "unit": "m",
       "interval": {
-       "low": 1.8877,
-       "high": 2.1078,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 1.4467,
+       "high": 2.5489,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1266,9 +1266,9 @@
       "value": 1.9097,
       "unit": "m",
       "interval": {
-       "low": 1.8085,
-       "high": 2.0109,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 1.3603,
+       "high": 2.4591,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1292,9 +1292,9 @@
       "value": 0.7565,
       "unit": "m",
       "interval": {
-       "low": 0.651,
-       "high": 0.8621,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 0.2063,
+       "high": 1.3067,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1318,9 +1318,9 @@
       "value": 1.0649,
       "unit": "m",
       "interval": {
-       "low": 0.9637,
-       "high": 1.1662,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 0.5155,
+       "high": 1.6143,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1344,9 +1344,9 @@
       "value": 2.7543,
       "unit": "m",
       "interval": {
-       "low": 2.6397,
-       "high": 2.8689,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 2.2023,
+       "high": 3.3063,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1370,9 +1370,9 @@
       "value": 0.0122,
       "unit": "m",
       "interval": {
-       "low": -0.1312,
-       "high": 0.1555,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": -0.5466,
+       "high": 0.5709,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1420,9 +1420,9 @@
     "value": 4.482,
     "unit": "m2",
     "interval": {
-     "low": 3.904,
-     "high": 5.061,
-     "method": "edge-plane spread + 3.5 cm systematic (cross-capture, M3) + unobserved share",
+     "low": 3.201,
+     "high": 5.764,
+     "method": "edge-plane spread + 3.5 cm systematic + unobserved share + room-extent term fitted on repeat captures (conformal 95%)",
      "calibrated": false
     },
     "status": "measured",
@@ -1459,9 +1459,9 @@
       "value": 1.9555,
       "unit": "m",
       "interval": {
-       "low": 1.8332,
-       "high": 2.0778,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 1.4018,
+       "high": 2.5092,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1485,9 +1485,9 @@
       "value": 0.0701,
       "unit": "m",
       "interval": {
-       "low": -0.0726,
-       "high": 0.2128,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": -0.4884,
+       "high": 0.6286,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1511,9 +1511,9 @@
       "value": 0.4279,
       "unit": "m",
       "interval": {
-       "low": 0.233,
-       "high": 0.6227,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": -0.1462,
+       "high": 1.002,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1537,9 +1537,9 @@
       "value": 1.8232,
       "unit": "m",
       "interval": {
-       "low": 1.675,
-       "high": 1.9715,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 1.2633,
+       "high": 2.3832,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1563,9 +1563,9 @@
       "value": 2.3834,
       "unit": "m",
       "interval": {
-       "low": 2.2173,
-       "high": 2.5494,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 1.8184,
+       "high": 2.9483,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1589,9 +1589,9 @@
       "value": 1.8933,
       "unit": "m",
       "interval": {
-       "low": 1.7731,
-       "high": 2.0135,
-       "method": "end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length",
+       "low": 1.3401,
+       "high": 2.4465,
+       "method": "end-plane spread + 3.5 cm systematic + virtual ends + unsupported length + room-extent term fitted on repeat captures (robust 2 sigma)",
        "calibrated": false
       },
       "status": "measured",
@@ -1893,8 +1893,8 @@
    "value": 68.731,
    "unit": "m2",
    "interval": {
-    "low": 65.24,
-    "high": 72.221,
+    "low": 60.279,
+    "high": 77.182,
     "method": "root-sum-square of room area half-widths (provisional)",
     "calibrated": false
    },
@@ -1982,12 +1982,12 @@
   "report": {}
  },
  "timing_s": {
-  "chunks": 26.98,
-  "align_and_drift": 14.45,
-  "walls": 2.09,
-  "frame_pass": 41.92,
-  "rooms_and_openings": 1.98,
-  "assemble": 0.44
+  "chunks": 25.19,
+  "align_and_drift": 13.77,
+  "walls": 2.04,
+  "frame_pass": 36.32,
+  "rooms_and_openings": 1.18,
+  "assemble": 0.42
  },
  "limitations": [
   "No ground truth: accuracy of every value is untested; intervals are provisional and uncalibrated.",
@@ -1998,5 +1998,5 @@
   "Room-local refinement: wall positions of 6 of 6 rooms re-measured from that room's longest single visit (drift between visits removed from room dimensions); rooms are refined independently, so a shared wall can differ by a few cm between its two rooms.",
   "Drift: corrected per chunk of 40 sampled frames by: chunk heading, floor level, odometry jump distribution. Assumes rectilinear walls and a flat floor; drift without wall evidence is not corrected; wall-matching shifts are not applied (they did not improve agreement in the M4 ablation)."
  ],
- "config_sha256": "59bf1a9e34271286"
+ "config_sha256": "296545e09e12dd5f"
 }

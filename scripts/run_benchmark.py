@@ -82,10 +82,42 @@ def compare(A: dict, B: dict, cfg: dict) -> dict:
             wb = abs(sb[match[0]].offset - sb[match[1]].offset)
             dims.append(dict(room_a=ra.id, room_b=rb.id, walls_a=[ra.walls[i].id, ra.walls[j].id], walls_b=[rb.walls[match[0]].id, rb.walls[match[1]].id],
                              width_a=round(wa, 4), width_b=round(wb, 4), delta=round(wb - wa, 4)))
+    hw = lambda m: (m.interval.high - m.interval.low) / 2
+    areas = [dict(room_a=r["a"], room_b=r["b"], area_a=pa[r["a"]].area.value, area_b=pb[r["b"]].area.value, delta=pb[r["b"]].area.value - pa[r["a"]].area.value,
+                  halfwidth=float(np.hypot(hw(pa[r["a"]].area), hw(pb[r["b"]].area)))) for r in rm]
+    walls = []        # same wall in both captures (plane-backed in both, same axis, offsets within tolerance, >= 50% overlap): length agreement
+    for r in rm:
+        ra, rb = pa[r["a"]], pb[r["b"]]
+        sb = [(w, to_other(wall_seg(w), reg)) for w in rb.walls if w.source == "plane"]
+        for w in (w for w in ra.walls if w.source == "plane"):
+            s = wall_seg(w)
+            c = [(abs(t.offset - s.offset), k) for k, (wb, t) in enumerate(sb) if t.axis == s.axis and abs(t.offset - s.offset) <= tol
+                 and min(t.s1, s.s1) - max(t.s0, s.s0) >= 0.5 * min(t.s1 - t.s0, s.s1 - s.s0)]
+            if c:
+                wb = sb[min(c)[1]][0]
+                walls.append(dict(wall_a=w.id, wall_b=wb.id, length_a=w.length.value, length_b=wb.length.value, delta=wb.length.value - w.length.value,
+                                  halfwidth=float(np.hypot(hw(w.length), hw(wb.length)))))
+    ops = []          # same opening in both captures: centres within 30 cm after registration, same orientation
+    for oa in A["plan"].openings:
+        ca = np.mean([oa.p0, oa.p1], 0)
+        da = np.subtract(oa.p1, oa.p0)
+        best = None
+        for ob in B["plan"].openings:
+            q = reg.apply(np.array([ob.p0, ob.p1], float))
+            cb, db = q.mean(0), q[1] - q[0]
+            same_dir = abs(abs(np.dot(da, db)) / (np.linalg.norm(da) * np.linalg.norm(db) + 1e-9) - 1) < 0.05
+            dist = float(np.linalg.norm(cb - ca))
+            if same_dir and dist <= 0.3 and (best is None or dist < best[0]):
+                best = (dist, ob)
+        if best:
+            ob = best[1]
+            ops.append(dict(opening_a=oa.id, opening_b=ob.id, width_a=oa.width.value, width_b=ob.width.value, delta=ob.width.value - oa.width.value,
+                            halfwidth=float(np.hypot(hw(oa.width), hw(ob.width))), centre_dist_m=round(best[0], 3)))
     SA, SB = segments(A["planes"]), [to_other(s, reg) for s in segments(B["planes"])]
     wp = width_pairs(SA, SB, match_segments(SA, SB, cfg), cfg)
     return dict(registration=dict(fitness_5cm=round(reg.fitness_5cm, 3), median_cm=round(reg.median_cm, 2), accepted=bool(reg.accepted)),
-                rooms_matched=[dict(a=r["a"], b=r["b"], iou=round(r["iou"], 2)) for r in rm], room_dims=dims,
+                rooms_matched=[dict(a=r["a"], b=r["b"], iou=round(r["iou"], 2)) for r in rm], room_dims=dims, room_areas=areas, walls=walls, openings=ops,
+                n_openings=[len(A["plan"].openings), len(B["plan"].openings)],
                 plane_pairs=[dict(width_a=round(p["width_a"], 4), delta=round(p["delta"], 4)) for p in wp])
 
 
@@ -125,11 +157,35 @@ def main(variant: str):
         all_d += list(d); all_w += list(w); all_pd += list(pd_); all_pw += list(pw)
         print(f"  {b:>11s} vs {a:<12s} rooms matched {len(r['rooms_matched'])}:  room dims {stats(d, w)}   | M3 plane pairs {stats(pd_, pw)}")
     print(f"  POOLED                                   room dims {stats(np.array(all_d), np.array(all_w))}   | M3 plane pairs {stats(np.array(all_pd), np.array(all_pw))}")
+    print("\nWALL LENGTHS (same wall in both captures) and CALIBRATION: does the interval of the difference (root-sum-square of the two half-widths) contain it?")
+    pooled = {"walls": [], "room_areas": [], "openings": []}
+    for a, b in PAIRS:
+        r = res[f"{b}->{a}"]
+        line = f"  {b:>11s} vs {a:<12s}"
+        for key, wkey, unit in (("walls", "length_a", "m"), ("room_areas", "area_a", "m2"), ("openings", "width_a", "m")):
+            x = r[key]
+            pooled[key] += x
+            if not x:
+                line += f" | {key}: none"
+                continue
+            d = np.array([v["delta"] for v in x]); h = np.array([v["halfwidth"] for v in x]); w = np.array([v[wkey] for v in x])
+            g = f", gate {int(gate(d, w).sum())}/{len(d)}" if key == "walls" else ""
+            line += f" | {key}: n {len(d)}, median |d| {np.median(np.abs(d)) * (100 if unit == 'm' else 1):.2f} {'cm' if unit == 'm' else 'm2'}{g}, inside interval {int((np.abs(d) <= h).sum())}/{len(d)}"
+        print(line + f" | openings detected {r['n_openings'][1]} vs {r['n_openings'][0]}")
+    cal = {}
+    for key, wkey in (("walls", "length_a"), ("room_areas", "area_a"), ("openings", "width_a")):
+        x = pooled[key]
+        if x:
+            d = np.array([v["delta"] for v in x]); h = np.array([v["halfwidth"] for v in x])
+            cal[key] = dict(n=len(x), inside=float((np.abs(d) <= h).mean()), median_abs=float(np.median(np.abs(d))),
+                            gate_pass=float(gate(d, np.array([v[wkey] for v in x])).mean()) if key == "walls" else None)
+            print(f"  POOLED {key}: n {len(x)}, inside interval {100 * cal[key]['inside']:.0f}% (intervals are ~2 sigma: about 95% expected if calibrated)"
+                  + (f", per-wall gate {100 * cal[key]['gate_pass']:.0f}%" if key == "walls" else ""))
     summary = dict(variant=variant, overrides=VARIANTS[variant], pooled_room_dims=dict(n=len(all_d), pass_rate=float(gate(np.array(all_d), np.array(all_w)).mean()) if all_d else None,
                    median_abs_cm=float(np.median(np.abs(all_d)) * 100) if all_d else None),
                    pooled_plane_pairs=dict(n=len(all_pd), pass_rate=float(gate(np.array(all_pd), np.array(all_pw)).mean()) if all_pd else None,
                                            median_abs_cm=float(np.median(np.abs(all_pd)) * 100) if all_pd else None),
-                   pairs=res, timing_s={n: c["plan"].timing_s for n, c in caps.items()})
+                   calibration=cal, pairs=res, timing_s={n: c["plan"].timing_s for n, c in caps.items()})
     (out / "benchmark.json").write_text(json.dumps(summary, indent=1))
     print(f"\nwrote {out / 'benchmark.json'}")
 
