@@ -66,7 +66,7 @@ def run_damage(src, plan: schema.Plan, inter: dict, cfg: dict, out_dir: Path | N
 
         cam_plan = to_plan(np.zeros((1, 3)))[0]
         for det in dets:
-            P = box_points(det, depth, conf, cap.K_depth, (s["rgb_width"], s["rgb_height"]), cfg)
+            P = box_points(det, depth, conf, cap.K_depth, cap.rgb_wh, cfg)
             patch, why = project_detection(det, P, to_plan, cam_plan, cap.K_depth, rooms, cfg)
             if patch is None:
                 reasons[why] = reasons.get(why, 0) + 1

@@ -14,7 +14,23 @@ from floorplan.io.imagesource import build_image_source, depth_for_images
 from floorplan.pipeline import build_plan
 from floorplan.sfm import run_sfm
 
-IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".heic"}
+IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".heic", ".heif"}
+
+
+def read_image(p: Path):
+    """BGR image, upright. iPhones save HEIC by default: read through pillow-heif (EXIF orientation applied); others through OpenCV
+    (which also applies EXIF orientation). None if unreadable."""
+    if p.suffix.lower() in (".heic", ".heif"):
+        import numpy as np
+        import pillow_heif
+        from PIL import Image, ImageOps
+
+        pillow_heif.register_heif_opener()
+        try:
+            return cv2.cvtColor(np.asarray(ImageOps.exif_transpose(Image.open(p)).convert("RGB")), cv2.COLOR_RGB2BGR)
+        except Exception:
+            return None
+    return cv2.imread(str(p))
 
 
 def empty_plan(name: str, tier: str, reason: str, cfg: dict, timing: dict, report: dict) -> schema.Plan:
@@ -65,14 +81,18 @@ def run_photos(folder: Path, work_dir: Path, cfg: dict) -> tuple[schema.Plan, di
     if flat.exists():
         shutil.rmtree(flat)
     flat.mkdir(parents=True)
-    n = 0
+    n, unreadable = 0, []
     for p in sorted(Path(folder).rglob("*")):
-        if p.suffix.lower() in IMAGE_SUFFIXES and p.suffix.lower() != ".heic":
-            img = cv2.imread(str(p))
+        if p.suffix.lower() in IMAGE_SUFFIXES:
+            img = read_image(p)
             if img is None:
+                unreadable.append(p.name)
                 continue
             w = cfg["sfm"]["frame_width_px"]
             room = p.parent.name if p.parent != Path(folder) else "room"
             cv2.imwrite(str(flat / f"{room}__{p.stem}.jpg"), cv2.resize(img, (w, int(round(img.shape[0] * w / img.shape[1]))), interpolation=cv2.INTER_AREA))
             n += 1
-    return run_images(flat, work_dir, cfg, "exhaustive", f"{Path(folder).name} (photos)", "photo", n)
+    plan, inter = run_images(flat, work_dir, cfg, "exhaustive", f"{Path(folder).name} (photos)", "photo", n)
+    if unreadable:
+        plan.limitations.append(f"{len(unreadable)} photo file(s) could not be read and were skipped: {unreadable[:10]}")
+    return plan, inter

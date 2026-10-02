@@ -73,3 +73,21 @@ def test_up_is_found_in_a_randomly_rotated_scene_and_rotated_to_y():
 def test_camera_up_of_an_upright_camera():
     R = np.eye(3)  # camera axes = world axes, y down
     assert camera_up(R) == pytest.approx([0, -1, 0])
+
+
+def test_heic_photo_is_read_upright(tmp_path):
+    """iPhones save HEIC by default; the photo tier must read it, not skip it."""
+    import numpy as np
+    import pillow_heif
+    from PIL import Image
+
+    from floorplan.tiers.images import read_image
+
+    pillow_heif.register_heif_opener()
+    a = np.zeros((40, 60, 3), np.uint8)
+    a[:, :30] = (255, 0, 0)                       # left half red (RGB)
+    Image.fromarray(a).save(tmp_path / "p.heic", quality=95)
+    img = read_image(tmp_path / "p.heic")
+    assert img is not None and img.shape[:2] == (40, 60)
+    assert img[20, 10, 2] > 200 and img[20, 50, 2] < 60      # BGR: red channel high on the left only
+    assert read_image(tmp_path / "missing.heic") is None

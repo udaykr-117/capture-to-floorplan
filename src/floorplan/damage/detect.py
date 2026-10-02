@@ -21,8 +21,8 @@ class Detector:
         from transformers import OwlViTForObjectDetection, OwlViTProcessor
 
         self.cfg, self.torch = cfg["damage"], torch
-        self.proc = OwlViTProcessor.from_pretrained(self.cfg["model"])
-        self.model = OwlViTForObjectDetection.from_pretrained(self.cfg["model"]).eval()
+        self.proc = OwlViTProcessor.from_pretrained(self.cfg["model"], revision=self.cfg["revision"])
+        self.model = OwlViTForObjectDetection.from_pretrained(self.cfg["model"], revision=self.cfg["revision"]).eval()
         self.prompts = [(c, p) for c, ps in self.cfg["classes"].items() for p in ps]
 
     def detect(self, bgr: np.ndarray, frame: int) -> list[Detection]:

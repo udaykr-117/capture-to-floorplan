@@ -186,6 +186,7 @@ refine:                        # M7 fix: room-local wall refinement (src/floorpl
 
 damage:
   model: google/owlvit-base-patch32   # chosen in M1 for CPU (0.5-1 s per frame); zero-shot, no damage-specific training, so accuracy is untested
+  revision: cbc355fb364588351c5d51c7f74465e8e7ec6f72   # pinned; same as scripts/fetch_models.sh (offline runs use the cached snapshot)
   keyframe_every: 25           # frames (multiple of stray.frame_stride): about one keyframe per 6 s of walking, ~200 per large capture, bounded CPU time
   score_min: 0.33              # negative control (scripts/m6_negative_control.py): the 3 samples have no damage; regions vanish from 0.14, the highest single false box was 0.322 -> 0.33 is above every false box seen (569 boxes). Was 0.10 (model-card example). Recall on real damage untested and probably lowered
   max_box_fraction: 0.5        # a box covering more than half of the image is a whole wall or the floor, not a damage patch

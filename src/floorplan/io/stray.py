@@ -25,6 +25,7 @@ class Capture:
     odo: pd.DataFrame
     depth_hw: tuple[int, int]
     K_depth: np.ndarray
+    rgb_wh: tuple[int, int] = (1920, 1440)
 
 
 def scale_intrinsics(K_rgb: np.ndarray, rgb_wh: tuple[int, int], depth_hw: tuple[int, int]) -> np.ndarray:
@@ -48,12 +49,17 @@ def open_capture(d: str | Path, cfg: dict) -> Capture:
     n_conf = len(list((d / "confidence").glob("*.png")))
     assert n_depth == n_conf == n, f"counts differ: depth {n_depth}, confidence {n_conf}, odometry {n}"
     cap = cv2.VideoCapture(str(d / "rgb.mp4"))
-    assert (cap.get(3), cap.get(4)) == rgb_wh, f"video is {cap.get(3)}x{cap.get(4)}, expected {rgb_wh}"
-    assert int(cap.get(7)) == n, f"video has {int(cap.get(7))} frames, odometry has {n}"
+    video_wh = (int(cap.get(3)), int(cap.get(4)))
+    n_video = int(cap.get(7))
     cap.release()
+    if min(video_wh) > 0 and video_wh != rgb_wh:   # camera_matrix.csv is at the video resolution; another device may record a different size than the samples
+        print(f"note: video is {video_wh[0]}x{video_wh[1]} (samples were {rgb_wh[0]}x{rgb_wh[1]}); intrinsics are taken as given at the video size")
+        rgb_wh = video_wh
+    if n_video != n:
+        print(f"note: video has {n_video} frames, odometry has {n}; depth and poses are used, video frames only for damage detection")
     first = cv2.imread(str(d / "depth" / "000000.png"), -1)
     depth_hw = first.shape
-    return Capture(d, K_rgb, odo, depth_hw, scale_intrinsics(K_rgb, rgb_wh, depth_hw))
+    return Capture(d, K_rgb, odo, depth_hw, scale_intrinsics(K_rgb, rgb_wh, depth_hw), rgb_wh)
 
 
 def backproject(depth_m: np.ndarray, conf: np.ndarray, K: np.ndarray, conf_min: int, dmin: float, dmax: float) -> np.ndarray:
