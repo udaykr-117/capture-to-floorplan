@@ -1,4 +1,4 @@
-"""Provisional, uncalibrated intervals (see configs/default.yaml `intervals`). Replace with calibrated ones in M3/M7."""
+"""Intervals per measurement (see configs/default.yaml `intervals`): plane spread, systematic and room-extent terms; lengths and areas calibrated on repeat captures only."""
 import numpy as np
 
 from floorplan.geometry.walls import WallPlane

@@ -57,7 +57,7 @@ def render_plan(plan: Plan, path: str | Path) -> None:
     ax.set_aspect("equal")
     ax.set_xlabel("x' (m)")
     ax.set_ylabel("z' (m)")
-    fig.text(0.5, 0.005, "provisional, uncalibrated intervals  |  accuracy untested (no ground truth)  |  damage = unvalidated candidates  |  dashed = no wall plane",
+    fig.text(0.5, 0.005, "intervals: lengths/areas calibrated on repeat captures only  |  accuracy untested (no ground truth)  |  damage = unvalidated candidates  |  dashed = no wall plane",
              ha="center", fontsize=7, color="0.3")
     fig.savefig(path, dpi=110, bbox_inches="tight")
     plt.close(fig)
