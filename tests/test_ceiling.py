@@ -55,3 +55,9 @@ def test_thin_ceiling_coverage_is_unmeasurable():
     P, N = _aligned(np.concatenate([room, patch]))
     c = measure_ceiling(box(0, 0, 5, 4), P, N, CFG)
     assert c.status == "unmeasurable" and "below" in c.reason
+
+
+def test_a_noise_free_ceiling_at_exactly_one_height_is_still_found():
+    P, N = _aligned(box_room(0, 0, 5, 4, 2.5, noise=0.0))
+    c = measure_ceiling(box(0, 0, 5, 4), P, N, CFG)
+    assert c.status == "measured" and c.height == pytest.approx(2.5, abs=0.015)

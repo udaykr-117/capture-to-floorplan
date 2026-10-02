@@ -56,7 +56,7 @@ def find_wall_planes(Pa: np.ndarray, Na: np.ndarray, cfg: dict) -> list[WallPlan
         c, t, h = Pa[m, a], Pa[m, b], Pa[m, 1]
         if len(c) == 0:
             continue
-        edges = np.arange(c.min() - w["hist_bin_m"], c.max() + 2 * w["hist_bin_m"], w["hist_bin_m"])
+        edges = np.arange(c.min() - 5 * w["hist_bin_m"], c.max() + 6 * w["hist_bin_m"], w["hist_bin_m"])  # margin bins: the outermost wall must not touch the array edge
         hist, _ = np.histogram(c, edges)
         sm = np.convolve(hist, np.ones(3) / 3, mode="same")
         dist = max(1, int(round(w["plane_min_separation_m"] / w["hist_bin_m"])))

@@ -52,3 +52,9 @@ def test_low_furniture_is_detected_but_not_structural():
     assert len(planes) == 5 and len(kept) == 4
     furniture = [r for p in planes for r in p.runs if r.coverage < CFG["walls"]["min_height_coverage"]]
     assert len(furniture) == 1 and furniture[0].length == pytest.approx(2.0, abs=0.12)
+
+
+def test_the_outermost_walls_are_found_even_with_noise_free_points():
+    # all points of a wall in one histogram bin, and the wall is the first / last bin of the range
+    planes = _planes(_world(box_room(0, 0, 5.0, 4.0, 2.5, noise=0.0), 33.0), _cams([(2, 1.5), (3, 2.5)], 33.0))
+    assert len(planes) == 4

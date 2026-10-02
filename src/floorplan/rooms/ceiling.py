@@ -38,7 +38,7 @@ def measure_ceiling(poly: Polygon, Pa: np.ndarray, Na: np.ndarray, cfg: dict) ->
         out.reason = f"only {int(cand.sum())} horizontal points between {lo} and {hi} m above the floor"
         return out
     h = Pa[cand, 1]
-    edges = np.arange(h.min() - c["hist_bin_m"], h.max() + 2 * c["hist_bin_m"], c["hist_bin_m"])
+    edges = np.arange(h.min() - 3 * c["hist_bin_m"], h.max() + 4 * c["hist_bin_m"], c["hist_bin_m"])  # margin bins: a noise-free ceiling at one height must still have a peak
     hist, _ = np.histogram(h, edges)
     sm = np.convolve(hist, np.ones(3) / 3, mode="same")
     peaks, _ = find_peaks(sm, height=max(5.0, 0.1 * sm.max()), distance=max(1, int(round(c["peak_tol_m"] / c["hist_bin_m"]))))
