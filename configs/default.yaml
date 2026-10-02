@@ -12,6 +12,91 @@ stray:
   voxel_m: 0.02          # task brief default; 2 cm matches the best opening/ceiling gate granularity
   flush_every_frames: 100  # memory bound only: merge+voxelise every 100 frames; only changes the cloud via voxel averaging order
 
+scene:
+  normal_voxel_m: 0.04         # analysis cloud: 2x the capture voxel, ~4x fewer points, enough neighbours per normal; same value as the session-1 wall probe
+  normal_radius_m: 0.12        # normal neighbourhood; same as session-1 wall probe (not tuned)
+  normal_max_nn: 40            # cap on neighbours so dense areas do not slow the estimate
+  vertical_normal_max: 0.2     # |n_up| below this counts as a vertical surface (same as checks.wall_normal_vertical_max)
+  horizontal_normal_min: 0.9   # |n_up| above this counts as a horizontal surface (floor, ceiling, table tops)
+
+align:
+  floor_below_camera_m: 0.5    # floor candidates must be >= 0.5 m below every camera position (phone is held above hip height)
+  floor_hist_bin_m: 0.01       # 1 cm height bins resolve the 3-7 cm floor spread seen in M1
+  floor_peak_min_rel: 0.4      # a floor peak needs >= 40% of the strongest peak below the camera; the floor is the LOWEST such peak
+  floor_refine_halfwidth_m: 0.03  # floor height = median of points within +-3 cm of the chosen peak
+  yaw_peak_window_deg: 10      # wall yaw = 4-theta circular mean of normals within +-10 deg of the histogram peak
+  yaw_max_residual_deg: 1.0    # after rotating, the wall direction must be within 1 deg of an axis or alignment is rejected
+
+walls:
+  slab_above_floor_m: [0.3, 1.6]  # above floor clutter and baseboards, below most ceilings and lintels (same slab as the M1 wall probe)
+  normal_axis_max_deg: 15      # a point supports an axis-aligned wall if its horizontal normal is within 15 deg of the axis
+  hist_bin_m: 0.02             # 2 cm bins for the wall-offset histogram (= capture voxel)
+  peak_min_support_m2: 0.5     # a wall plane needs >= 0.5 m2 of surface (converted to points with the analysis voxel area)
+  plane_min_separation_m: 0.06 # two planes closer than 6 cm are one plane; thin partitions (>= ~9 cm) keep both faces
+  plane_tol_m: 0.03            # points within +-3 cm of a peak belong to the plane; offset = their median
+  along_cell_m: 0.05           # cell size when measuring where along the wall the plane has support
+  along_cell_min_points: 5     # cell counts as supported with >= 5 analysis points (about 12% of the slab height)
+  gap_merge_m: 1.2             # gaps shorter than 1.2 m stay inside one wall run (doorways are bridged, found later as openings)
+  min_run_length_m: 0.5        # runs shorter than 0.5 m are noise or furniture edges
+  coverage_cell_m: 0.10        # cell size for the height-coverage check
+  min_height_coverage: 0.6     # a run is a structural wall if its supported columns fill >= 60% of the slab height; lower = furniture
+
+rooms:
+  cell_m: 0.05                 # 5 cm map cells: well below a door width, half the normal radius
+  floor_band_m: 0.20           # floor evidence = horizontal points within +-20 cm of the floor height (was 0.08: dropped drifted floor, M2 log); furniture under 20 cm is negligible
+  fan_bin_deg: 0.5             # angular bin of a visibility fan; ~2 depth pixels at fx=213 (0.27 deg per pixel)
+  fan_gap_bins: 4              # empty angular gaps up to 2 deg stay inside one fan (sparse far hits)
+  fan_min_frames: 2            # a cell counts as carved free space if >= 2 frames saw through it (drops single-frame spikes)
+  camera_free_radius_m: 0.35   # the person carrying the phone occupies ~0.35 m of free floor around the camera
+  barrier_half_width_m: 0.05   # wall runs are drawn 10 cm wide when used as barriers
+  fill_hole_max_m2: 4.0        # unobserved holes fully enclosed by floor and under 4 m2 are furniture, not walls
+  seed_min_dist_m: 0.5         # room core is >= 0.5 m from any barrier; doorways up to 1.0 m wide have a max distance < 0.5 m
+  min_room_area_m2: 1.5        # smaller regions are merged into their neighbour (closets are kept by the polygon step)
+  min_room_width_m: 0.6        # opening by a 0.3 m radius removes tails narrower than 0.6 m (leaks through windows, doors)
+  rect_min_fraction: 0.35      # a plane-grid rectangle joins a room if >= 35% of its cells are that room; the barrier trims ~7 cm per wall side, so wall-thickness slivers fall below it
+  virtual_line_min_len_m: 0.8  # a straight stretch of room edge >= 0.8 m with no wall plane within the tolerance becomes a virtual wall line
+  virtual_line_plane_tol_m: 0.15  # ...tolerance: the mask edge sits within ~10 cm of the true face
+  closing_m: 0.15              # slits narrower than 0.3 m inside a room polygon (between two nearby planes) are closed
+  hole_max_m2: 1.0             # holes smaller than 1 m2 inside a room polygon (columns, furniture) are filled
+
+ceiling:
+  range_above_floor_m: [1.8, 4.5]  # habitable ceilings: below 1.8 m is door tops and furniture; above 4.5 m is past the 5 m depth range from a handheld phone
+  hist_bin_m: 0.01             # 1 cm height bins, same resolution as the floor histogram
+  peak_tol_m: 0.03             # points within +-3 cm of a peak belong to that ceiling level
+  cell_m: 0.05                 # coverage is counted in 5 cm map cells so many points in one cell count once
+  min_coverage: 0.2            # at least 20% of the room's area must have ceiling points at the peak height, else unmeasurable
+  min_area_m2: 1.0             # and at least 1 m2 absolute
+  second_peak_rel: 0.5         # a second level with >= 50% of the best level's coverage ...
+  second_peak_sep_m: 0.08      # ... more than 8 cm away makes the result ambiguous (dropped ceiling, slope, or drift)
+  floor_min_points: 200        # fewer floor points than this in a room: fall back to the global floor and say so
+  interval_sigma: 2.0          # interval half-width = 2 x robust sigma of local floor and ceiling spread; NOT calibrated yet
+
+openings:
+  cell_m: 0.02                 # 2 cm cells along the wall: the opening-width gate is 2 cm
+  image_height_m: 2.6          # wall images cover floor to 2.6 m (door heads and windows are below this)
+  wall_tol_m: 0.05             # points within +-5 cm of the plane are wall (door trim and slight plane tilt)
+  through_beyond_m: 0.20       # a ray counts as passing through the plane only if its hit is >= 20 cm beyond it (drift doubles walls by 10-30 cm; M1 overlay)
+  through_point_stride: 3      # use every 3rd hit per frame for ray crossings: 3x faster, still thousands of rays per metre of wall
+  max_gap_bridge_m: 3.0        # runs of the same plane closer than 3 m are examined together (an opening can split a plane's runs)
+  min_open_height_m: 0.4       # a column is open if it has >= 40 cm of continuous see-through height with no wall points
+  min_opening_m: 0.45          # narrower openings are noise (a door is >= 0.6 m)
+  max_opening_m: 3.0           # wider ones are not treated as doors
+  merge_gap_m: 0.05            # open columns split by < 5 cm are one opening
+  bounded_max_gap_m: 0.30      # an opening is framed by wall within 30 cm on both sides; otherwise it is the end of a wall (added after 3 m long phantom 'openings' on with_ceiling, M2 log)
+  door_bottom_max_m: 0.15      # open down to within 15 cm of the floor = door / passage, else raised (window, pass-through). Briefly set to 0.35 on a wrong premise (sparse synthetic rays); with sensor-density rays a synthetic door reaches 0.10 m. Re-check on real doors
+
+intervals:
+  # PROVISIONAL and NOT calibrated: there is no ground truth. They are made conservative and are meant to be
+  # replaced by quantiles of real errors (cross-capture disagreement in M3, benchmark in M7).
+  sigma_k: 2.0                 # half-width = 2 x the robust spread of the wall points around the fitted plane (~95% if the spread were Gaussian noise)
+  virtual_end_halfwidth_m: 0.15  # a wall end with no fitted plane sits on the mask edge, good to ~15 cm
+  unsupported_halfwidth_m: 0.10  # extra half-width per unit of (1 - wall support): a mostly unseen wall is a guess
+  min_halfwidth_m: 0.01        # never report a half-width under 1 cm
+  unobserved_area_weight: 0.5  # area outside observed free space counts as half wrong in the area interval
+  min_area_rel: 0.01           # area half-width is at least 1% of the area
+  adjacency_wall_m: 0.35       # rooms whose boundaries run within 35 cm (a wall thickness) for >= 0.5 m are adjacent
+  adjacency_min_shared_m: 0.5
+
 checks:
   ransac_distance_m: 0.02      # brief for the loader task: plane distance threshold 0.02 (2 cm = voxel size)
   ransac_iterations: 2000      # enough for the largest planes at ~10^6 points; not tuned
