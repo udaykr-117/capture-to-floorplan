@@ -23,6 +23,7 @@ def wall_length(edge: Edge, planes: list[WallPlane], cfg: dict) -> Measurement:
     other = 2 if edge.axis == 0 else 0  # the wall ends lie on lines of the other axis
     s0, s1 = _line_sigma(sig, other, edge.s0, cfg), _line_sigma(sig, other, edge.s1, cfg)
     hw = max(float(np.hypot(np.hypot(iv["sigma_k"] * s0, iv["sigma_k"] * s1), iv["unsupported_halfwidth_m"] * (1 - edge.support))), iv["min_halfwidth_m"])
+    hw = float(np.hypot(hw, iv["sigma_k"] * iv.get("scale_rel_sigma", 0.0) * edge.length))   # image tiers: the metric scale itself is uncertain
     return Measurement(value=round(edge.length, 4), unit="m",
                        interval=Interval(low=round(edge.length - hw, 4), high=round(edge.length + hw, 4), method="end-plane spread + 3.5 cm systematic (cross-capture, M3) + virtual ends + unsupported length"))
 
@@ -32,6 +33,7 @@ def room_area(area: float, edges: list[Edge], observed_fraction: float, planes: 
     sig = _sigma_lookup(planes)
     var = sum((e.length * _line_sigma(sig, e.axis, e.offset, cfg)) ** 2 for e in edges)
     hw = float(np.hypot(iv["sigma_k"] * np.sqrt(var), iv["unobserved_area_weight"] * (1 - observed_fraction) * area))
+    hw = float(np.hypot(hw, iv["sigma_k"] * 2 * iv.get("scale_rel_sigma", 0.0) * area))        # an area scales with the square of a length scale
     hw = max(hw, iv["min_area_rel"] * area)
     return Measurement(value=round(area, 3), unit="m2",
                        interval=Interval(low=round(area - hw, 3), high=round(area + hw, 3), method="edge-plane spread + 3.5 cm systematic (cross-capture, M3) + unobserved share"))

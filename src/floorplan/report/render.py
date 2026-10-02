@@ -12,6 +12,8 @@ from floorplan.schema import Plan
 
 
 def _pm(m, fmt="{:.2f}") -> str:
+    if m.value is None:
+        return "n/a"
     hw = (m.interval.high - m.interval.low) / 2
     return f"{fmt.format(m.value)} ± {fmt.format(hw)}"
 

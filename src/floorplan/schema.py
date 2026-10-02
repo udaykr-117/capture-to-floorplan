@@ -80,6 +80,7 @@ class FrameInfo(BaseModel):
     floor_world_y: float
     drift_correction: str = Field(default="none", description="the components applied, e.g. 'chunk heading + floor level + odometry jump distribution'; 'none' = poses as-is")
     drift_report: dict = {}
+    tier_report: dict = {}
 
 
 class Plan(BaseModel):

@@ -32,8 +32,11 @@ def _ceiling_measurement(c, cfg: dict) -> schema.Measurement:
     if c.height is None:
         return schema.Measurement(value=None, unit="m", status="unmeasurable", note=c.reason,
                                   interval=schema.Interval(low=None, high=None, method="none: ceiling not captured"))
+    w = cfg["intervals"]["sigma_k"] * cfg["intervals"].get("scale_rel_sigma", 0.0) * c.height
+    lo, hi = c.interval
+    lo, hi = c.height - float(np.hypot(c.height - lo, w)), c.height + float(np.hypot(hi - c.height, w))
     return schema.Measurement(value=round(c.height, 4), unit="m", status=c.status, note=c.reason,
-                              interval=schema.Interval(low=round(c.interval[0], 4), high=round(c.interval[1], 4),
+                              interval=schema.Interval(low=round(lo, 4), high=round(hi, 4),
                                                        method=f"{cfg['ceiling']['interval_sigma']:g} sigma of local floor and ceiling spread (provisional)"))
 
 
@@ -81,8 +84,8 @@ def build_plan(src: Source, cfg: dict, tier: str = "lidar", drift: bool | None =
     t0 = time.time()
     layers = free_space(Pa, Na, cams_a, planes, fans, grid, cfg)
     labels = clean_labels(segment_rooms(layers["free"], grid, cfg), grid, cfg)
-    polys = room_polygons(labels, planes, grid, cfg)
-    ops = detect_openings(images, cfg)
+    polys = room_polygons(labels, planes, grid, cfg) if planes else []   # no wall plane found: nothing to build rooms from, do not invent any
+    ops = detect_openings(images, cfg) if planes else []
     assign_rooms(ops, {rp.id: rp.polygon for rp in polys})
     t["rooms_and_openings"] = time.time() - t0
 
@@ -109,7 +112,8 @@ def build_plan(src: Source, cfg: dict, tier: str = "lidar", drift: bool | None =
         ids = [f"R{r}" if r else None for r in o.rooms]
         out_ops.append(schema.Opening(
             id=f"O{k}", kind=o.kind, p0=p0, p1=p1, bottom_m=round(o.bottom, 3), top_m=round(o.top, 3), rooms=ids,
-            width=schema.Measurement(value=round(o.width, 4), unit="m", interval=schema.Interval(low=round(o.interval[0], 4), high=round(o.interval[1], 4),
+            width=schema.Measurement(value=round(o.width, 4), unit="m", interval=schema.Interval(low=round(o.width - float(np.hypot(o.width - o.interval[0], cfg["intervals"]["sigma_k"] * cfg["intervals"].get("scale_rel_sigma", 0.0) * o.width)), 4),
+                                                                                                  high=round(o.width + float(np.hypot(o.interval[1] - o.width, cfg["intervals"]["sigma_k"] * cfg["intervals"].get("scale_rel_sigma", 0.0) * o.width)), 4),
                                                                                                   method="bracket: see-through extent to wall-to-wall (provisional)"))))
         for rid in ids:
             for r in rooms:
@@ -146,8 +150,21 @@ def build_plan(src: Source, cfg: dict, tier: str = "lidar", drift: bool | None =
         "Spaces joined by an opening wider than 1.2 m are merged into one room; rooms are assumed rectilinear.",
         "Openings use see-through evidence: mirrors and glass can create phantom openings, windows to the outside are not detected.",
     ]
+    if not planes:
+        limits.append("No wall plane was found in the reconstruction: no rooms are reported.")
     if not measured:
         limits.append("No ceiling was captured in any room: all ceiling heights are unmeasurable.")
+    info = getattr(src, "info", None)
+    tier_report: dict = {}
+    if info is not None:  # image tiers (video, photos)
+        sc = info["scale"]
+        tier_report = dict(images_in=info["n_input"], images_registered=info["n_registered"], images_with_depth=info["n_aligned"],
+                           registered_fraction=round(info["n_registered"] / max(info["n_input"], 1), 3), scale_metres_per_sfm_unit=round(sc.metres_per_unit, 5),
+                           scale_rel_sigma=round(sc.rel_sigma, 3), scale_from_depth=round(sc.from_depth, 5), scale_from_camera_height=round(sc.from_height, 5) if sc.from_height else None,
+                           camera_height_m=round(info["camera_height_m"], 2), gravity_refined_deg=round(info["gravity"]["shift_deg"], 1),
+                           cloud_extent_m=[round(float(x), 2) for x in np.ptp(Pa, axis=0)], note=sc.note)
+        limits.append(f"{tier} tier: no depth sensor and no poses. SfM registered {info['n_registered']} of {info['n_input']} images ({100 * info['n_registered'] / max(info['n_input'], 1):.0f}%); "
+                      f"only the registered part of the capture is reconstructed. Metric scale from monocular depth and camera height, relative uncertainty +-{100 * sc.rel_sigma:.0f}% (1 sigma).")
     jumps = list(getattr(src, "jumps", []))
     mode = "none"
     report: dict = {}
@@ -168,7 +185,7 @@ def build_plan(src: Source, cfg: dict, tier: str = "lidar", drift: bool | None =
     else:
         limits.append("Drift is NOT corrected (poses used as-is): floor and wall positions can drift by several cm to tens of cm across a capture.")
     plan = schema.Plan(
-        capture=src.name, tier=tier, frame=schema.FrameInfo(yaw_deg=round(fr.yaw_deg, 3), floor_world_y=round(fr.floor_y, 4), drift_correction=mode, drift_report=report),
+        capture=src.name, tier=tier, frame=schema.FrameInfo(yaw_deg=round(fr.yaw_deg, 3), floor_world_y=round(fr.floor_y, 4), drift_correction=mode, drift_report=report, tier_report=tier_report),
         rooms=rooms, openings=out_ops, stitched=stitched, timing_s={k: round(v, 2) for k, v in t.items()}, limitations=limits,
         config_sha256=hashlib.sha256(json.dumps(cfg, sort_keys=True).encode()).hexdigest()[:16])
     return plan, dict(Pa=Pa, Na=Na, corr=corr, chunks=chunks, planes=planes, polys=polys, labels=labels, grid=grid, layers=layers, ceilings=ceilings, al=al)

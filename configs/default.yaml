@@ -88,6 +88,7 @@ openings:
 intervals:
   # PROVISIONAL and NOT calibrated: there is no ground truth. They are made conservative and are meant to be
   # replaced by quantiles of real errors (cross-capture disagreement in M3, benchmark in M7).
+  scale_rel_sigma: 0.0         # relative uncertainty of the metric scale: 0 for LiDAR; the image tiers set it from their scale estimate (scale.py)
   sigma_k: 2.0                 # half-width = 2 x the robust spread of the wall points around the fitted plane (~95% if the spread were Gaussian noise)
   plane_position_sigma_m: 0.035  # systematic wall-plane position error added in quadrature to the fit spread. From M3: 42 facing-wall widths over the 3 capture pairs differ by a robust sigma of 7.1 cm = 2 x sqrt(2) x 3.5 cm (clean pair alone: 2.1 cm). A LOWER bound on error (two captures can share a bias) and fitted on these same samples; recalibrate against ground truth in M7
   virtual_end_halfwidth_m: 0.15  # a wall end with no fitted plane sits on the mask edge, good to ~15 cm
@@ -135,6 +136,36 @@ drift:
   use_floor: true              # ... and chunk floor levelling
   jump_speed_mps: 5.0          # a step faster than 5 m/s is a tracker snap, not motion (walking 0.5 m/s; clean captures never exceed 1.5 m/s; floor_only has 17 m/s)
   holdout_fraction: 0.2        # share of wall associations held out to check that the shifts generalise
+
+sfm:
+  frame_width_px: 960          # frames are resized to 960 px wide for SfM and depth (1920 px costs 4x with no gain in a 5 m room)
+  video_fps: 5.0               # sampled frames per second of video (M1: 2.5 fps registered too few frames)
+  focal_factor: 0.833          # prior focal length / longest image side: iPhone main camera; camera_matrix.csv gives 1599.7 px at 1920 px on all three samples
+  sift_peak_threshold: 0.0067  # COLMAP default
+  sift_max_features: 8192      # COLMAP default
+  seq_overlap: 10              # COLMAP default: each frame is matched with the next 10
+  guided_matching: false
+  init_min_tri_angle_deg: 16.0 # COLMAP default
+  min_registered: 3            # fewer registered images than this is not a reconstruction: the tier reports failure and no rooms
+
+scale:
+  # Measured on the registered stretches of two samples (M5): error of the depth-model scale +4.8% (single_room) and -26.0% (floor_only);
+  # of the camera-height prior -17.0% and -19.8%; of the combination -10.8% and -21.7% (rms 17%). Two points only: treat as a rough order of magnitude.
+  camera_height_m: 1.42        # median camera height above the floor over the three whole captures: 1.41, 1.40, 1.46 m
+  camera_height_rel_sigma: 0.18  # the registered stretches had the phone at ~1.7 m (bias towards textured views near the ceiling): prior error rms 18.5%
+  depth_rel_sigma_floor: 0.18  # depth-model scale error rms 18.6% over the two samples
+  min_rel_sigma: 0.20          # the combined scale is never reported better than +-20% (1 sigma): its measured errors were -10.8% and -21.7%
+  use_camera_height: true
+
+depth:
+  model: depth-anything/Depth-Anything-V2-Metric-Indoor-Small-hf   # Apache-2.0 per the upstream README for the Small model; the fine-tuned card has no licence field (DISCLOSURE.md)
+  revision: 8078d68a9c75a972131914f6afd0c1723be0da7f               # pinned; same as scripts/fetch_models.sh
+  min_sparse_points: 30        # an image needs >= 30 SfM points to align its depth scale
+  ratio_trim_log: 0.4          # per-point depth ratios more than ln(1.5) from the median are outliers (wrong matches, flying pixels)
+  stride: 4                    # back-project every 4th pixel: ~43k points per 960x720 frame, about the LiDAR density (49k)
+  edge_rel: 0.08               # drop pixels where the relative depth gradient exceeds 8% per pixel (flying pixels at depth edges)
+  min_depth_m: 0.3             # model depth range used (metres, model scale)
+  max_depth_m: 6.0
 
 checks:
   ransac_distance_m: 0.02      # brief for the loader task: plane distance threshold 0.02 (2 cm = voxel size)
