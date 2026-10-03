@@ -1,6 +1,6 @@
-"""Room-local wall refinement (M7 fix for the repeatability gate).
+"""Room-local wall refinement (the fix for the repeatability gate).
 
-Diagnosis (JOURNAL M7): a wall's position seen chunk by chunk moves by a robust 3.5 cm (range ~14 cm) over a capture, so a plane fitted to all of
+Diagnosis (docs/fix_declaration.md, Fix A): a wall's position seen chunk by chunk moves by a robust 3.5 cm (range ~14 cm) over a capture, so a plane fitted to all of
 its points is an average of positions from different times, and two facing walls fitted that way inherit the drift between the times they were
 seen. Here each room's plane-backed edges are re-measured from ONE visit: the longest run of consecutive chunks whose cameras were inside the room.
 Within a visit (tens of seconds) drift is small, so the room's own walls are mutually consistent. Rooms are refined independently, so a wall shared

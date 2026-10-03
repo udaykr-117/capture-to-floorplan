@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 x0, x1, z0, z1 = map(float, sys.argv[1:5])
 names = ("with_ceiling", "floor_only", "single_room")
 cols = {"with_ceiling": "k", "floor_only": "r", "single_room": "b"}
-plans = {n: json.loads((ROOT / "bench" / "results" / "after2a" / f"{n}.json").read_text()) for n in names}
+plans = {n: json.loads((ROOT / "bench" / "results" / "final" / f"{n}.json").read_text()) for n in names}
 caps = {n: load(n) for n in names}
 fig, axs = plt.subplots(1, 3, figsize=(24, 9))
 for ax, n in zip(axs, names):

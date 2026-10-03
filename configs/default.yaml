@@ -1,5 +1,5 @@
 # Every threshold has a one-line justification. Do not change a value to improve a result
-# without logging the before/after in JOURNAL.md (CLAUDE.md rule 4).
+# without recording the before/after numbers (docs/fix_declaration.md, docs/benchmark_report.md).
 # Only values already decided are here. New ones are added when the code that needs them exists.
 
 stray:
@@ -13,22 +13,22 @@ stray:
   flush_every_frames: 100  # memory bound only: merge+voxelise every 100 frames; only changes the cloud via voxel averaging order
 
 scene:
-  normal_voxel_m: 0.04         # analysis cloud: 2x the capture voxel, ~4x fewer points, enough neighbours per normal; same value as the session-1 wall probe
-  normal_radius_m: 0.12        # normal neighbourhood; same as session-1 wall probe (not tuned)
+  normal_voxel_m: 0.04         # analysis cloud: 2x the capture voxel, ~4x fewer points, enough neighbours per normal; same value as the first wall-plane probe
+  normal_radius_m: 0.12        # normal neighbourhood; same as the first wall-plane probe (not tuned)
   normal_max_nn: 40            # cap on neighbours so dense areas do not slow the estimate
   vertical_normal_max: 0.2     # |n_up| below this counts as a vertical surface (same as checks.wall_normal_vertical_max)
   horizontal_normal_min: 0.9   # |n_up| above this counts as a horizontal surface (floor, ceiling, table tops)
 
 align:
   floor_below_camera_m: 0.5    # floor candidates must be >= 0.5 m below every camera position (phone is held above hip height)
-  floor_hist_bin_m: 0.01       # 1 cm height bins resolve the 3-7 cm floor spread seen in M1
+  floor_hist_bin_m: 0.01       # 1 cm height bins resolve the 3-7 cm floor spread measured on the samples
   floor_peak_min_rel: 0.4      # a floor peak needs >= 40% of the strongest peak below the camera; the floor is the LOWEST such peak
   floor_refine_halfwidth_m: 0.03  # floor height = median of points within +-3 cm of the chosen peak
   yaw_peak_window_deg: 10      # wall yaw = 4-theta circular mean of normals within +-10 deg of the histogram peak
   yaw_max_residual_deg: 1.0    # after rotating, the wall direction must be within 1 deg of an axis or alignment is rejected
 
 walls:
-  slab_above_floor_m: [0.3, 1.6]  # above floor clutter and baseboards, below most ceilings and lintels (same slab as the M1 wall probe)
+  slab_above_floor_m: [0.3, 1.6]  # above floor clutter and baseboards, below most ceilings and lintels (same slab as the first wall-plane probe)
   normal_axis_max_deg: 15      # a point supports an axis-aligned wall if its horizontal normal is within 15 deg of the axis
   hist_bin_m: 0.02             # 2 cm bins for the wall-offset histogram (= capture voxel)
   peak_min_support_m2: 0.5     # a wall plane needs >= 0.5 m2 of surface (converted to points with the analysis voxel area)
@@ -43,7 +43,7 @@ walls:
 
 rooms:
   cell_m: 0.05                 # 5 cm map cells: well below a door width, half the normal radius
-  floor_band_m: 0.20           # floor evidence = horizontal points within +-20 cm of the floor height (was 0.08: dropped drifted floor, M2 log); furniture under 20 cm is negligible
+  floor_band_m: 0.20           # floor evidence = horizontal points within +-20 cm of the floor height (was 0.08: dropped drifted floor); furniture under 20 cm is negligible
   fan_bin_deg: 0.5             # angular bin of a visibility fan; ~2 depth pixels at fx=213 (0.27 deg per pixel)
   fan_gap_bins: 4              # empty angular gaps up to 2 deg stay inside one fan (sparse far hits)
   fan_min_frames: 2            # a cell counts as carved free space if >= 2 frames saw through it (drops single-frame spikes)
@@ -52,8 +52,8 @@ rooms:
   fill_hole_max_m2: 4.0        # unobserved holes fully enclosed by floor and under 4 m2 are furniture, not walls
   seed_min_dist_m: 0.5         # room core is >= 0.5 m from any barrier; doorways up to 1.0 m wide have a max distance < 0.5 m
   min_room_area_m2: 1.5        # smaller regions are merged into their neighbour (closets are kept by the polygon step)
-  keep_narrow_rooms: true      # ON after the second fix loop: same-wall median 29.7 -> 24.7 cm, room areas 2.03 -> 1.04 m2 across captures (docs/fix_declaration.md round 2). Second fix loop (a): a narrow labelled space (corridor) gets grid lines along its own edges and the smaller connector minimum area, so a neighbour's rectangle does not swallow it (rooms/polygon.py)
-  split_connectors: false      # second fix loop (b): also cut corridors out of rooms (rooms/freespace.py split_connectors); over-split in the benchmark, see JOURNAL
+  keep_narrow_rooms: true      # a narrow labelled space (corridor) gets grid lines along its own edges and the smaller connector minimum area, so a neighbour's rectangle does not swallow it (rooms/polygon.py). Same-wall length difference between captures 29.7 -> 24.7 cm, room areas 2.03 -> 1.04 m2 (docs/fix_declaration.md, Fix B)
+  split_connectors: false      # also cut corridors out of rooms (rooms/freespace.py split_connectors); OFF because it over-split and made wall lengths worse (docs/fix_declaration.md, Fix B)
   connector_max_width_m: 1.2   # a corridor is narrower than 1.2 m (the same width above which an opening merges two rooms); wider spaces get their own seed anyway
   connector_min_length_m: 1.5  # and at least 1.5 m long: a doorway neck is only a wall thick (0.1-0.3 m), a hallway is longer than a door leaf
   connector_min_area_m2: 1.0   # smaller narrow pieces are convex-corner slivers of the opening, not corridors
@@ -77,27 +77,27 @@ ceiling:
   interval_sigma: 2.0          # interval half-width = 2 x robust sigma of local floor and ceiling spread; NOT calibrated yet
 
 openings:
-  drop_same_room: true         # an opening joins two spaces (or a space and the outside); with the same room on both sides it is a see-through around a half wall, counter or shelf inside the room (with_ceiling O0, sill 0.88 m, 2.94 m wide)
-  merge_wall_faces: true       # one opening seen on both faces of a wall (planes < adjacency_wall_m apart, overlapping) is one opening; floor_only reported doors twice (JOURNAL)
+  drop_same_room: true         # an opening joins two spaces (or a space and the outside); with the same room on both sides it is a see-through around a half wall, counter or shelf inside the room (with_ceiling: a 2.94 m wide see-through at sill height 0.88 m inside one room)
+  merge_wall_faces: true       # one opening seen on both faces of a wall (planes < adjacency_wall_m apart, overlapping) is one opening; floor_only reported doors twice
   cell_m: 0.02                 # 2 cm cells along the wall: the opening-width gate is 2 cm
   image_height_m: 2.6          # wall images cover floor to 2.6 m (door heads and windows are below this)
   wall_tol_m: 0.05             # points within +-5 cm of the plane are wall (door trim and slight plane tilt)
-  through_beyond_m: 0.20       # a ray counts as passing through the plane only if its hit is >= 20 cm beyond it (drift doubles walls by 10-30 cm; M1 overlay). 0.50 was tried and reverted: it did not remove the 1.9 m with_ceiling opening and turned real doors into 'raised' (JOURNAL)
+  through_beyond_m: 0.20       # a ray counts as passing through the plane only if its hit is >= 20 cm beyond it (drift doubles walls by 10-30 cm, seen when the three captures are overlaid). 0.50 was tried and reverted: it did not remove the 1.9 m with_ceiling opening and turned real doors into 'raised'
   through_point_stride: 3      # use every 3rd hit per frame for ray crossings: 3x faster, still thousands of rays per metre of wall
   max_gap_bridge_m: 3.0        # runs of the same plane closer than 3 m are examined together (an opening can split a plane's runs)
   min_open_height_m: 0.4       # a column is open if it has >= 40 cm of continuous see-through height with no wall points
   min_opening_m: 0.45          # narrower openings are noise (a door is >= 0.6 m)
   max_opening_m: 3.0           # wider ones are not treated as doors
   merge_gap_m: 0.05            # open columns split by < 5 cm are one opening
-  bounded_max_gap_m: 0.30      # an opening is framed by wall within 30 cm on both sides; otherwise it is the end of a wall (added after 3 m long phantom 'openings' on with_ceiling, M2 log)
+  bounded_max_gap_m: 0.30      # an opening is framed by wall within 30 cm on both sides; otherwise it is the end of a wall (added after 3 m long phantom 'openings' appeared on with_ceiling)
   door_bottom_max_m: 0.15      # open down to within 15 cm of the floor = door / passage, else raised (window, pass-through). Briefly set to 0.35 on a wrong premise (sparse synthetic rays); with sensor-density rays a synthetic door reaches 0.10 m. Re-check on real doors
 
 intervals:
-  # PROVISIONAL and NOT calibrated: there is no ground truth. They are made conservative and are meant to be
-  # replaced by quantiles of real errors (cross-capture disagreement in M3, benchmark in M7).
+  # NOT calibrated against ground truth (none exists). Wall-length and room-area terms are calibrated on repeat captures only. Made conservative; meant to be
+  # replaced by quantiles of real errors (cross-capture disagreement, see scripts/calibrate_intervals.py).
   scale_rel_sigma: 0.0         # relative uncertainty of the metric scale: 0 for LiDAR; the image tiers set it from their scale estimate (scale.py)
   sigma_k: 2.0                 # half-width = 2 x the robust spread of the wall points around the fitted plane (~95% if the spread were Gaussian noise)
-  plane_position_sigma_m: 0.035  # systematic wall-plane position error added in quadrature to the fit spread. From M3: 42 facing-wall widths over the 3 capture pairs differ by a robust sigma of 7.1 cm = 2 x sqrt(2) x 3.5 cm (clean pair alone: 2.1 cm). A LOWER bound on error (two captures can share a bias) and fitted on these same samples; recalibrate against ground truth in M7
+  plane_position_sigma_m: 0.035  # systematic wall-plane position error added in quadrature to the fit spread. From the cross-capture comparison: 42 facing-wall widths over the 3 capture pairs differ by a robust sigma of 7.1 cm = 2 x sqrt(2) x 3.5 cm (clean pair alone: 2.1 cm). A LOWER bound on error (two captures can share a bias) and fitted on these same samples; recalibrate against ground truth
   extent_halfwidth_m: 0.54     # room-extent term added to every wall-length half-width. Repeat captures cut rooms at different places: same wall differs by a median 25-30 cm (scripts/calibrate_intervals.py, out/calibrate_intervals.txt). Robust 2-sigma fit; covers 24/34 wall pairs in- and out-of-sample. The 95% conformal fit (3.43 m) is set by one wall that spans two rooms in another capture (a segmentation failure, reported as such), so it was not used
   extent_area_rel: 0.255       # room-extent term for room areas, as a fraction of the area: conformal 95% fit over 10 room pairs (10/10 in-sample, 9/10 leave-one-pair-out). Fitted on the same 3 captures: re-fit against ground truth when it exists
   virtual_end_halfwidth_m: 0.15  # a wall end with no fitted plane sits on the mask edge, good to ~15 cm
@@ -114,7 +114,7 @@ register:
   icp_max_iter: 40             # per threshold; stops earlier when the update is below 0.1 mm / 0.001 deg
   icp_max_points: 150000       # random subset of the moving wall points, for speed
   min_fitness_5cm: 0.5         # a registration is accepted if >= 50% of wall points land within 5 cm of the other capture; below that it is reported as failed
-  plane_match_tol_m: 0.15      # wall segments match if their offsets differ by < 15 cm after registration (drift doubles walls by 10-30 cm, M1 overlay)
+  plane_match_tol_m: 0.15      # wall segments match if their offsets differ by < 15 cm after registration (drift doubles walls by 10-30 cm, seen when the three captures are overlaid)
   plane_min_overlap_m: 0.5     # ... and overlap along the wall by >= 0.5 m
   baseline_min_m: 0.8          # width pairs: distance between two facing planes, at least a narrow room
   baseline_max_m: 10.0         # ... and at most a house length
@@ -124,7 +124,7 @@ register:
   room_inside_fraction: 0.7    # a room's ceiling is taken from another capture only if >= 70% of the room lies inside one room of that capture
 
 drift:
-  enabled: true                # plane-anchored per-chunk correction (M4); false = poses used as-is
+  enabled: true                # plane-anchored per-chunk correction; false = poses used as-is
   chunk_frames: 40             # sampled frames per chunk (~9 s at stride 5): enough walls per chunk for a direction, short enough to follow drift
   min_vertical_points: 400     # a chunk needs this many vertical-surface analysis points to trust its wall direction
   min_resultant: 0.6           # ... and a 4-theta resultant length of at least 0.6 (walls agree on one direction)
@@ -133,22 +133,22 @@ drift:
   floor_median_chunks: 5       # same for floor height (one chunk of floor_only read +13 cm while its neighbours read 0..1 cm)
   max_yaw_deg: 6.0             # never rotate a chunk by more than 6 deg (largest drift seen in the diagnosis is 3.5 deg)
   max_floor_m: 0.15            # never shift a chunk's floor by more than 15 cm (largest seen is 8.5 cm)
-  assoc_tol_m: 0.35            # two views of a wall are associated if their offsets differ by < 35 cm (drift reaches ~60 cm over a capture, M4 diagnosis)
+  assoc_tol_m: 0.35            # two views of a wall are associated if their offsets differ by < 35 cm (drift reaches ~60 cm over a capture)
   assoc_min_overlap_m: 0.5     # ... and overlap along the wall by >= 0.5 m, from the same side (so the two faces of a partition are not mixed up)
   smooth_weight: 0.1           # weight of 'neighbouring chunks move together' relative to one wall association (weight 1)
   prior_weight: 0.01           # weak pull of every shift to zero; only fixes the free global translation
   huber_m: 0.05                # associations with a residual above 5 cm are down-weighted (wrong matches)
   irls_iters: 4                # re-weighting rounds
   jump_correction: true        # spread odometry relocalization jumps back along the path (needs drift.enabled)
-  use_yaw: true                # component switches for the M4 ablation: chunk heading correction ...
-  use_shift: false             # ... chunk wall-position shifts: OFF by default. In the M4 component ablation it worsened the path start-end gap on both captures with a loop (35->41 cm, 19->23 cm) and the cleanest capture pair (median width difference 1.6->5.3 cm); it helped only floor_only's widths (22->31% within the gate). Few pairs: low power, so kept as an option
+  use_yaw: true                # component switches for the drift ablation: chunk heading correction ...
+  use_shift: false             # ... chunk wall-position shifts: OFF by default. In the component ablation it worsened the path start-end gap on both captures with a loop (35->41 cm, 19->23 cm) and the cleanest capture pair (median width difference 1.6->5.3 cm); it helped only floor_only's widths (22->31% within the gate). Few pairs: low power, so kept as an option
   use_floor: true              # ... and chunk floor levelling
   jump_speed_mps: 5.0          # a step faster than 5 m/s is a tracker snap, not motion (walking 0.5 m/s; clean captures never exceed 1.5 m/s; floor_only has 17 m/s)
   holdout_fraction: 0.2        # share of wall associations held out to check that the shifts generalise
 
 sfm:
   frame_width_px: 960          # frames are resized to 960 px wide for SfM and depth (1920 px costs 4x with no gain in a 5 m room)
-  video_fps: 5.0               # sampled frames per second of video (M1: 2.5 fps registered too few frames)
+  video_fps: 5.0               # sampled frames per second of video (2.5 fps registered too few frames)
   focal_factor: 0.833          # prior focal length / longest image side: iPhone main camera; camera_matrix.csv gives 1599.7 px at 1920 px on all three samples
   sift_peak_threshold: 0.0067  # COLMAP default
   sift_max_features: 8192      # COLMAP default
@@ -156,12 +156,12 @@ sfm:
   guided_matching: false
   init_min_tri_angle_deg: 16.0 # COLMAP default
   min_registered: 3            # fewer registered images than this is not a reconstruction: the tier reports failure and no rooms
-  matcher: sift                # sift (COLMAP) or learned (DISK + LightGlue via kornia, CPU, much slower); see JOURNAL "video tier, learned matcher"
+  matcher: sift                # sift (COLMAP) or learned (DISK + LightGlue via kornia, CPU, much slower); off by default: 33% vs 18% of single_room frames placed, but 36 min for 191 frames (docs/technical_report.md section 2)
   learned_width_px: 640        # DISK input width: 3.4 s per frame on this CPU at 640 px
   learned_max_keypoints: 1024  # LightGlue cost grows with the square of the keypoint count; 1024 keeps a pair near 1-2 s on CPU
 
 scale:
-  # Measured on the registered stretches of two samples (M5): error of the depth-model scale +4.8% (single_room) and -26.0% (floor_only);
+  # Measured on the registered stretches of two samples: error of the depth-model scale +4.8% (single_room) and -26.0% (floor_only);
   # of the camera-height prior -17.0% and -19.8%; of the combination -10.8% and -21.7% (rms 17%). Two points only: treat as a rough order of magnitude.
   camera_height_m: 1.42        # median camera height above the floor over the three whole captures: 1.41, 1.40, 1.46 m
   camera_height_rel_sigma: 0.18  # the registered stretches had the phone at ~1.7 m (bias towards textured views near the ceiling): prior error rms 18.5%
@@ -188,22 +188,22 @@ checks:
   wall_slab_above_floor_m: [0.3, 1.6]    # slab used to look at walls: above floor clutter, below ceiling
   wall_normal_vertical_max: 0.2          # |n.up| below this counts as a vertical surface
 
-refine:                        # M7 fix: room-local wall refinement (src/floorplan/rooms/refine.py). false = M6 behaviour (the "before" of the fix loop)
-  enabled: true                # on after the M7 benchmark: 7 of 9 paired room dimensions agree better across captures, 2 worse (docs/fix_declaration.md)
+refine:                        # Fix A: room-local wall refinement (src/floorplan/rooms/refine.py). false = the pipeline before the fix
+  enabled: true                # 7 of 9 paired room dimensions agree better across captures, 2 worse (docs/fix_declaration.md)
   chunk_inside_min: 0.5        # a chunk belongs to a room visit if >= half of its camera positions are inside the room polygon
   min_visit_chunks: 2          # a visit of one chunk (~9 s) is too short to see opposite walls; keep the global planes then
-  visits: longest              # longest = walls from the room's longest visit (round-1 fix); median = median over all visits of >= min_visit_chunks (test of the two round-1 regressions, JOURNAL)
-  window_m: 0.15               # search +-15 cm around the global plane: same as register.plane_match_tol_m; per-chunk wall positions range ~14 cm (M7 H1)
+  visits: longest              # longest = walls from the room's longest visit (Fix A); median = median over all visits of >= min_visit_chunks (tested and rejected, docs/fix_declaration.md)
+  window_m: 0.15               # search +-15 cm around the global plane: same as register.plane_match_tol_m; per-chunk wall positions range ~14 cm
   end_margin_m: 0.2            # ignore 20 cm at each wall end (corners mix the perpendicular wall)
-  min_points: 40               # same as the M7 diagnosis: ~0.016 m2 of 2 cm voxels
+  min_points: 40               # same as the diagnosis script: ~0.016 m2 of 2 cm voxels
 
 damage:
-  model: google/owlvit-base-patch32   # chosen in M1 for CPU (0.5-1 s per frame); zero-shot, no damage-specific training, so accuracy is untested
+  model: google/owlvit-base-patch32   # chosen for CPU (0.5-1 s per frame); zero-shot, no damage-specific training, so accuracy is untested
   revision: cbc355fb364588351c5d51c7f74465e8e7ec6f72   # pinned; same as scripts/fetch_models.sh (offline runs use the cached snapshot)
   keyframe_every: 25           # frames (multiple of stray.frame_stride): about one keyframe per 6 s of walking, ~200 per large capture, bounded CPU time
   score_min: 0.33              # negative control (scripts/m6_negative_control.py): the 3 samples have no damage; regions vanish from 0.14, the highest single false box was 0.322 -> 0.33 is above every false box seen (569 boxes). Was 0.10 (model-card example). Recall on real damage untested and probably lowered
   max_box_fraction: 0.5        # a box covering more than half of the image is a whole wall or the floor, not a damage patch
-  surfaces: [wall, ceiling]    # report damage only on walls and ceilings: every prompt names a wall or ceiling, and on single_room the floor boxes were tile grout and a mat (decision made AFTER looking at that output, see JOURNAL M6)
+  surfaces: [wall, ceiling]    # report damage only on walls and ceilings: every prompt names a wall or ceiling, and on single_room the floor boxes were tile grout and a mat (chosen after looking at that output)
   min_views: 2                 # a region must be detected in >= 2 keyframes (single-frame detections are the commonest false positives)
   plane_inlier_m: 0.04         # depth pixels within 4 cm of the box's fitted plane are the surface; others are background seen through the box
   min_plane_fraction: 0.5      # at least half of the box's depth pixels must lie on one plane, else the box is not on a single surface and is dropped
@@ -211,7 +211,7 @@ damage:
   horizontal_normal_min: 0.9   # same as scene.horizontal_normal_min: floor or ceiling plane
   vertical_normal_max: 0.3     # |n_up| below this is a wall (looser than scene.vertical_normal_max because a box plane fit is noisier than a cloud normal)
   wall_match_m: 0.10           # a damaged wall point is assigned to a room wall edge within 10 cm of its plane
-  max_extent:                  # physical plausibility per class (m2 of surface; for cracks the longest box side in m). Chosen AFTER seeing 5-7 m2 'holes' in with_ceiling (JOURNAL M6); a hole bigger than a door is not a hole
+  max_extent:                  # physical plausibility per class (m2 of surface; for cracks the longest box side in m). Chosen after seeing 5-7 m2 'holes' in with_ceiling; a hole bigger than a door is not a hole
     hole: 0.5
     mold: 2.0
     stain: 4.0

@@ -95,7 +95,7 @@ def run_damage(src, plan: schema.Plan, inter: dict, cfg: dict, out_dir: Path | N
                score_min=d["score_min"], min_views=d["min_views"], seconds_detect=round(t_detect, 1), seconds_total=round(time.time() - t0, 1),
                live=live)
     note = ("Zero-shot box detections (OWL-ViT) projected through the LiDAR depth onto room surfaces. Accuracy is untested: no labelled damage exists, "
-            "scores are not calibrated, area is an upper bound (box footprint), and the model fires on clean surfaces (see JOURNAL M6). Treat every region as a candidate to check.")
+            "scores are not calibrated, area is an upper bound (box footprint), and the model fires on clean surfaces. Treat every region as a candidate to check.")
     if not reg:
         note = (f"No damage region above the detector threshold ({d['score_min']}). This is NOT proof of no damage: the threshold was set so that clean captures "
                 "report nothing, and recall on real damage is untested.")

@@ -1,7 +1,7 @@
 """Metric scale for an SfM reconstruction that has none: two independent estimates and their combination.
 
 1. depth model: every frame's depth was aligned to the SfM points with a factor a_i (model metres per SfM unit); the median over frames is
-   the global scale. Per-frame values vary a lot (M1: 0.53 to 2.66 against LiDAR), so the spread over frames gives its uncertainty.
+   the global scale. Per-frame values vary a lot (0.53 to 2.66 against LiDAR on 8 test frames), so the spread over frames gives its uncertainty.
 2. camera height: a hand-held phone is at chest height; the protocol asks for it. Height of the cameras above the floor in SfM units
    gives scale = prior height / measured height.
 They are combined in log space by inverse variance. Both uncertainties come from config (`scale:`), which cites the measurement.

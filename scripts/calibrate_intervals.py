@@ -7,7 +7,7 @@ quadrature to every half-width, so that the conformal 95% quantile of the pairs 
 Walls: s in metres. Rooms: s as a fraction of the room area.
 Leave-one-capture-pair-out: s is fitted on two pairs and the coverage is measured on the third (out of sample).
 The fitted values go to configs/default.yaml (intervals.extent_halfwidth_m, intervals.extent_area_rel) by hand, with this output cited.
-Usage: uv run python scripts/calibrate_intervals.py [bench/results/after/benchmark.json]   (run on a benchmark made WITHOUT these terms, i.e. both set to 0)
+Usage: uv run python scripts/calibrate_intervals.py [bench/results/refined/benchmark.json]   (run on a benchmark made WITHOUT these terms, i.e. both set to 0)
 """
 import json
 import math
@@ -79,4 +79,4 @@ def main(path):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else ROOT / "bench" / "results" / "after" / "benchmark.json")
+    main(sys.argv[1] if len(sys.argv) > 1 else ROOT / "bench" / "results" / "refined" / "benchmark.json")

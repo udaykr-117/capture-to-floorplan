@@ -14,7 +14,7 @@ from m7_diagnose import CFG, OUT, load
 from floorplan.register import register, to_other_polygon
 
 ROOT = Path(__file__).resolve().parents[1]
-plans = {n: json.loads((ROOT / "bench" / "results" / (sys.argv[1] if len(sys.argv) > 1 else "after") / f"{n}.json").read_text()) for n in ("with_ceiling", "floor_only", "single_room")}
+plans = {n: json.loads((ROOT / "bench" / "results" / (sys.argv[1] if len(sys.argv) > 1 else "refined") / f"{n}.json").read_text()) for n in ("with_ceiling", "floor_only", "single_room")}
 caps = {n: load(n) for n in plans}
 fig, axs = plt.subplots(1, 2, figsize=(22, 11))
 for ax, b in zip(axs, ("floor_only", "single_room")):
@@ -30,5 +30,5 @@ for ax, b in zip(axs, ("floor_only", "single_room")):
     for o in plans["with_ceiling"]["openings"]:
         ax.plot([o["p0"][0], o["p1"][0]], [o["p0"][1], o["p1"][1]], c="blue", lw=5)
     ax.set_aspect("equal"); ax.set_title(f"with_ceiling rooms (black, openings blue) vs {b} rooms registered (red dashed)")
-fig.savefig(OUT / f"seg_look_{sys.argv[1] if len(sys.argv) > 1 else 'after'}.png", dpi=60, bbox_inches="tight")
+fig.savefig(OUT / f"seg_look_{sys.argv[1] if len(sys.argv) > 1 else 'refined'}.png", dpi=60, bbox_inches="tight")
 print("wrote out/seg_look.png")

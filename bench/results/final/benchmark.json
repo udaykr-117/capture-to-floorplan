@@ -1,5 +1,5 @@
 {
- "variant": "after2a",
+ "variant": "final",
  "overrides": {
   "refine": {
    "enabled": true,
@@ -862,28 +862,28 @@
  },
  "timing_s": {
   "with_ceiling": {
-   "chunks": 40.86,
-   "align_and_drift": 23.92,
-   "walls": 4.27,
-   "frame_pass": 63.84,
-   "rooms_and_openings": 2.32,
-   "assemble": 0.9
+   "chunks": 40.39,
+   "align_and_drift": 31.03,
+   "walls": 4.11,
+   "frame_pass": 71.1,
+   "rooms_and_openings": 2.41,
+   "assemble": 1.04
   },
   "floor_only": {
-   "chunks": 16.99,
-   "align_and_drift": 5.52,
-   "walls": 0.88,
-   "frame_pass": 14.7,
-   "rooms_and_openings": 0.63,
-   "assemble": 0.14
+   "chunks": 26.64,
+   "align_and_drift": 13.19,
+   "walls": 0.92,
+   "frame_pass": 36.63,
+   "rooms_and_openings": 1.85,
+   "assemble": 0.43
   },
   "single_room": {
-   "chunks": 3.18,
-   "align_and_drift": 1.11,
-   "walls": 0.08,
-   "frame_pass": 4.55,
-   "rooms_and_openings": 0.17,
-   "assemble": 0.02
+   "chunks": 8.33,
+   "align_and_drift": 2.96,
+   "walls": 0.22,
+   "frame_pass": 12.12,
+   "rooms_and_openings": 0.49,
+   "assemble": 0.07
   }
  }
 }

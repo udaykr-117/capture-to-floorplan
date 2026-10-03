@@ -27,12 +27,14 @@ ROOT = Path(__file__).resolve().parents[1]
 SAMPLES = {"with_ceiling": ROOT / "single_scan_with_ceiling" / "c7d28f72c6", "floor_only": ROOT / "single_scan_floor_only" / "1a8384c3f6",
            "single_room": ROOT / "single_room" / "c00a170fe1"}
 PAIRS = [("with_ceiling", "floor_only"), ("with_ceiling", "single_room"), ("floor_only", "single_room")]
-OFF2 = {"keep_narrow_rooms": False, "split_connectors": False}
-VARIANTS = {"before": {"refine": {"enabled": False}, "rooms": OFF2},                                           # round 1 before
-            "after": {"refine": {"enabled": True, "visits": "longest"}, "rooms": OFF2},                                             # round 1 after = round 2 before
-            "after2a": {"refine": {"enabled": True, "visits": "longest"}, "rooms": {"keep_narrow_rooms": True, "split_connectors": False}},  # round 2 (a)
-            "after2": {"refine": {"enabled": True}, "rooms": {"keep_narrow_rooms": True, "split_connectors": True}},    # round 2 (a)+(b)
-            "after3": {"refine": {"enabled": True, "visits": "median"}, "rooms": {"keep_narrow_rooms": True, "split_connectors": False}}}  # median over visits
+OFF = {"keep_narrow_rooms": False, "split_connectors": False}
+VARIANTS = {
+    "before": {"refine": {"enabled": False}, "rooms": OFF},                                                  # the pipeline before the fixes
+    "refined": {"refine": {"enabled": True, "visits": "longest"}, "rooms": OFF},                              # Fix A only
+    "final": {"refine": {"enabled": True, "visits": "longest"}, "rooms": {"keep_narrow_rooms": True, "split_connectors": False}},   # Fix A + Fix B: the shipped pipeline
+    "corridor_split": {"refine": {"enabled": True}, "rooms": {"keep_narrow_rooms": True, "split_connectors": True}},               # Fix B with corridors cut out of rooms (not shipped)
+    "median_visits": {"refine": {"enabled": True, "visits": "median"}, "rooms": {"keep_narrow_rooms": True, "split_connectors": False}},  # tested alternative to Fix A (rejected)
+}
 
 
 def wall_seg(w) -> Seg:
@@ -197,5 +199,5 @@ def main(variant: str):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--variant", choices=list(VARIANTS), default="after")
+    ap.add_argument("--variant", choices=list(VARIANTS), default="final")
     main(ap.parse_args().variant)

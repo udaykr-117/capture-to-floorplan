@@ -14,13 +14,13 @@ property), all on CPU. Every "accuracy" number below is agreement between those 
 | Video | any clip | Runs; **no plan** on the samples: structure from motion places 4-18% of the frames (plain walls, blur). Says so with the reason, never invents rooms. |
 | Photo | room folders (JPEG, HEIC) | Runs; **no plan** on photo sets simulated from the videos (0 frames placed). Real photo sets untested. |
 
-| What the three captures show (shipped pipeline, `out/final_bench_after2a.txt`) | Value |
+| What the three captures show (shipped pipeline, `out/final_bench_final.txt`) | Value |
 |---|---|
 | Room widths agreeing within 1 cm or 0.5% | 3 of 12 (median difference 7.7 cm) |
-| Same wall's length, median difference between captures | 24.7 cm (was 29.7 cm before the second fix) |
+| Same wall's length, median difference between captures | 24.7 cm (was 29.7 cm before Fix B) |
 | Room area, median difference | 1.04 m2, 15% (was 2.03 m2) |
 | Two whole-house footprints, drift correction off / on | 14% / 4% apart |
-| Intervals that contain the real difference: walls / room areas | 79% / 100% (was 24% / 30% before calibration) |
+| Intervals that contain the real difference: walls / room areas | 79% / 100% (was 24% / 30% before the calibration term) |
 | Openings found in the three captures | 3 / 7 / 1 (detection disagrees: gate untested, almost surely fails) |
 | Damage regions on the clean samples | 0 (threshold set by negative control; recall on real damage untested) |
 
@@ -67,7 +67,7 @@ Example: `uv run --group models plan run single_scan_with_ceiling/c7d28f72c6`.
 bash scripts/reproduce.sh          # logs in out/
 ```
 Single steps:
-- `uv run python scripts/run_benchmark.py --variant before|after|after2a|after2|after3` (fix loops, ~5 min each; `after2a` is what ships)
+- `uv run python scripts/run_benchmark.py --variant before|refined|final` (the fix loop: before, after Fix A, after Fix A + Fix B = shipped; also `corridor_split`, `median_visits`: tested alternatives)
 - `uv run python scripts/m4_ablation.py` (drift off/on), `scripts/calibrate_intervals.py` (interval calibration)
 - `scripts/m5_tier_eval.py`, `scripts/m5_photo_eval.py` (video and photo tiers), `scripts/m6_negative_control.py` (damage threshold)
 - `scripts/m7_diagnose.py`, `scripts/seg_*.py`, `scripts/refine_visits.py`, `scripts/openings_xcap.py` (the diagnoses behind the fixes)
@@ -75,10 +75,11 @@ Single steps:
 Benchmark outputs that the reports quote are committed in `bench/results/`.
 
 ## The fix loop in one paragraph
-Worst gate = repeatability. Round 1: wall positions drift by ~3.5 cm over a capture, so each room's walls are re-measured from its longest single
-visit (paired room widths 1/9 -> 3/9 within the gate, median 9.3 -> 5.3 cm). Round 2: rooms are cut at different places in different captures
-(a corridor belongs to different rooms), so narrow spaces are kept as rooms (same-wall length 29.7 -> 24.7 cm, areas 2.03 -> 1.04 m2). Both
-declarations, the predictions made before running, and where each prediction missed are in `docs/fix_declaration.md`; the gate still fails.
+Worst gate = repeatability. Fix A: wall positions drift by about 3.5 cm over a capture, so each room's walls are re-measured from its longest single
+visit (paired room widths 1/9 -> 3/9 within the gate, median 9.3 -> 5.3 cm). Fix B: rooms are cut at different places in different captures (a
+corridor belongs to different rooms), so narrow spaces are kept as rooms (same-wall length 29.7 -> 24.7 cm, areas 2.03 -> 1.04 m2). The one-page
+declaration with the predictions is `docs/fix_declaration.md`; before/after, where each prediction missed and the code diffs are in
+`docs/fix_loop.md`. The gate still fails.
 
 ## Tests
 ```
@@ -90,6 +91,6 @@ uv run --group models pytest -q          # 74 tests
   ceilings, openings, room-local refinement), `drift/` (chunk correction, odometry jumps), `tiers/` (video/photo), `damage/` (detector, projection,
   rules), `sfm.py`, `depth.py`, `scale.py`, `intervals.py`, `register.py`, `pipeline.py`, `cli.py`, `report/render.py`.
 - `configs/default.yaml`: every threshold with a one-line justification. `configs/rules.yaml`: concealed-damage rules and scope actions.
-- `docs/`: `capture_protocol.md`, `device_matrix.md`, `technical_report.md`, `benchmark_report.md`, `compliance_matrix.md`, `fix_declaration.md`.
+- `docs/`: `capture_protocol.md`, `device_matrix.md`, `technical_report.md`, `benchmark_report.md`, `compliance_matrix.md`, `fix_declaration.md`, `fix_loop.md`.
 - `scripts/`: benchmark, reproduction, calibration and diagnosis scripts. `tests/`: pytest. `bench/results/`: benchmark outputs.
 - `DISCLOSURE.md`: every external model, library and reference.

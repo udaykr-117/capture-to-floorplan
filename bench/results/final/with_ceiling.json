@@ -2213,12 +2213,12 @@
   "report": {}
  },
  "timing_s": {
-  "chunks": 40.86,
-  "align_and_drift": 23.92,
-  "walls": 4.27,
-  "frame_pass": 63.84,
-  "rooms_and_openings": 2.32,
-  "assemble": 0.9
+  "chunks": 40.39,
+  "align_and_drift": 31.03,
+  "walls": 4.11,
+  "frame_pass": 71.1,
+  "rooms_and_openings": 2.41,
+  "assemble": 1.04
  },
  "limitations": [
   "No ground truth: accuracy of every value is untested. Wall-length and room-area intervals are calibrated only against repeat captures of one property (a lower bound); other intervals are provisional.",
@@ -2226,7 +2226,7 @@
   "Spaces joined by an opening wider than 1.2 m are merged into one room; rooms are assumed rectilinear.",
   "Openings use see-through evidence: mirrors and glass can create phantom openings, windows to the outside are not detected.",
   "Room-local refinement: wall positions of 6 of 7 rooms re-measured from that room's longest single visit (drift between visits removed from room dimensions); rooms are refined independently, so a shared wall can differ by a few cm between its two rooms.",
-  "Drift: corrected per chunk of 40 sampled frames by: chunk heading, floor level. Assumes rectilinear walls and a flat floor; drift without wall evidence is not corrected; wall-matching shifts are not applied (they did not improve agreement in the M4 ablation)."
+  "Drift: corrected per chunk of 40 sampled frames by: chunk heading, floor level. Assumes rectilinear walls and a flat floor; drift without wall evidence is not corrected; wall-matching shifts are not applied (they did not improve agreement in the ablation)."
  ],
  "config_sha256": "d1e9f6c9388d4a3b"
 }

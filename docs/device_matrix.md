@@ -5,6 +5,13 @@ property (no ground truth exists: all numbers are agreement between repeat captu
 a tape). The capture device of the samples is unknown (1920x1440 RGB, 256x192 depth). No iPhone was available to us, so no tier
 has been run on a capture we made ourselves.
 
+Which tier runs on which hardware:
+
+| Hardware | LiDAR tier | Video tier | Photo tier |
+|---|---|---|---|
+| iPhone 12 Pro and newer Pro / Pro Max (incl. 15 Pro, 16 Pro), iPad Pro with LiDAR | yes | yes | yes |
+| iPhone 15 / 15 Plus / 16 and other iPhones without LiDAR | no (no depth sensor) | yes | yes |
+
 | Tier | Phone | Capture app | Processing (our side) | What it delivers on the samples | Status |
 |---|---|---|---|---|---|
 | LiDAR | iPhone 12 Pro or newer Pro/Pro Max, iPad Pro with LiDAR (ARKit depth + poses) | Stray Scanner (free; the app the protocol names) | any laptop, CPU only; measured 9-174 s per capture depending on its length, + ~1-1.6 s per keyframe for the damage pass | Full plan: rooms, walls, areas, ceilings (where the ceiling was scanned), openings, adjacency, damage pass. Between repeat captures: room widths 3 of 12 within 1 cm / 0.5% (median 7.7 cm), same wall's length median 24.7 cm, room area median 1.04 m2 (15%), two whole-house footprints 4% apart. Wall-plane position error sigma ~3.5 cm (cross-capture). Openings found 3 / 7 / 1 in the three captures. Opening widths and ceiling heights: **untested** against ground truth | runs; accuracy gates not met or untested |

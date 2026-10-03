@@ -3,6 +3,10 @@
  "overrides": {
   "refine": {
    "enabled": false
+  },
+  "rooms": {
+   "keep_narrow_rooms": false,
+   "split_connectors": false
   }
  },
  "pooled_room_dims": {
@@ -29,9 +33,9 @@
    "gate_pass": null
   },
   "openings": {
-   "n": 2,
-   "inside": 0.5,
-   "median_abs": 0.06,
+   "n": 1,
+   "inside": 0.0,
+   "median_abs": 0.09999999999999998,
    "gate_pass": null
   }
  },
@@ -426,8 +430,8 @@
    ],
    "openings": [],
    "n_openings": [
-    4,
-    9
+    3,
+    7
    ],
    "plane_pairs": [
     {
@@ -637,7 +641,7 @@
    ],
    "openings": [],
    "n_openings": [
-    4,
+    3,
     1
    ],
    "plane_pairs": [
@@ -776,26 +780,17 @@
    ],
    "openings": [
     {
-     "opening_a": "O6",
+     "opening_a": "O5",
      "opening_b": "O0",
      "width_a": 0.86,
      "width_b": 0.76,
      "delta": -0.09999999999999998,
      "halfwidth": 0.028284271247461926,
      "centre_dist_m": 0.132
-    },
-    {
-     "opening_a": "O7",
-     "opening_b": "O0",
-     "width_a": 0.78,
-     "width_b": 0.76,
-     "delta": -0.020000000000000018,
-     "halfwidth": 0.028284271247461926,
-     "centre_dist_m": 0.196
     }
    ],
    "n_openings": [
-    9,
+    7,
     1
    ],
    "plane_pairs": [
@@ -836,28 +831,28 @@
  },
  "timing_s": {
   "with_ceiling": {
-   "chunks": 45.03,
-   "align_and_drift": 20.6,
-   "walls": 2.03,
-   "frame_pass": 30.94,
-   "rooms_and_openings": 0.67,
-   "assemble": 0.37
+   "chunks": 49.25,
+   "align_and_drift": 29.16,
+   "walls": 4.22,
+   "frame_pass": 50.51,
+   "rooms_and_openings": 1.81,
+   "assemble": 0.94
   },
   "floor_only": {
-   "chunks": 11.59,
-   "align_and_drift": 12.46,
-   "walls": 2.03,
-   "frame_pass": 33.23,
-   "rooms_and_openings": 1.14,
-   "assemble": 0.43
+   "chunks": 16.73,
+   "align_and_drift": 5.48,
+   "walls": 0.93,
+   "frame_pass": 14.75,
+   "rooms_and_openings": 0.37,
+   "assemble": 0.15
   },
   "single_room": {
-   "chunks": 8.58,
-   "align_and_drift": 2.99,
-   "walls": 0.23,
-   "frame_pass": 10.01,
-   "rooms_and_openings": 0.46,
-   "assemble": 0.08
+   "chunks": 3.22,
+   "align_and_drift": 1.12,
+   "walls": 0.1,
+   "frame_pass": 4.59,
+   "rooms_and_openings": 0.1,
+   "assemble": 0.03
   }
  }
 }

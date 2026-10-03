@@ -9,10 +9,10 @@ rm -rf out/cache
 
 echo "== 1. fix loop: before / after (repeatability, wall lengths, areas, openings, calibration, timing)"
 uv run python scripts/run_benchmark.py --variant before | tee out/final_bench_before.txt
-uv run python scripts/run_benchmark.py --variant after  | tee out/final_bench_after.txt     # round 1 after = round 2 before
-uv run python scripts/run_benchmark.py --variant after2a | tee out/final_bench_after2a.txt  # round 2, shipped
-uv run python scripts/run_benchmark.py --variant after2  | tee out/final_bench_after2.txt   # round 2 with the corridor split (not shipped)
-uv run python scripts/run_benchmark.py --variant after3  | tee out/final_bench_after3.txt   # median over visits (tested for the round-1 regressions, rejected)
+uv run python scripts/run_benchmark.py --variant refined        | tee out/final_bench_refined.txt         # Fix A only
+uv run python scripts/run_benchmark.py --variant final          | tee out/final_bench_final.txt           # Fix A + Fix B: the shipped pipeline
+uv run python scripts/run_benchmark.py --variant corridor_split | tee out/final_bench_corridor_split.txt  # Fix B with corridors cut out (not shipped)
+uv run python scripts/run_benchmark.py --variant median_visits  | tee out/final_bench_median_visits.txt   # alternative to Fix A (rejected)
 
 echo "== 2. drift on/off ablation (stitched footprint, wall sharpness, loop gap, cross-capture agreement)"
 uv run python scripts/m4_ablation.py | tee out/final_drift_ablation.txt

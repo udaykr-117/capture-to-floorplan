@@ -43,7 +43,7 @@ def load(name):
 
 
 WIN = 0.15        # search window around the global plane: the first version used +-3 cm (plane_tol_m), which clips any displacement > 3 cm
-                  # and biases every chunk offset toward the global plane (a mistake that made H1 and H3 look rejected; see JOURNAL M7)
+                  # and biases every chunk offset toward the global plane (a first version with +-3 cm hid the effect)
 
 
 def per_chunk_offsets(seg, chunk_pts):

@@ -194,7 +194,7 @@ def build_plan(src: Source, cfg: dict, tier: str = "lidar", drift: bool | None =
                       floor_level_range_cm=[round(float(np.min(dg["dy_cm"])), 1), round(float(np.max(dg["dy_cm"])), 1)] if d["use_floor"] else [0.0, 0.0],
                       odometry_jumps=[dict(frames=j["frames"], jump_cm=round(j["jump_m"] * 100, 1), spread_over_frames=j["spread_over_frames"]) for j in jumps])
         limits.append(f"Drift: corrected per chunk of {d['chunk_frames']} sampled frames by: {', '.join(parts) or 'nothing'}. Assumes rectilinear walls and a flat floor; "
-                      "drift without wall evidence is not corrected" + ("" if d["use_shift"] else "; wall-matching shifts are not applied (they did not improve agreement in the M4 ablation)") + ".")
+                      "drift without wall evidence is not corrected" + ("" if d["use_shift"] else "; wall-matching shifts are not applied (they did not improve agreement in the ablation)") + ".")
     else:
         limits.append("Drift is NOT corrected (poses used as-is): floor and wall positions can drift by several cm to tens of cm across a capture.")
     plan = schema.Plan(

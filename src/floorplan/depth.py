@@ -1,6 +1,6 @@
 """Single-image metric depth (Depth Anything V2 metric indoor, small, CPU) and its alignment to SfM sparse points.
 
-The model's metric scale is unreliable per image (M1: needed scale vs LiDAR 0.53 to 2.66). Its SHAPE is usable, so every image's depth is
+The model's metric scale is unreliable per image (needed scale vs LiDAR 0.53 to 2.66 on 8 test frames). Its SHAPE is usable, so every image's depth is
 rescaled to agree with the SfM sparse points of that image: that makes all views consistent with each other in the SfM scale.
 """
 from dataclasses import dataclass

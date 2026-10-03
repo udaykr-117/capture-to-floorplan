@@ -78,31 +78,28 @@ Results before calibration: wall lengths 8/34 inside (24%), room areas 3/10 (30%
 at different places in different captures (the same wall's length differs by a median 25-31 cm even between plane-backed corners), which the
 plane-spread terms do not model. I added one room-extent term per quantity, fitted on the capture pairs and checked leave-one-pair-out
 (`scripts/calibrate_intervals.py`): room area ±25.5% (conformal 95%; 10/10 in-sample, 9/10 held out) and wall length ±0.54 m (robust 2σ;
-24/34 in- and out-of-sample; 27/34 with the shipped round-2 pipeline). Wall intervals stay under-covered (71-79%) on purpose: the 95% fit is ±3.4 m, set by one wall that spans two rooms in
+24/34 in- and out-of-sample; 27/34 with the shipped pipeline). Wall intervals stay under-covered (71-79%) on purpose: the 95% fit is ±3.4 m, set by one wall that spans two rooms in
 another capture, which is a segmentation failure to fix, not an uncertainty to print on every wall. Openings: 1 matched pair, not inside; ceilings:
 no repeat, no check. Image tiers: no plans, so nothing to calibrate; their scale term (≥ 20%) is from the three scale errors measured in §2.
 The 3.5 cm systematic term was fitted on the same capture pairs, so this check is partly circular; with ground truth the intervals would be
 recalibrated per tier from error quantiles.
 
 ## 6. Fix loop
-Declaration, prediction and result: `docs/fix_declaration.md`; regenerate with `run_benchmark.py --variant before|after|after2a|after2|after3` (`after2a` ships).
-**Round 1.** Worst gate: repeatability (room dimensions within 1 cm or 0.5%: 1 of 10 passed, median 7.7 cm). Root cause tested against six hypotheses; the
-evidence supports drift blur (one wall's position moves by a robust 3.5 cm over a capture, and widths measured only in chunks that see both walls
-agree better: 4.9 → 2.6 cm on the biggest pair) and rejects fit noise, per-run offsets, a mode estimator and ambiguous matches. My first version of
-the drift test searched only ±3 cm around the plane and wrongly showed ~1 cm; pictures of the worst pairs (whole walls displaced 10-20 cm)
-exposed it. Fix: each room's walls are re-measured from the room's longest single visit. Result on the same 9 dimensions: median 9.3 → 5.3 cm,
-pass 1/9 → 3/9, 7 of 9 better, 2 worse; the gate still fails.
-Unpaired, as the benchmark prints it: 1/10 → 3/12 within the gate, median 7.7 → 7.7 cm, 90th percentile 13.0 → 17.1 cm (worse). Costs not
-predicted: floor_only's footprint +2.7 m2 and room overlaps up to 0.14 m2 at shared walls.
-Why it fell short: refinement removes drift BETWEEN visits but not within one. The two regressions come from one room of floor_only whose walls were measured from its first seconds; two visits of the same room inside one capture differ by up to 7 cm (`scripts/refine_visits.py`). Taking the median over all visits instead was tried and rejected by a rule set before running (room dimensions 3/12 → 2/11, median 7.7 → 10.1 cm).
+Declaration (written before the run): `docs/fix_declaration.md`. Before/after, prediction against actual, and why it fell short: `docs/fix_loop.md`.
+Regenerate: `run_benchmark.py --variant before|refined|final`; the code diffs are `git diff fix-a-before fix-a-after` and `git diff fix-b-before fix-b-after`.
 
-**Round 2** (same gate, measured as the length of the same wall in two captures: 2/34, median 29.7 cm). Pictures of the three captures registered
-on each other showed a 0.9 m corridor that is part of the top room in one capture and of the bottom room in the others: a corridor never gets a
-room seed (all floor is < 0.5 m from a wall), so the flood hands it to whichever neighbour reaches it first. The declared fix (cut corridors out of
-rooms) first did not fire at all: debugging showed the polygon step swallowing narrow spaces. Keeping narrow spaces (grid lines along their edges,
-1 m2 minimum) helped: same-wall median 29.7 → 24.7 cm, room areas 2.03 → 1.04 m2, footprints of the two whole-property captures 5.4% → 4.1%
-apart. Cutting corridors out as well over-split (a notch became a room in one capture) and made walls worse (41.8 cm), so it ships off. Predicted
-10-20 cm for walls: missed; predicted ~1 m2 for areas: met; gate still fails.
+**Worst gate: repeatability.** Room widths within 1 cm or 0.5% across captures: 1 of 10, median difference 7.7 cm. Hypothesis: drift blur: one
+wall's position moves by a robust 3.5 cm (range 14 cm) over a capture, so a plane fitted to the whole capture is an average of several positions.
+Four other causes (fit noise, per-segment offsets, skirting bias, wrong correspondences) were tested and rejected. **Fix A:** re-measure each room's
+walls from that room's longest single visit. Result on the same 9 room widths: median 9.3 -> 5.3 cm, within the gate 1/9 -> 3/9, 7 of 9 better and 2
+worse. Predicted about 4 cm and 20-40%: partly met; footprint growth (+2.7 m2 in floor_only) and room overlaps (up to 0.14 m2) were not predicted.
+The gate still fails. Refinement removes drift between visits, not within one: two visits of one room differ by up to 7 cm. A median over all visits
+was tested and rejected (3/12 -> 2/11 within the gate).
+
+**Fix B: corridors as rooms.** Remaining failure: the same wall's length, 2 of 34 within the gate, median 29.7 cm. A corridor about 0.9 m wide
+belongs to different rooms in different captures, because rooms are seeded only where the floor is at least 0.5 m from every wall. Keeping narrow
+spaces as rooms: same-wall median 29.7 -> 24.7 cm, room areas 2.03 -> 1.04 m2, whole-house footprints 5.4% -> 4.1% apart. Predicted 10-20 cm: missed.
+Cutting corridors out of rooms as well over-split and made walls worse (41.8 cm), so it ships off.
 
 ## 7. Known failure modes
 - **Low texture, blur** (video/photo): SfM fragments; the tier says "no plan". Protocol asks for slow turns and furniture in view.

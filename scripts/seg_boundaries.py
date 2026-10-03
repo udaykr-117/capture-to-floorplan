@@ -7,7 +7,7 @@ from pathlib import Path
 from shapely.geometry import LineString, Polygon
 
 ROOT = Path(__file__).resolve().parents[1]
-d = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "bench" / "results" / "after"
+d = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "bench" / "results" / "refined"
 for n in ("with_ceiling", "floor_only", "single_room"):
     plan = json.loads((d / f"{n}.json").read_text())
     rooms = plan["rooms"]

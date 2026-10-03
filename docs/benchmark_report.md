@@ -26,15 +26,15 @@ or tape ground truth). We had no iPhone, so the set is the three LiDAR captures 
 | Video wall lengths ±3% | video | no plan (4-18% of frames registered) | **fails** |
 | Calibration at every tier | all | LiDAR: see §4; image tiers: no plans to calibrate | partial |
 
-## 2. Repeatability table (LiDAR, plan output, shipped pipeline; `out/final_bench_after2a.txt`)
+## 2. Repeatability table (LiDAR, plan output, shipped pipeline; `out/final_bench_final.txt`)
 | Capture pair | Rooms matched (IoU >= 0.5) | Room dimensions: n, median abs diff, pass | Same wall length: n, median abs diff, pass | Room area: n, median abs diff |
 |---|---|---|---|---|
 | floor_only vs with_ceiling | 6 | 7, 5.3 cm, 2/7 | 20, 24.2 cm, 0/20 | 6, 1.16 m2 |
 | single_room vs with_ceiling | 2 | 1, 0.0 cm, 1/1 | 5, 29.3 cm, 1/5 | 2, 1.56 m2 |
 | single_room vs floor_only | 2 | 4, 12.0 cm, 0/4 | 9, 18.0 cm, 1/9 | 2, 1.04 m2 |
 | **pooled** | 10 | **12, 7.7 cm, 3/12 (25%)** | **34, 24.7 cm, 2/34 (6%)** | **10, 1.04 m2 (15%)** |
-Two fix loops moved these numbers (`docs/fix_declaration.md`): room dimensions 1/10 -> 3/12 (round 1), same-wall length 29.7 -> 24.7 cm and room
-area 2.03 -> 1.04 m2 (round 2). Wall lengths still disagree far more than room dimensions because a corridor is a separate room in one capture
+Two fixes moved these numbers (`docs/fix_loop.md`): room widths 1/10 -> 3/12 within the gate (Fix A), same-wall length 29.7 -> 24.7 cm and room
+area 2.03 -> 1.04 m2 (Fix B). Wall lengths still disagree far more than room dimensions because a corridor is a separate room in one capture
 and part of a neighbouring room in the others: room segmentation, not measurement noise, is the main open problem of the LiDAR tier.
 
 ## 3. Drift ablation (stitched footprint, correction off vs on, shipped pipeline; `out/final_drift_ablation.txt`)
@@ -52,12 +52,12 @@ Without ground truth, the test is: does the interval of the difference between t
 `scripts/calibrate_intervals.py`, `out/calibrate_intervals.txt`:
 | Quantity | Before calibration | Extent term added | After, in-sample | After, leave-one-capture-pair-out |
 |---|---|---|---|---|
-| Wall length | 8/34 (24%) inside | ±0.54 m (robust 2σ) | 24/34 (71%); 27/34 (79%) with the shipped round-2 pipeline | 24/34 (71%) |
+| Wall length | 8/34 (24%) inside | ±0.54 m (robust 2σ) | 24/34 (71%); 27/34 (79%) with the shipped pipeline | 24/34 (71%) |
 | Room area | 3/10 (30%) inside | ±25.5% of area (conformal 95%) | 10/10 | 9/10 |
 | Opening width | 0/1 matched pair inside | none (too few pairs) | 0/1 | n/a |
 Wall intervals still under-cover (71% vs 95%) by choice: covering the remaining walls needs ±3.4 m, set by one wall that spans two rooms in another
 capture. The fitted terms come from the same three captures (no independent data), so they are a lower bound on the true uncertainty.
-Benchmark re-run with both terms in the pipeline: walls 24/34 (71%) and room areas 10/10 inside, as fitted (`out/final_bench_after.txt`); with the shipped round-2 pipeline walls 27/34 (79%), areas 10/10 (`out/final_bench_after2a.txt`). The terms were fitted before round 2 and not refitted.
+Benchmark re-run with both terms in the pipeline: walls 24/34 (71%) and room areas 10/10 inside, as fitted (`out/final_bench_refined.txt`); with the shipped pipeline walls 27/34 (79%), areas 10/10 (`out/final_bench_final.txt`). The terms were fitted before Fix B and not refitted.
 
 ## 5. Head-to-head vs a consumer app
 Not done: it needs an iPhone with LiDAR running the app on the same rooms, and we had none. No numbers are claimed.

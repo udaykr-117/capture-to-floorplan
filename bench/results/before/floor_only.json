@@ -314,10 +314,9 @@
     }
    ],
    "openings": [
+    "O3",
     "O4",
-    "O5",
-    "O6",
-    "O7"
+    "O5"
    ]
   },
   {
@@ -475,7 +474,7 @@
     }
    ],
    "openings": [
-    "O3"
+    "O2"
    ]
   },
   {
@@ -755,12 +754,10 @@
    "openings": [
     "O0",
     "O1",
-    "O2",
+    "O3",
     "O4",
     "O5",
-    "O6",
-    "O7",
-    "O8"
+    "O6"
    ]
   },
   {
@@ -978,7 +975,7 @@
     }
    ],
    "openings": [
-    "O2"
+    "O1"
    ]
   },
   {
@@ -1316,8 +1313,7 @@
     }
    ],
    "openings": [
-    "O0",
-    "O1"
+    "O0"
    ]
   },
   {
@@ -1535,44 +1531,13 @@
     }
    ],
    "openings": [
-    "O8"
+    "O6"
    ]
   }
  ],
  "openings": [
   {
    "id": "O0",
-   "kind": "door",
-   "p0": [
-    2.4947130056158535,
-    4.335564710331084
-   ],
-   "p1": [
-    2.4947130056158535,
-    5.105564710331084
-   ],
-   "width": {
-    "value": 0.76,
-    "unit": "m",
-    "interval": {
-     "low": 0.74,
-     "high": 0.78,
-     "method": "bracket: see-through extent to wall-to-wall (provisional)",
-     "calibrated": false
-    },
-    "status": "measured",
-    "note": null,
-    "source": null
-   },
-   "bottom_m": 0.06,
-   "top_m": 1.58,
-   "rooms": [
-    "R5",
-    "R3"
-   ]
-  },
-  {
-   "id": "O1",
    "kind": "door",
    "p0": [
     2.6433603764326894,
@@ -1603,7 +1568,7 @@
    ]
   },
   {
-   "id": "O2",
+   "id": "O1",
    "kind": "door",
    "p0": [
     5.057043864488941,
@@ -1634,7 +1599,7 @@
    ]
   },
   {
-   "id": "O3",
+   "id": "O2",
    "kind": "door",
    "p0": [
     4.005632492616471,
@@ -1665,7 +1630,7 @@
    ]
   },
   {
-   "id": "O4",
+   "id": "O3",
    "kind": "raised",
    "p0": [
     0.8949741835571172,
@@ -1696,7 +1661,7 @@
    ]
   },
   {
-   "id": "O5",
+   "id": "O4",
    "kind": "raised",
    "p0": [
     2.4449741835571173,
@@ -1727,7 +1692,7 @@
    ]
   },
   {
-   "id": "O6",
+   "id": "O5",
    "kind": "door",
    "p0": [
     3.3949741835571174,
@@ -1758,38 +1723,7 @@
    ]
   },
   {
-   "id": "O7",
-   "kind": "raised",
-   "p0": [
-    3.535929643678194,
-    1.0923739499804865
-   ],
-   "p1": [
-    4.3359296436781944,
-    1.0923739499804865
-   ],
-   "width": {
-    "value": 0.78,
-    "unit": "m",
-    "interval": {
-     "low": 0.76,
-     "high": 0.8,
-     "method": "bracket: see-through extent to wall-to-wall (provisional)",
-     "calibrated": false
-    },
-    "status": "measured",
-    "note": null,
-    "source": null
-   },
-   "bottom_m": 0.24,
-   "top_m": 1.44,
-   "rooms": [
-    "R1",
-    "R3"
-   ]
-  },
-  {
-   "id": "O8",
+   "id": "O6",
    "kind": "raised",
    "p0": [
     2.6602907382972196,
@@ -1844,16 +1778,16 @@
     "opening_id": "O0"
    },
    {
-    "a": "R5",
-    "b": "R3",
+    "a": "R3",
+    "b": "R4",
     "via": "opening",
     "opening_id": "O1"
    },
    {
-    "a": "R3",
-    "b": "R4",
+    "a": "R1",
+    "b": "R3",
     "via": "opening",
-    "opening_id": "O2"
+    "opening_id": "O3"
    },
    {
     "a": "R1",
@@ -1868,22 +1802,10 @@
     "opening_id": "O5"
    },
    {
-    "a": "R1",
-    "b": "R3",
-    "via": "opening",
-    "opening_id": "O6"
-   },
-   {
-    "a": "R1",
-    "b": "R3",
-    "via": "opening",
-    "opening_id": "O7"
-   },
-   {
     "a": "R3",
     "b": "R6",
     "via": "opening",
-    "opening_id": "O8"
+    "opening_id": "O6"
    },
    {
     "a": "R1",
@@ -1914,20 +1836,20 @@
   "report": {}
  },
  "timing_s": {
-  "chunks": 11.59,
-  "align_and_drift": 12.46,
-  "walls": 2.03,
-  "frame_pass": 33.23,
-  "rooms_and_openings": 1.14,
-  "assemble": 0.43
+  "chunks": 16.73,
+  "align_and_drift": 5.48,
+  "walls": 0.93,
+  "frame_pass": 14.75,
+  "rooms_and_openings": 0.37,
+  "assemble": 0.15
  },
  "limitations": [
-  "No ground truth: accuracy of every value is untested; intervals are provisional and uncalibrated.",
+  "No ground truth: accuracy of every value is untested. Wall-length and room-area intervals are calibrated only against repeat captures of one property (a lower bound); other intervals are provisional.",
   "Damage detection has not been run on this plan (separate pass: `plan run` does it with the models group installed).",
   "Spaces joined by an opening wider than 1.2 m are merged into one room; rooms are assumed rectilinear.",
   "Openings use see-through evidence: mirrors and glass can create phantom openings, windows to the outside are not detected.",
   "No ceiling was captured in any room: all ceiling heights are unmeasurable.",
-  "Drift: corrected per chunk of 40 sampled frames by: chunk heading, floor level, odometry jump distribution. Assumes rectilinear walls and a flat floor; drift without wall evidence is not corrected; wall-matching shifts are not applied (they did not improve agreement in the M4 ablation)."
+  "Drift: corrected per chunk of 40 sampled frames by: chunk heading, floor level, odometry jump distribution. Assumes rectilinear walls and a flat floor; drift without wall evidence is not corrected; wall-matching shifts are not applied (they did not improve agreement in the ablation)."
  ],
- "config_sha256": "595843d824fc6ec5"
+ "config_sha256": "722ae23932282aaf"
 }

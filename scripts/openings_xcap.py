@@ -11,7 +11,7 @@ from m7_diagnose import CFG, load
 from floorplan.register import register
 
 ROOT = Path(__file__).resolve().parents[1]
-var = sys.argv[1] if len(sys.argv) > 1 else "after2a"
+var = sys.argv[1] if len(sys.argv) > 1 else "final"
 names = ("with_ceiling", "floor_only", "single_room")
 caps = {n: load(n) for n in names}
 ops = []

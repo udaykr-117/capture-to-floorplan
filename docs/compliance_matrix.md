@@ -29,7 +29,7 @@ measured, does not reach the bar), **untested** (built, no data to measure), **m
 | 22 | Gates: photo walls ±8%, video walls ±3% | `docs/benchmark_report.md` §1 | no plan | fails |
 | 23 | Calibration scored at every tier | `scripts/calibrate_intervals.py`, `docs/benchmark_report.md` §4 | LiDAR walls 79% / areas 100% covered (held-out: 71% / 90%) | partial |
 | 24 | Head-to-head vs a consumer app on 2 rooms | `docs/benchmark_report.md` §5 | none | missing (no iPhone) |
-| 25 | Fix loop: declaration, before/after regenerable, readable diff | `docs/fix_declaration.md`, `scripts/run_benchmark.py --variant before/after/after2a/after2/after3` | round 1: paired room dims 1/9 -> 3/9, median 9.3 -> 5.3 cm; round 2: same-wall median 29.7 -> 24.7 cm, room areas 2.03 -> 1.04 m2 | met (gate still fails, reasons stated) |
+| 25 | Fix loop: one-page declaration, before/after regenerable, readable diff | `docs/fix_declaration.md`, `docs/fix_loop.md`, `scripts/run_benchmark.py --variant before/refined/final`, `git diff fix-a-before fix-a-after` | Fix A: paired room widths 1/9 -> 3/9 within the gate, median 9.3 -> 5.3 cm. Fix B: same-wall median 29.7 -> 24.7 cm, room areas 2.03 -> 1.04 m2 | met (gate still fails; reasons stated) |
 | 26 | Process evidence: commit history | `git log` | commits per step since the scaffold | met |
 | 27 | README to running in < 15 min on a clean machine | `README.md` | install, fetch, one command | met: tested from a fresh clone on Windows, offline run completes; install time on a cold network not measured |
 | 28 | Reproduction bundle | `scripts/reproduce.sh`, `bench/results/` | regenerates every reported number from raw captures | met (live paths; no cached model outputs needed) |

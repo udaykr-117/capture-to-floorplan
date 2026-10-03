@@ -1,5 +1,5 @@
 """Wall-plane runs that cross the INSIDE of a room polygon (a partition the room was merged across). Uses the m7 cache (planes) and the
-plans in bench/results/after. Usage: uv run python scripts/seg_interior.py"""
+plans in bench/results/refined. Usage: uv run python scripts/seg_interior.py"""
 import json
 import sys
 from pathlib import Path
@@ -11,7 +11,7 @@ from m7_diagnose import load
 
 ROOT = Path(__file__).resolve().parents[1]
 for n in ("with_ceiling", "floor_only", "single_room"):
-    plan = json.loads((ROOT / "bench" / "results" / "after" / f"{n}.json").read_text())
+    plan = json.loads((ROOT / "bench" / "results" / "refined" / f"{n}.json").read_text())
     planes = load(n)["planes"]
     print(f"\n{n}:")
     for r in plan["rooms"]:

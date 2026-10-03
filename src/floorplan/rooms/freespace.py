@@ -139,7 +139,7 @@ def segment_rooms(free: np.ndarray, grid: Grid, cfg: dict) -> np.ndarray:
 
 def split_connectors(labels: np.ndarray, grid: Grid, cfg: dict) -> np.ndarray:
     """Give corridors their own label. A corridor narrower than 2 x seed_min_dist never gets a seed, so the flood hands it to whichever
-    neighbouring room reaches it first, and that differs between captures of the same home (JOURNAL, second fix loop). Here, inside every room,
+    neighbouring room reaches it first, and that differs between captures of the same home (docs/fix_declaration.md, Fix B). Here, inside every room,
     the part that a disk of the connector width cannot reach (narrow), long enough not to be a doorway, and touching ANOTHER room, becomes a
     new room. A strip between furniture and a wall touches only its own room and is left alone."""
     r = cfg["rooms"]

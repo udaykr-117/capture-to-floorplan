@@ -635,20 +635,20 @@
   "report": {}
  },
  "timing_s": {
-  "chunks": 8.58,
-  "align_and_drift": 2.99,
-  "walls": 0.23,
-  "frame_pass": 10.01,
-  "rooms_and_openings": 0.46,
-  "assemble": 0.08
+  "chunks": 3.22,
+  "align_and_drift": 1.12,
+  "walls": 0.1,
+  "frame_pass": 4.59,
+  "rooms_and_openings": 0.1,
+  "assemble": 0.03
  },
  "limitations": [
-  "No ground truth: accuracy of every value is untested; intervals are provisional and uncalibrated.",
+  "No ground truth: accuracy of every value is untested. Wall-length and room-area intervals are calibrated only against repeat captures of one property (a lower bound); other intervals are provisional.",
   "Damage detection has not been run on this plan (separate pass: `plan run` does it with the models group installed).",
   "Spaces joined by an opening wider than 1.2 m are merged into one room; rooms are assumed rectilinear.",
   "Openings use see-through evidence: mirrors and glass can create phantom openings, windows to the outside are not detected.",
   "No ceiling was captured in any room: all ceiling heights are unmeasurable.",
-  "Drift: corrected per chunk of 40 sampled frames by: chunk heading, floor level. Assumes rectilinear walls and a flat floor; drift without wall evidence is not corrected; wall-matching shifts are not applied (they did not improve agreement in the M4 ablation)."
+  "Drift: corrected per chunk of 40 sampled frames by: chunk heading, floor level. Assumes rectilinear walls and a flat floor; drift without wall evidence is not corrected; wall-matching shifts are not applied (they did not improve agreement in the ablation)."
  ],
- "config_sha256": "595843d824fc6ec5"
+ "config_sha256": "722ae23932282aaf"
 }

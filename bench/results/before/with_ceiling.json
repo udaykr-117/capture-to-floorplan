@@ -484,9 +484,7 @@
     }
    ],
    "openings": [
-    "O0",
-    "O0",
-    "O2"
+    "O1"
    ]
   },
   {
@@ -1016,7 +1014,7 @@
     }
    ],
    "openings": [
-    "O1"
+    "O0"
    ]
   },
   {
@@ -1570,45 +1568,14 @@
     }
    ],
    "openings": [
-    "O2",
-    "O3"
+    "O1",
+    "O2"
    ]
   }
  ],
  "openings": [
   {
    "id": "O0",
-   "kind": "raised",
-   "p0": [
-    1.0784895791909732,
-    -0.9402478032811088
-   ],
-   "p1": [
-    1.0784895791909732,
-    2.0197521967188914
-   ],
-   "width": {
-    "value": 2.94,
-    "unit": "m",
-    "interval": {
-     "low": 2.92,
-     "high": 2.96,
-     "method": "bracket: see-through extent to wall-to-wall (provisional)",
-     "calibrated": false
-    },
-    "status": "measured",
-    "note": null,
-    "source": null
-   },
-   "bottom_m": 0.88,
-   "top_m": 2.6,
-   "rooms": [
-    "R1",
-    "R1"
-   ]
-  },
-  {
-   "id": "O1",
    "kind": "raised",
    "p0": [
     -0.17564995106820844,
@@ -1639,7 +1606,7 @@
    ]
   },
   {
-   "id": "O2",
+   "id": "O1",
    "kind": "door",
    "p0": [
     1.1043500489317915,
@@ -1670,7 +1637,7 @@
    ]
   },
   {
-   "id": "O3",
+   "id": "O2",
    "kind": "raised",
    "p0": [
     -0.40809567650588024,
@@ -1722,7 +1689,7 @@
     "a": "R1",
     "b": "R7",
     "via": "opening",
-    "opening_id": "O2"
+    "opening_id": "O1"
    },
    {
     "a": "R1",
@@ -1759,19 +1726,19 @@
   "report": {}
  },
  "timing_s": {
-  "chunks": 45.03,
-  "align_and_drift": 20.6,
-  "walls": 2.03,
-  "frame_pass": 30.94,
-  "rooms_and_openings": 0.67,
-  "assemble": 0.37
+  "chunks": 49.25,
+  "align_and_drift": 29.16,
+  "walls": 4.22,
+  "frame_pass": 50.51,
+  "rooms_and_openings": 1.81,
+  "assemble": 0.94
  },
  "limitations": [
-  "No ground truth: accuracy of every value is untested; intervals are provisional and uncalibrated.",
+  "No ground truth: accuracy of every value is untested. Wall-length and room-area intervals are calibrated only against repeat captures of one property (a lower bound); other intervals are provisional.",
   "Damage detection has not been run on this plan (separate pass: `plan run` does it with the models group installed).",
   "Spaces joined by an opening wider than 1.2 m are merged into one room; rooms are assumed rectilinear.",
   "Openings use see-through evidence: mirrors and glass can create phantom openings, windows to the outside are not detected.",
-  "Drift: corrected per chunk of 40 sampled frames by: chunk heading, floor level. Assumes rectilinear walls and a flat floor; drift without wall evidence is not corrected; wall-matching shifts are not applied (they did not improve agreement in the M4 ablation)."
+  "Drift: corrected per chunk of 40 sampled frames by: chunk heading, floor level. Assumes rectilinear walls and a flat floor; drift without wall evidence is not corrected; wall-matching shifts are not applied (they did not improve agreement in the ablation)."
  ],
- "config_sha256": "595843d824fc6ec5"
+ "config_sha256": "722ae23932282aaf"
 }
