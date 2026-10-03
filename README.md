@@ -5,12 +5,12 @@ One command turns one capture (LiDAR scan, video clip or photo folders) into `pl
 damage regions, concealed-damage flags naming the rule that fired, and scope items keyed to surfaces.
 
 ## Status at a glance
-No iPhone, no GPU and no tape measurements were available: the benchmark is the three Stray Scanner captures supplied with the brief (one
+No iPhone, no GPU and no tape measurements were available: the benchmark is the three LiDAR captures supplied with the brief (one
 property), all on CPU. Every "accuracy" number below is agreement between those repeat captures, not error against a tape.
 
 | Tier | Runs on | Result on the samples |
 |---|---|---|
-| LiDAR | Stray Scanner export (iPhone/iPad Pro) | Full plans in 25-165 s (+2-10 min for damage). Repeatability gate **fails** (see below). Opening and ceiling accuracy untested. |
+| LiDAR | depth + poses + intrinsics (iPhone/iPad Pro) | Full plans in 25-165 s (+2-10 min for damage). Repeatability gate **fails** (see below). Opening and ceiling accuracy untested. |
 | Video | any clip | Runs; **no plan** on the samples: structure from motion places 4-18% of the frames (plain walls, blur). Says so with the reason, never invents rooms. |
 | Photo | room folders (JPEG, HEIC) | Runs; **no plan** on photo sets simulated from the videos (0 frames placed). Real photo sets untested. |
 
@@ -26,7 +26,7 @@ property), all on CPU. Every "accuracy" number below is agreement between those 
 
 Gates that fail or are untested, and why: `docs/benchmark_report.md` §1. Requirement-by-requirement status: `docs/compliance_matrix.md`.
 
-## Install (clean machine, about 5-15 minutes, mostly downloads)
+## Install
 Tested from a fresh `git clone` on Windows 11: `uv sync --group models` + `fetch_models.sh` took 38 s with a warm download cache, then
 `plan run` on `single_room` ran in 172 s **offline** (`HF_HUB_OFFLINE=1`), damage pass included. A cold machine adds the downloads
 (the installed environment is 1.4 GB on Windows; Linux takes the CPU-only torch; weights 0.7 GB). Cold-network time was not measured.
@@ -49,7 +49,7 @@ Capture with `docs/capture_protocol.md`, copy the files to the computer, then:
 ```
 uv run --group models plan run <capture>
 ```
-- `<capture>` = a Stray Scanner folder (LiDAR tier), a video file (video tier) or a folder of room folders (photo tier); the tier is detected,
+- `<capture>` = a LiDAR capture folder (LiDAR tier), a video file (video tier) or a folder of room folders (photo tier); the tier is detected,
   or force it with `--tier lidar|video|photo`.
 - Output: `out/<tier>_<name>/plan.json`, `plan.png`, `damage/*.jpg` (evidence images, if any). The terminal prints every room, the damage summary
   and the plan's limitations.
@@ -65,7 +65,7 @@ Example: `uv run --group models plan run single_scan_with_ceiling/c7d28f72c6`.
 
 ## Reproduce every reported number
 ```
-bash scripts/reproduce.sh          # about 1.5-2.5 h on a laptop CPU; logs in out/
+bash scripts/reproduce.sh          # logs in out/
 ```
 Single steps:
 - `uv run python scripts/run_benchmark.py --variant before|after|after2a|after2|after3` (fix loops, ~5 min each; `after2a` is what ships)
@@ -87,7 +87,7 @@ uv run --group models pytest -q          # 74 tests
 ```
 
 ## Layout
-- `src/floorplan/`: `io/` (Stray Scanner, video frames, image source), `geometry/` (alignment, walls, gravity), `rooms/` (free space, polygons,
+- `src/floorplan/`: `io/` (LiDAR capture loader, video frames, image source), `geometry/` (alignment, walls, gravity), `rooms/` (free space, polygons,
   ceilings, openings, room-local refinement), `drift/` (chunk correction, odometry jumps), `tiers/` (video/photo), `damage/` (detector, projection,
   rules), `sfm.py`, `depth.py`, `scale.py`, `intervals.py`, `register.py`, `pipeline.py`, `cli.py`, `report/render.py`.
 - `configs/default.yaml`: every threshold with a one-line justification. `configs/rules.yaml`: concealed-damage rules and scope actions.
