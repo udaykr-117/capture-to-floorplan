@@ -4,7 +4,7 @@ Regenerate everything with `bash scripts/reproduce.sh` (logs in `out/`, benchmar
 
 ## 0. What the benchmark set is, and what it is not
 The brief asks for a self-built set (multi-room capture, a furnished room with staged damage, all rooms at all three tiers, one room twice, laser
-or tape ground truth). We had no iPhone, so the set is the three Stray Scanner captures we were given, all of **one property**:
+or tape ground truth). We had no iPhone, so the set is the three LiDAR captures we were given, all of **one property**:
 | Brief requirement | What we have | Gap |
 |---|---|---|
 | Multi-room capture, 3+ rooms + connector | `single_scan_with_ceiling` (6 rooms), `single_scan_floor_only` (6 rooms) | none |
