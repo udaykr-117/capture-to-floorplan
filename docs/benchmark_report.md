@@ -17,9 +17,9 @@ or tape ground truth). We had no iPhone, so the set is the three LiDAR captures 
 ## 1. Gates
 | Gate | Tier | Number | Verdict |
 |---|---|---|---|
-| Opening widths <= 2 cm on >= 85%, misses and phantoms count | LiDAR | no ground truth. Openings found: 3 / 7 / 1 in the three captures (was 4 / 9 / 1: two doors counted once per wall face, and a see-through with the same room on both sides, removed); 2 openings match across captures: the corridor door (0.86 vs 0.76 m wide) and one doorway measured 1.92 vs 1.03 m | **untested**, almost certainly fails (detection disagrees between captures: doors open or closed, areas covered differently) |
-| Ceiling <= 1.5 cm per room; spread across captures <= 1 cm | LiDAR | measured in 6 of 6 with_ceiling rooms (intervals ±1 to ±5.5 cm); the other captures did not sweep the ceiling, so no spread can be computed | accuracy **untested**; spread **unmeasurable** (neither "repeatable-but-biased" nor "unrepeatable" can be stated) |
-| Repeatability: same room, same tier, within 1 cm or 0.5% per wall | LiDAR | room dimensions 3/12 pass (paired 3/9, median 5.3 cm); same wall's length 2/34 pass, median 24.7 cm | **fails** |
+| Opening widths <= 2 cm on >= 85%, misses and phantoms count | LiDAR | no ground truth. Openings found: 3 / 7 / 1 in the three captures (was 4 / 9 / 1: two doors counted once per wall face, and a see-through with the same room on both sides, removed); 1 opening matches across captures (centres within 30 cm after registration): the corridor door, 0.86 vs 0.76 m wide; a second doorway sits 52 cm apart in two captures and measures 1.92 vs 1.03 m | **untested**, almost certainly fails (detection disagrees between captures: doors open or closed, areas covered differently) |
+| Ceiling <= 1.5 cm per room; spread across captures <= 1 cm | LiDAR | measured in 7 of 7 with_ceiling rooms (intervals ±1 to ±5.5 cm in the first six); the other captures did not sweep the ceiling, so no spread can be computed | accuracy **untested**; spread **unmeasurable** (neither "repeatable-but-biased" nor "unrepeatable" can be stated) |
+| Repeatability: same room, same tier, within 1 cm or 0.5% per wall | LiDAR | room dimensions 3/12 pass (median 7.7 cm); same wall's length 2/34 pass, median 24.7 cm | **fails** |
 | Drift accountability: correction + footprint ablation on/off | LiDAR | correction implemented; ablation in §3 | **met** as a requirement (correction shipped, ablation shown) |
 | Photo-tier whole-property stitch, footprint ±8%, no overlaps | photo | no plan (0 of 8 and 0 of 31 simulated photos registered) | **fails** |
 | Photo wall lengths ±8%, calibrated | photo | no plan | **fails** |
@@ -65,11 +65,12 @@ Not done: it needs an iPhone with LiDAR running the app on the same rooms, and w
 ## 6. Timing (laptop CPU, no GPU; `bench/results/*/benchmark.json`, `out/final_*`)
 | Step | Time |
 |---|---|
-| LiDAR plan, single_room / floor_only / with_ceiling | 21-26 s / 84-90 s / 168-174 s |
+| LiDAR plan, single_room / floor_only / with_ceiling | 9-26 s / 32-90 s / 60-174 s (repeated runs; the spread is machine load) |
 | Damage pass (keyframe every 25 frames) | 98 s for 69 keyframes (single_room); ~1.0-1.6 s per keyframe |
 | Video tier: frame extraction + SfM | 327 s for 650 frames (with_ceiling, 3 fps) |
 | Video tier: depth model | ~1.4 s per registered frame (141 s for 25 frames) |
 | Photo tier: SfM | 13 s for 31 photos |
+| Video tier, optional learned matcher (DISK + LightGlue) | 2157 s for 191 frames (single_room) |
 
 ## 7. Damage
 | Capture | Detections at 0.10 (model-card threshold) | Regions at 0.10 | Regions at the shipped 0.33 |

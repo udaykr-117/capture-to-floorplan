@@ -8,7 +8,7 @@ measured, does not reach the bar), **untested** (built, no data to measure), **m
 | 1 | Capture route: one-page stock protocol (Route 2) | `docs/capture_protocol.md` | Stray Scanner (LiDAR), Camera app (video, photos); walk, length, avoid, hand-over | met (not yet followed by a non-engineer on a real phone) |
 | 2 | Device matrix: tier x hardware x honest accuracy | `docs/device_matrix.md` | table with measured numbers and "no plan" where it fails | met |
 | 3 | Photo tier: 2-8 stills per room, per-room folders, same stitched plan | `src/floorplan/tiers/images.py` (`run_photos`), `src/floorplan/sfm.py` | one SfM over all folders, doorway shots link rooms; HEIC read | partial: runs; **no plan** on simulated photo sets (0 registered) |
-| 4 | Video tier: hand-held walkthrough | `src/floorplan/tiers/images.py` (`run_video`), `src/floorplan/depth.py`, `src/floorplan/scale.py` | SfM + monocular depth + scale with uncertainty | partial: runs; **no plan** on the samples (4-18% of frames registered) |
+| 4 | Video tier: hand-held walkthrough | `src/floorplan/tiers/images.py` (`run_video`), `src/floorplan/depth.py`, `src/floorplan/scale.py` | SfM + monocular depth + scale with uncertainty; optional learned matcher (off) | partial: runs; **no plan** on the samples (4-18% of frames registered) |
 | 5 | LiDAR tier: depth, poses, intrinsics | `src/floorplan/io/stray.py`, `src/floorplan/pipeline.py` | full plan on all three captures | met |
 | 6 | Same output contract from every tier, intervals widen as data thins | `src/floorplan/schema.py`, `src/floorplan/intervals.py` | one `Plan` schema; image tiers add a >= 20% scale term | met (contract); image tiers return no rooms |
 | 7 | Per-room walls, ceiling height, floor area, openings | `src/floorplan/pipeline.py`, `rooms/ceiling.py`, `rooms/openings.py` | `plan.json` rooms[].walls/area/ceiling_height, openings[] | met (LiDAR); accuracy untested |
@@ -22,16 +22,16 @@ measured, does not reach the bar), **untested** (built, no data to measure), **m
 | 15 | Rendered plan | `src/floorplan/report/render.py` | `plan.png` | met |
 | 16 | Benchmark set composition | `docs/benchmark_report.md` §0 | supplied captures only | partial: no staged damage, no ground truth, photos simulated |
 | 17 | Gate: opening widths <= 2 cm on >= 85% | `docs/benchmark_report.md` §1 | detection counts disagree 3/7/1 between captures | untested (no ground truth) |
-| 18 | Gate: ceiling <= 1.5 cm, spread <= 1 cm, report says which failure | `docs/benchmark_report.md` §1 | 6 rooms measured in one capture | untested; spread unmeasurable |
+| 18 | Gate: ceiling <= 1.5 cm, spread <= 1 cm, report says which failure | `docs/benchmark_report.md` §1 | 7 rooms measured in one capture | untested; spread unmeasurable |
 | 19 | Gate: repeatability 1 cm or 0.5% per wall | `docs/benchmark_report.md` §2 | room dims 3/12, same-wall lengths 2/34 (median 24.7 cm) | fails |
-| 20 | Gate: drift accountability, footprint ablation on/off | `src/floorplan/drift/`, `scripts/m4_ablation.py`, `docs/benchmark_report.md` §3 | footprints 61.1 -> 68.7 and 71.7 -> 72.7 m2 | met |
+| 20 | Gate: drift accountability, footprint ablation on/off | `src/floorplan/drift/`, `scripts/m4_ablation.py`, `docs/benchmark_report.md` §3 | footprints 61.1 -> 68.7 and 71.2 -> 71.7 m2; the two whole-property captures 14% -> 4% apart | met |
 | 21 | Gate: photo-tier whole-property stitch, ±8%, no overlaps | `docs/benchmark_report.md` §1 | no plan | fails |
 | 22 | Gates: photo walls ±8%, video walls ±3% | `docs/benchmark_report.md` §1 | no plan | fails |
 | 23 | Calibration scored at every tier | `scripts/calibrate_intervals.py`, `docs/benchmark_report.md` §4 | LiDAR walls 79% / areas 100% covered (held-out: 71% / 90%) | partial |
 | 24 | Head-to-head vs a consumer app on 2 rooms | `docs/benchmark_report.md` §5 | none | missing (no iPhone) |
-| 25 | Fix loop: declaration, before/after regenerable, readable diff | `docs/fix_declaration.md`, `scripts/run_benchmark.py --variant before/after/after2a/after2` | round 1: paired room dims 1/9 -> 3/9, median 9.3 -> 5.3 cm; round 2: same-wall median 29.7 -> 24.7 cm, room areas 2.03 -> 1.04 m2 | met (gate still fails, reasons stated) |
+| 25 | Fix loop: declaration, before/after regenerable, readable diff | `docs/fix_declaration.md`, `scripts/run_benchmark.py --variant before/after/after2a/after2/after3` | round 1: paired room dims 1/9 -> 3/9, median 9.3 -> 5.3 cm; round 2: same-wall median 29.7 -> 24.7 cm, room areas 2.03 -> 1.04 m2 | met (gate still fails, reasons stated) |
 | 26 | Process evidence: commit history | `git log` | commits per step since the scaffold | met |
-| 27 | README to running in < 15 min on a clean machine | `README.md` | install, fetch, one command | met: fresh clone on Windows, setup 38 s (warm cache) + offline run 172 s; cold-network time not measured |
+| 27 | README to running in < 15 min on a clean machine | `README.md` | install, fetch, one command | met: tested from a fresh clone on Windows, offline run completes; install time on a cold network not measured |
 | 28 | Reproduction bundle | `scripts/reproduce.sh`, `bench/results/` | regenerates every reported number from raw captures | met (live paths; no cached model outputs needed) |
 | 29 | Benchmark report: gates at all tiers, repeatability, head-to-head, timing | `docs/benchmark_report.md` | sections 1-7 | met (head-to-head missing, row 24) |
 | 30 | Technical report <= 6 pages | `docs/technical_report.md` | architecture, tiers, drift, error budget, calibration, fix loop, failure modes | met |

@@ -35,7 +35,7 @@ see-through extent and the wall-to-wall gap. An opening seen on both faces of on
 |---|---|---|---|---|---|
 | LiDAR | depth 256x192, confidence, ARKit poses, intrinsics | ARKit | LiDAR | plane spread + 3.5 cm systematic | full plans |
 | Video | one clip | COLMAP SIFT, sequential matching, sharpest frame per 0.2 s (5 fps) | Depth Anything V2 (metric, indoor) median against SfM depth, combined with a 1.42 m camera-height prior (median of the three captures) | + scale sigma (≥ 20%) | no plan |
-| Photo | room folders, 2-8 stills each + doorway shots | COLMAP, exhaustive matching across all rooms (doorway shots link rooms) | same as video | + scale sigma | no plan |
+| Photo | room folders, 2-8 stills each + doorway shots (JPEG, PNG or iPhone HEIC) | COLMAP, exhaustive matching across all rooms (doorway shots link rooms) | same as video | + scale sigma | no plan |
 
 Device matrix and the capture route: `docs/device_matrix.md`, `docs/capture_protocol.md` (Route 2: Stray Scanner for LiDAR, the Camera app
 for video and photos). Video and photo failed on the samples for one diagnosed reason: COLMAP placed only 34/191 (5 fps), 33/350 and 25/650 (3 fps) video frames
@@ -52,7 +52,8 @@ under one spot moves 8 cm between visits; floor_only ends with an ARKit relocali
 accumulated drift. Correction (plane-anchored, `drift/`): (1) odometry jumps are spread linearly back along the path since the last reset; (2) each
 chunk is rotated about its own camera centre so its walls align with the axes; (3) each chunk's floor is levelled. A held-out 20% of wall
 associations checks the fit. Wall-matching shifts are implemented but off: they made the start-end loop gap and the cleanest capture pair worse.
-Assumes rectilinear walls and a flat floor. **Ablation** (stitched footprint with correction on and off): see `docs/benchmark_report.md` §3.
+Assumes rectilinear walls and a flat floor. **Ablation** (stitched footprint with correction on and off): with_ceiling 71.2 → 71.7 m2, floor_only
+61.1 → 68.7 m2; the two whole-property captures are 14% apart with correction off and 4% with it on (`docs/benchmark_report.md` §3).
 The room-local refinement of §6 is a second drift measure aimed at room dimensions.
 
 ## 4. Error budget (LiDAR tier, per wall position, 1σ)
@@ -77,14 +78,14 @@ Results before calibration: wall lengths 8/34 inside (24%), room areas 3/10 (30%
 at different places in different captures (the same wall's length differs by a median 25-31 cm even between plane-backed corners), which the
 plane-spread terms do not model. I added one room-extent term per quantity, fitted on the capture pairs and checked leave-one-pair-out
 (`scripts/calibrate_intervals.py`): room area ±25.5% (conformal 95%; 10/10 in-sample, 9/10 held out) and wall length ±0.54 m (robust 2σ;
-24/34 in- and out-of-sample). Wall intervals stay under-covered (71%) on purpose: the 95% fit is ±3.4 m, set by one wall that spans two rooms in
-another capture, which is a segmentation failure to fix, not an uncertainty to print on every wall. Openings: 2 matched pairs, 1 inside; ceilings:
+24/34 in- and out-of-sample; 27/34 with the shipped round-2 pipeline). Wall intervals stay under-covered (71-79%) on purpose: the 95% fit is ±3.4 m, set by one wall that spans two rooms in
+another capture, which is a segmentation failure to fix, not an uncertainty to print on every wall. Openings: 1 matched pair, not inside; ceilings:
 no repeat, no check. Image tiers: no plans, so nothing to calibrate; their scale term (≥ 20%) is from the three scale errors measured in §2.
 The 3.5 cm systematic term was fitted on the same capture pairs, so this check is partly circular; with ground truth the intervals would be
 recalibrated per tier from error quantiles.
 
 ## 6. Fix loop
-Declaration, prediction and result: `docs/fix_declaration.md`; regenerate with `run_benchmark.py --variant before|after`.
+Declaration, prediction and result: `docs/fix_declaration.md`; regenerate with `run_benchmark.py --variant before|after|after2a|after2|after3` (`after2a` ships).
 **Round 1.** Worst gate: repeatability (room dimensions within 1 cm or 0.5%: 1 of 10 passed, median 7.7 cm). Root cause tested against six hypotheses; the
 evidence supports drift blur (one wall's position moves by a robust 3.5 cm over a capture, and widths measured only in chunks that see both walls
 agree better: 4.9 → 2.6 cm on the biggest pair) and rejects fit noise, per-run offsets, a mode estimator and ambiguous matches. My first version of
@@ -113,4 +114,6 @@ apart. Cutting corridors out as well over-split (a notch became a room in one ca
 - **Ceiling not swept**: `unmeasurable` (single_room and floor_only); a ceiling can be transferred from another capture with its source named.
 - **Damage**: zero-shot detector; fires on seams, lamps and mats at its default threshold; raised by negative control so clean captures report
   nothing; recall on real damage untested; area is the box footprint (upper bound).
+- **Room segmentation differs between captures**: a corridor or half wall belongs to different rooms in different captures, so the same wall's length differs by a median 24.7 cm.
+- **Openings disagree between captures** (3 / 7 / 1 found): doors are open or closed, areas are covered differently; no ground truth to say which is right.
 - **Drift within a visit** and rooms seen once at the end of a long path: the remaining repeatability error.

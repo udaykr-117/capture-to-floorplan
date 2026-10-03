@@ -1,4 +1,4 @@
-# Fix declaration (M7)
+# Fix declaration, round 1
 
 Written BEFORE running the fixed pipeline. Numbers regenerate with `uv run python scripts/run_benchmark.py --variant before|after`.
 
@@ -6,7 +6,7 @@ Written BEFORE running the fixed pipeline. Numbers regenerate with `uv run pytho
 Repeatability: two captures of the same property must agree within 1 cm or 0.5% per wall.
 On the plan output (room dimensions = distance between two opposite plane-backed walls of a room, rooms matched across captures by IoU >= 0.5),
 pooled over the three capture pairs: **1 of 10 dimensions pass (10%), median disagreement 7.7 cm, 90th percentile 13.0 cm**
-(`bench/results/before/benchmark.json`). The older all-plane-pairs metric (M3): 10 of 40 (25%), median 4.8 cm.
+(`bench/results/before/benchmark.json`). The older all-plane-pairs metric: 10 of 40 (25%), median 4.8 cm.
 
 ## Root-cause hypothesis and evidence
 Hypothesis: **drift blur of wall positions.** A wall plane is fitted to all of its points from the whole capture; the same wall seen at different
@@ -29,7 +29,7 @@ room's walls come from the same tens of seconds. No threshold was tuned on the b
 ## Prediction (made before the run)
 - Room dimensions, pooled: median disagreement from 7.7 cm to **about 4 cm**; pass rate from 10% to **20-40%**. The gate (1 cm / 0.5%) will
   still FAIL: H3 shows ~2.6 cm median even for co-visible widths.
-- M3 plane-pair metric: **exactly unchanged** (25%, 4.8 cm), because the fix does not touch the wall planes. This is a control: if it moves, the
+- Plane-pair metric: **exactly unchanged** (25%, 4.8 cm), because the fix does not touch the wall planes. This is a control: if it moves, the
   fix leaks somewhere it should not.
 - Footprints and room count unchanged; small room overlaps (<= a few hundredths of a m2) may appear where rooms share a wall.
 - Risk: only 10 room dimensions are comparable, so one or two dimensions change the pass rate by 10-20 points.
@@ -52,14 +52,14 @@ Paired comparison (the same room dimension compared in both runs, 9 of them):
 - 7 of 9 better, 2 worse. Median |d| 9.3 -> 5.3 cm. Gate pass 1/9 -> 3/9.
 - Unpaired, as the benchmark prints it (the set changes because refined walls match differently): 1/10 -> 3/12 pass, median 7.7 -> 7.7 cm,
   90th percentile 13.0 -> **17.1 cm (worse)**. Three of the new dimensions (single_room vs floor_only) disagree by 6.9-17.7 cm.
-- Control: the M3 plane-pair metric is unchanged (10/40, 4.8 cm), as predicted.
+- Control: the plane-pair metric is unchanged (10/40, 4.8 cm), as predicted.
 - Cost: rooms now overlap by up to 0.10 / 0.11 / 0.14 m2 where they share a wall (was 0); footprints +0.2 / +2.7 / +0.4 m2.
 
 ## Prediction vs actual
 - Predicted median about 4 cm: actual 5.3 cm paired, 7.7 cm unpaired (unchanged). Partly met.
 - Predicted pass 20-40%: actual 33% paired, 25% unpaired. Met. The gate still FAILS, as predicted.
 - Not predicted: the single_room vs floor_only dimensions get worse. That area is where floor_only is rotated +2.27 deg and shifted 26 cm locally
-  (M3). Refinement uses one visit; if the visit itself is rotated (heading drift within the visit, or a rotated frame there), it cannot fix that, and
+  (cross-capture analysis). Refinement uses one visit; if the visit itself is rotated (heading drift within the visit, or a rotated frame there), it cannot fix that, and
   dropping the averaging over other visits makes those walls worse.
 - Predicted footprints unchanged and overlaps of a few hundredths of a m2: MISSED. floor_only's footprint grew 2.7 m2 (66.0 -> 68.7, 4%) and overlaps
   reach 0.14 m2. The two big captures' footprints are now 72.7 vs 68.7 m2 (6% apart; 9% before).
@@ -91,7 +91,7 @@ Thresholds are from building dimensions (corridor width, door depth), not tuned 
 - Same-wall lengths: median disagreement from 29.7 cm to **10-20 cm**; walls within the gate from 2/34 to **3-6** (still FAILS: the plane
   positions themselves differ by ~5 cm, as round 1 showed).
 - Room areas: median disagreement from 2.03 m2 to **about 1 m2**.
-- One more room in each capture (the corridor); room dimensions and the M3 plane-pair metric about unchanged.
+- One more room in each capture (the corridor); room dimensions and the plane-pair metric about unchanged.
 - Risk: other narrow places (closets, the strip beside with_ceiling R1) may split in one capture and not in another, which would make some
   walls worse.
 
@@ -127,9 +127,10 @@ Choosing between (a) and (a)+(b) after seeing these numbers is a decision inform
 
 
 ## Follow-up on the two round-1 regressions
-Both bad dimensions involve floor_only's bottom-right room, whose walls were re-measured from chunks 0-3 (the first seconds of the capture).
-`scripts/refine_visits.py` shows that two visits of the same room within one capture can disagree by up to 7 cm (with_ceiling R2: 3.037 vs
-3.108 m), so a single visit carries its own error. Tested: walls from the median over all visits of >= 2 chunks (`refine.visits: median`,
+Both bad dimensions involve floor_only's bottom-right room (R1), whose walls were re-measured from chunks 0-3 (the first seconds of the capture;
+that changed its x width from 4.595 m to 4.642 m). Its only other visit (chunks 24-25) has too few wall points to compare, so this room's
+visit-to-visit error is not measured. In with_ceiling R2, `scripts/refine_visits.py` shows two visits of the same room disagreeing by up to
+7 cm (3.037 vs 3.108 m), so a single visit can carry its own error; that is the likely, not proven, cause here. Tested: walls from the median over all visits of >= 2 chunks (`refine.visits: median`,
 `run_benchmark.py --variant after3`). Rule set before running: adopt only if room dimensions improve and no more get worse. Result: room
 dimensions 3/12 -> 2/11 within the gate, median 7.7 -> 10.1 cm, walls in the gate 2 -> 0. **Rejected**; `longest` stays. The regressions are
-explained, not fixed.
+only partly explained and not fixed.

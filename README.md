@@ -10,7 +10,7 @@ property), all on CPU. Every "accuracy" number below is agreement between those 
 
 | Tier | Runs on | Result on the samples |
 |---|---|---|
-| LiDAR | depth + poses + intrinsics (iPhone/iPad Pro) | Full plans in 25-165 s (+2-10 min for damage). Repeatability gate **fails** (see below). Opening and ceiling accuracy untested. |
+| LiDAR | depth + poses + intrinsics (iPhone/iPad Pro) | Full plans, plus the damage pass. Repeatability gate **fails** (see below). Opening and ceiling accuracy untested. |
 | Video | any clip | Runs; **no plan** on the samples: structure from motion places 4-18% of the frames (plain walls, blur). Says so with the reason, never invents rooms. |
 | Photo | room folders (JPEG, HEIC) | Runs; **no plan** on photo sets simulated from the videos (0 frames placed). Real photo sets untested. |
 
@@ -27,9 +27,8 @@ property), all on CPU. Every "accuracy" number below is agreement between those 
 Gates that fail or are untested, and why: `docs/benchmark_report.md` §1. Requirement-by-requirement status: `docs/compliance_matrix.md`.
 
 ## Install
-Tested from a fresh `git clone` on Windows 11: `uv sync --group models` + `fetch_models.sh` took 38 s with a warm download cache, then
-`plan run` on `single_room` ran in 172 s **offline** (`HF_HUB_OFFLINE=1`), damage pass included. A cold machine adds the downloads
-(the installed environment is 1.4 GB on Windows; Linux takes the CPU-only torch; weights 0.7 GB). Cold-network time was not measured.
+Tested from a fresh `git clone` on Windows 11: after `uv sync --group models` and `fetch_models.sh`, `plan run` on `single_room` completed
+**offline** (`HF_HUB_OFFLINE=1`), damage pass included. The installed environment is 1.4 GB on Windows (Linux takes the CPU-only torch).
 1. Install `uv`: https://docs.astral.sh/uv/getting-started/installation/ (one command; it brings its own Python 3.12).
 2. Get the code and the dependencies:
    ```
